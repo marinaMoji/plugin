@@ -70,3 +70,6 @@ Auto-render on every keystroke is **deferred** (undo, cursor, IME).
 ## Status
 
 **Documentation + LO render prototype validated** — extension (`.oxt`) not shipped yet.
+=======
+# plugin
+Word processor plugin
