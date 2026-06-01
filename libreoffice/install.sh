@@ -44,7 +44,7 @@ if [[ ! -f "${SRC}/marinamoji_kaeriten.py" ]]; then
 fi
 
 mkdir -p "${LO_USER}"
-cp "${SRC}/marinamoji_kaeriten.py" "${LO_USER}/"
+cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${LO_USER}/"
 cp "${ROOT}/../mapping.json" "${LO_USER}/marinamoji_mapping.json"
 
 if [[ ! -f "${LO_USER}/marinamoji_kaeriten.py" ]]; then

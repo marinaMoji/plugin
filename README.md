@@ -47,7 +47,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 |---------------|-------|
 | LO extension: frame render + refresh | Word add-in (textboxes) |
 | **Format kaeriten** + **Refresh** commands | Auto-format on save (optional) |
-| Canonical Unicode in document | TEI, LaTeX export |
+| Canonical Unicode in document | TEI, LaTeX export (LO menu, v0.3.1+) |
 | Show source / Copy plain | 再読, okurigana |
 
 | Out of scope (v1) | |

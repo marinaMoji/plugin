@@ -8,14 +8,21 @@ Shipped in the .oxt as a UNO Job (toolbar/menu) and optionally copied to user/Sc
 import json
 import os
 import re
+import subprocess
+import sys
 from collections import namedtuple
 
 import uno
 
+try:
+    from export_core import export_latex_for_clipboard as _latex_clipboard
+    from export_core import export_plain_text as _plain_text_export
+    from export_core import export_tei_for_clipboard as _tei_clipboard
+except ImportError:
+    _plain_text_export = _tei_clipboard = _latex_clipboard = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
-    from com.sun.star.awt.MessageBoxType import INFOBOX as _MB_INFO
-    from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK as _MB_OK
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
     from com.sun.star.text.VertOrientation import CHAR_BOTTOM as _VERT_CHAR_BOTTOM
     from com.sun.star.text.WrapTextMode import NONE as _WRAP_NONE
@@ -23,8 +30,6 @@ try:
     from com.sun.star.drawing.TextVerticalAdjust import BOTTOM as _TEXT_VERT_BOTTOM
     from com.sun.star.drawing.TextHorizontalAdjust import CENTER as _TEXT_HORIZ_CENTER
 except ImportError:
-    _MB_INFO = 4  # MessageBoxType.INFOBOX
-    _MB_OK = 1
     AS_CHARACTER = 1
     _VERT_CHAR_BOTTOM = 6
     _WRAP_NONE = 0
@@ -288,16 +293,6 @@ def _host_char_height_at_anchor(doc, text, anchor):
     return _host_char_height(doc, text, text.createTextCursorByRange(anchor))
 
 
-def _msgbox(doc, message, title="marinaMoji Kaeriten"):
-    try:
-        parent = doc.getCurrentController().getFrame().getContainerWindow()
-        toolkit = parent.getToolkit()
-        box = toolkit.createMessageBox(parent, _MB_INFO, _MB_OK, title, message)
-        box.execute()
-    except Exception:
-        pass  # formatting must not fail because of a status dialog
-
-
 _FRAME_NAME = "marinaMoji_kaeriten"
 
 
@@ -476,18 +471,6 @@ def _format_clusters(text, work_range, mapper, doc):
     return count
 
 
-def _count_frames_in_range(doc, work_range):
-    n = 0
-    for frame, _marks in _iter_frames(doc):
-        try:
-            anchor = frame.getAnchor()
-        except Exception:
-            continue
-        if _range_contains(work_range, anchor):
-            n += 1
-    return n
-
-
 def _refresh_frames_in_place(doc, work_range, mapper):
     """Update existing frames from host kanji size (no show_source)."""
     text = doc.Text
@@ -569,8 +552,165 @@ def _work_range(doc):
     return _get_document_range(doc)
 
 
-def _scope_label(doc):
-    return "selection" if _get_selection_range(doc) is not None else "document"
+def _char_index_in_range(work_range, position):
+    """Character offset of position from the start of work_range."""
+    text = work_range.getText()
+    start = work_range.getStart()
+    cur = text.createTextCursorByRange(start)
+    cur.gotoRange(position, True)
+    return len(cur.getString())
+
+
+def _canonical_text_in_range(doc, work_range):
+    """
+    Unicode source for export: plain text plus marks from marinaMoji frames in range.
+    """
+    parts = []
+    try:
+        enum = work_range.createEnumeration()
+        while enum.hasMoreElements():
+            portion = enum.nextElement()
+            ptype = portion.TextPortionType
+            if ptype == "Text":
+                parts.append(portion.getString())
+            elif ptype == "Frame":
+                frame = portion.TextFrame
+                marks = _decode_desc(frame.getPropertyValue("Description"))
+                if marks:
+                    parts.append(marks)
+                else:
+                    parts.append(portion.getString())
+            else:
+                parts.append(portion.getString())
+        return "".join(parts)
+    except Exception:
+        pass
+
+    plain = work_range.getString()
+    inserts = []
+    for frame, marks in _iter_frames(doc):
+        try:
+            anchor = frame.getAnchor()
+        except Exception:
+            continue
+        if not _range_contains(work_range, anchor):
+            continue
+        inserts.append((_char_index_in_range(work_range, anchor), marks))
+    if not inserts:
+        return plain
+    inserts.sort()
+    out = []
+    pos = 0
+    for idx, marks in inserts:
+        if idx > len(plain):
+            idx = len(plain)
+        out.append(plain[pos:idx])
+        out.append(marks)
+        pos = idx + (1 if idx < len(plain) else 0)
+    out.append(plain[pos:])
+    return "".join(out)
+
+
+def _canonical_text_for_export(doc):
+    work = _work_range(doc)
+    text = _canonical_text_in_range(doc, work)
+    if not text.strip():
+        return None
+    return text
+
+
+def _text_transferable(text):
+    """XTransferable for plain text (LO expects utf-16 flavor on macOS)."""
+    import unohelper
+    from com.sun.star.datatransfer import DataFlavor, XTransferable
+
+    flavors = []
+    for mime in ("text/plain;charset=utf-16", "text/plain;charset=utf-8", "text/plain"):
+        df = DataFlavor()
+        df.MimeType = mime
+        df.HumanPresentableName = "Text"
+        df.DataType = uno.getTypeByName("string")
+        flavors.append(df)
+
+    class StringTransferable(unohelper.Base, XTransferable):
+        def getTransferDataFlavors(self):
+            return tuple(flavors)
+
+        def isDataFlavorSupported(self, flavor):
+            return any(f.MimeType == flavor.MimeType for f in flavors)
+
+        def getTransferData(self, flavor):
+            if self.isDataFlavorSupported(flavor):
+                return text
+            raise RuntimeError("unsupported flavor: %s" % flavor.MimeType)
+
+    return StringTransferable()
+
+
+def _clipboard_set_uno(text):
+    try:
+        ctx = uno.getComponentContext()
+        sm = ctx.ServiceManager
+        transferable = _text_transferable(text)
+        for service in (
+            "com.sun.star.datatransfer.clipboard.SystemClipboard",
+            "com.sun.star.datatransfer.clipboard.Clipboard",
+        ):
+            try:
+                clipboard = sm.createInstanceWithContext(service, ctx)
+                if clipboard is not None:
+                    clipboard.setContents(transferable, None)
+                    return True
+            except Exception:
+                continue
+        try:
+            toolkit = sm.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
+            clipboard = toolkit.getSystemClipboard()
+            clipboard.setContents(transferable, None)
+            return True
+        except Exception:
+            pass
+    except Exception:
+        pass
+    return False
+
+
+def _clipboard_set_subprocess(text):
+    """OS clipboard when UNO clipboard is unavailable (common on macOS LO)."""
+    payload = text.encode("utf-8")
+    if sys.platform == "darwin":
+        cmds = (["/usr/bin/pbcopy"], ["pbcopy"])
+    elif sys.platform.startswith("linux"):
+        cmds = (
+            ["wl-copy"],
+            ["xclip", "-selection", "clipboard"],
+            ["xsel", "--clipboard", "--input"],
+        )
+    else:
+        return False
+    for cmd in cmds:
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                env={"LANG": "en_US.UTF-8"},
+            )
+            proc.communicate(payload)
+            if proc.returncode == 0:
+                return True
+        except (OSError, subprocess.SubprocessError):
+            continue
+    return False
+
+
+def _clipboard_set_text(text):
+    if _clipboard_set_uno(text):
+        return True
+    return _clipboard_set_subprocess(text)
+
+
+def _export_is_full_document(doc):
+    return _get_selection_range(doc) is None
 
 
 def _render_in_scope(doc, work_range, mapper):
@@ -587,32 +727,7 @@ def render_kaeriten(*_args):
         return
     work = _work_range(doc)
     mapper = _MarkMapper()
-    scope = _scope_label(doc)
-    n_new, n_updated = _render_in_scope(doc, work, mapper)
-    total = n_new + n_updated
-    if total == 0:
-        frames = _count_frames_in_range(doc, work)
-        if frames > 0:
-            _msgbox(
-                doc,
-                "Found %d frame(s) but could not read host font size.\n"
-                "Click beside a kanji and try Render again." % frames,
-            )
-        else:
-            _msgbox(
-                doc,
-                "No kaeriten to render in this %s.\n\n"
-                "Type marks after a character with marinaMoji, e.g. 說㆒㆑者" % scope,
-            )
-    elif n_new and n_updated:
-        _msgbox(
-            doc,
-            "Rendered %d new and updated %d existing (%s)." % (n_new, n_updated, scope),
-        )
-    elif n_new:
-        _msgbox(doc, "Rendered %d kaeriten cluster(s) (%s)." % (n_new, scope))
-    else:
-        _msgbox(doc, "Updated %d kaeriten frame(s) (%s)." % (n_updated, scope))
+    _render_in_scope(doc, work, mapper)
 
 
 def unrender_kaeriten(*_args):
@@ -622,12 +737,57 @@ def unrender_kaeriten(*_args):
     except RuntimeError:
         return
     work = _work_range(doc)
-    scope = _scope_label(doc)
-    n = _show_source(doc, work)
-    if n == 0:
-        _msgbox(doc, "No marinaMoji kaeriten frames in this %s." % scope)
-    else:
-        _msgbox(doc, "Restored source marks for %d frame(s) (%s)." % (n, scope))
+    _show_source(doc, work)
+
+
+def copy_plain_text(*_args):
+    if _plain_text_export is None:
+        return
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return
+    text = _canonical_text_for_export(doc)
+    if text is None:
+        return
+    _clipboard_set_text(_plain_text_export(text))
+
+
+def export_tei(*_args):
+    if _tei_clipboard is None:
+        return
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return
+    text = _canonical_text_for_export(doc)
+    if text is None:
+        return
+    try:
+        payload = _tei_clipboard(text, full_document=_export_is_full_document(doc))
+        _clipboard_set_text(payload)
+    except Exception:
+        pass
+
+
+def export_latex(*_args):
+    if _latex_clipboard is None:
+        return
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return
+    text = _canonical_text_for_export(doc)
+    if text is None:
+        return
+    try:
+        mapping = _load_mapping()
+        payload = _latex_clipboard(
+            text, mapping_data=mapping, full_document=_export_is_full_document(doc)
+        )
+        _clipboard_set_text(payload)
+    except Exception:
+        pass
 
 
 # Legacy names (older menu URLs and saved macro shortcuts)
@@ -641,6 +801,9 @@ show_source = unrender_kaeriten
 g_exportedScripts = (
     render_kaeriten,
     unrender_kaeriten,
+    copy_plain_text,
+    export_tei,
+    export_latex,
     format_selection,
     format_paragraph,
     format_document,

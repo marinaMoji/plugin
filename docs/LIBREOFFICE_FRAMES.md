@@ -71,7 +71,7 @@ Tiny **borderless frame** anchored **as character**, containing stacked glyphs (
 - **Optional** editor-local tags (e.g. frame name `marinaMoji:kaeriten:<id>`) for finding objects on refresh — **not** for TEI/export semantics. See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
 - Do **not** auto-format on every keystroke in v1.
 - **Toolbar** (v0.2.3+): `OfficeToolBar` in `Addons.xcu`; enable via **View → Toolbars → marinaMoji**.
-- **Toolbar/menu** (v0.3.0+): single `.oxt` install; `org.marinaMoji.kaeriten:…` URLs + `marinamoji_kaeriten_dispatch.py` ProtocolHandler. Optional `install.sh` only for user-profile macros / debugging.
+- **Toolbar only** (v0.3.5+): no menu bar; copy buttons put plain / TEI / LaTeX on the clipboard (snippet vs full doc by selection). Optional `install.sh` for Tools → Macros / APSO.
 
 ## Related
 

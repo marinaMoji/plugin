@@ -14,7 +14,15 @@ from com.sun.star.lang import XInitialization, XServiceInfo
 PROTOCOL = "org.marinaMoji.kaeriten:"
 IMPLE_NAME = "MarinaMojiKaeritenProtocolHandler"
 SERVICE_NAME = "com.sun.star.frame.ProtocolHandler"
-_COMMANDS = frozenset(("render_kaeriten", "unrender_kaeriten"))
+_COMMANDS = frozenset(
+    (
+        "render_kaeriten",
+        "unrender_kaeriten",
+        "copy_plain_text",
+        "export_tei",
+        "export_latex",
+    )
+)
 
 
 def _extension_root():
@@ -67,10 +75,17 @@ class MarinaMojiKaeritenProtocolHandler(
         if url.Protocol != PROTOCOL:
             return
         macros = _macro_module()
-        if url.Path == "render_kaeriten":
+        path = url.Path
+        if path == "render_kaeriten":
             macros.render_kaeriten()
-        elif url.Path == "unrender_kaeriten":
+        elif path == "unrender_kaeriten":
             macros.unrender_kaeriten()
+        elif path == "copy_plain_text":
+            macros.copy_plain_text()
+        elif path == "export_tei":
+            macros.export_tei()
+        elif path == "export_latex":
+            macros.export_latex()
 
     def addStatusListener(self, control, url):
         pass

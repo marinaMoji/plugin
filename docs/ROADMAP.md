@@ -30,12 +30,12 @@
 - [ ] **Show source** — edit `說㆒㆑者`; views hidden or removed
 - [ ] Find marinaMoji frames by editor-local tags (if metadata used)
 - [ ] Paragraph font-size change → user **Refresh** or relative frame sizing
-- [ ] **Copy as plain text** (canonical clipboard)
+- [x] **Copy as plain text** (canonical clipboard)
 
 ## Phase 2 — Export and fallback
 
-- [ ] **Export TEI** from canonical visible text + `mapping.json` (not from frame objects)
-- [ ] **Export LaTeX** (experimental, `\kundoku`-style)
+- [x] **Copy TEI** / **Copy LaTeX** to clipboard from canonical text + `mapping.json` (snippet vs full doc by scope)
+- [ ] Optional: save TEI/LaTeX to file (deferred; clipboard-first)
 - [ ] Subscript-only fallback macro for simple レ (no extension)
 
 ## Phase 3 — Word renderer

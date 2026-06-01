@@ -15,4 +15,6 @@
                        manifest:full-path="Scripts/python/marinamoji_kaeriten.py"/>
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="Scripts/python/marinamoji_mapping.json"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="Scripts/python/export_core.py"/>
 </manifest:manifest>

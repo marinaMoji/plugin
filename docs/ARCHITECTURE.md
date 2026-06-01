@@ -77,8 +77,8 @@ Annotation objects should be **read-only** from the user’s perspective. Never 
 | **Render kaeriten** | Format + refresh | Selection if highlighted, else document: source → frames; rescale existing frames |
 | **Unrender kaeriten** | Show source | Same scope: frames → Unicode marks for editing |
 | **Copy as plain text** | — | Clipboard = `說㆒㆑者` (no frames) |
-| **Export TEI** | — | From canonical text + `mapping.json` |
-| **Export LaTeX** | — | From canonical text (`\kundoku`-style, TBD) |
+| **Copy TEI** | Export TEI | Clipboard: TEI snippet (selection) or full document |
+| **Copy LaTeX** | Export LaTeX | Clipboard: LaTeX snippet or full `.tex` scaffold |
 
 **Not in v1:**
 
