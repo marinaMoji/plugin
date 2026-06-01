@@ -15,7 +15,21 @@
       "line_height_twips": 0,
       "stack_direction": "top_to_bottom_first_mark_first"
     },
-    "fallback": "subscript"
+    "fallback": "subscript",
+    "word_primary": "content_control",
+    "word_content_control": {
+      "font_size_ratio": 0.42,
+      "min_font_size_pt": 6,
+      "stack_direction": "top_to_bottom_first_mark_first"
+    },
+    "onlyoffice_primary": "inline_content_control",
+    "onlyoffice_inline": {
+      "font_size_ratio": 0.42,
+      "min_font_size_pt": 6,
+      "stack_direction": "top_to_bottom_first_mark_first",
+      "compound_layout": "stack",
+      "stack_step_hps": 0
+    }
   },
   "marks": [
     {

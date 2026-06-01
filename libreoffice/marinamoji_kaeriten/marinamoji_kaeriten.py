@@ -764,7 +764,7 @@ def export_tei(*_args):
     if text is None:
         return
     try:
-        payload = _tei_clipboard(text, full_document=_export_is_full_document(doc))
+        payload = _tei_clipboard(text, full_document=False)
         _clipboard_set_text(payload)
     except Exception:
         pass
@@ -783,7 +783,7 @@ def export_latex(*_args):
     try:
         mapping = _load_mapping()
         payload = _latex_clipboard(
-            text, mapping_data=mapping, full_document=_export_is_full_document(doc)
+            text, mapping_data=mapping, full_document=False
         )
         _clipboard_set_text(payload)
     except Exception:

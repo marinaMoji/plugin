@@ -22,9 +22,9 @@ We **do** use normal **HTTPS** on our own domain (e.g. Let’s Encrypt via GitHu
 
 | Product | End-user install (goal) | Gatekeeper |
 |---------|-------------------------|------------|
-| **LibreOffice** | Download `.oxt` → double-click → Extension Manager | Usually none (LO opens the extension) |
-| **Word** | Download `.dmg` → run **Install marinaMoji Kaeriten** → open Word | May warn on unsigned `.app` / `.dmg` — [see below](#gatekeeper-macos) |
-| **ONLYOFFICE** | Download `.zip` → run **Install…** app or drag folder | Same as Word if using `.app` |
+| **LibreOffice** | Download Mac `.dmg` → run installer (or `.oxt` on Linux/Windows) | May warn on unsigned `.app` / `.dmg` |
+| **Word** | *(parked — not in current releases)* | — |
+| **ONLYOFFICE** | Download Mac `.dmg` → run installer (or manual zip) | May warn on unsigned `.app` / `.dmg` |
 
 **Recommended order for new users:** LibreOffice first (simplest), then Word or ONLYOFFICE if they need that host.
 
@@ -57,11 +57,14 @@ Each release tag (e.g. `plugins-v0.3.7`) attaches:
 
 | Asset | Contents |
 |-------|----------|
-| `MarinaMojiKaeriten.oxt` | LibreOffice extension |
-| `marinamoji-kaeriten-word-mac.dmg` | Word manifest installer + readme |
-| `word-dist.zip` | Static add-in files (for self-hosting mirrors) |
-| `marinamoji-kaeriten-onlyoffice.zip` | ONLYOFFICE plugin folder |
+| `MarinaMojiKaeriten.oxt` | LibreOffice extension (all platforms) |
+| `marinamoji-kaeriten-libreoffice-mac.dmg` | Mac GUI installer + `.oxt` + readme |
+| `marinamoji-kaeriten-onlyoffice.zip` | ONLYOFFICE plugin folder (manual install) |
+| `marinamoji-kaeriten-onlyoffice-mac.dmg` | Mac GUI installer + zip + readme |
+| `INSTALL.txt` | Plain-language install summary |
 | `SHA256SUMS.txt` | Checksums |
+
+Word assets (`word-dist.zip`, Word `.dmg`) are omitted while the Word add-in is parked in git.
 
 Build locally: `plugin/packaging/build-release.sh` (maintainers only).
 
@@ -116,20 +119,27 @@ Users may still need Right-click → Open the first time.
 
 ---
 
-## LibreOffice — easiest path
+## LibreOffice — Mac installer + `.oxt`
 
-**User steps (no Terminal):**
+**macOS (recommended — no Terminal):**
 
-1. Download `MarinaMojiKaeriten.oxt` from the website or GitHub.
-2. Double-click the file (or **Fichier → Ouvrir** in LibreOffice).
-3. LibreOffice **Extension Manager** opens → **Add** → accept → **restart Writer**.
-4. **Affichage → Barres d’outils → marinaMoji**.
+1. Download `marinamoji-kaeriten-libreoffice-mac.dmg` from the website or GitHub.
+2. **Right-click → Open** the installer app if macOS warns ([Gatekeeper](#gatekeeper-macos)).
+3. **Quit Writer** (Cmd+Q), then run **Install marinaMoji Kaeriten (LibreOffice)**.
+4. Accept the extension in Extension Manager when it opens → **restart Writer**.
+5. **View → Toolbars → marinaMoji**.
 
-**Maintainer:** `cd plugin/libreoffice && ./build.sh` → upload `dist/MarinaMojiKaeriten.oxt`.
+The Mac installer copies Python macros into your LibreOffice profile (required on **LibreOffice 26.x**) and opens `MarinaMojiKaeriten.oxt`.
 
-Optional: put the `.oxt` inside a `.dmg` with a short `Lisez-moi.txt` — same Gatekeeper rules if the `.dmg` is unsigned.
+**Linux / Windows / power users:**
 
-`install.sh` (macros to user profile) stays **optional** for power users; the `.oxt` alone is enough for the toolbar.
+1. Download `MarinaMojiKaeriten.oxt`.
+2. Double-click (or **Tools → Extension Manager → Add**) → accept → restart Writer.
+3. **View → Toolbars → marinaMoji**.
+
+**Maintainer:** `cd plugin/libreoffice && ./build.sh` → upload `dist/MarinaMojiKaeriten.oxt` and the Mac `.dmg` from `packaging/build-release.sh`.
+
+Optional **`install.sh`** (Terminal) — same macro copy as the Mac installer; for APSO / Macro dialog only.
 
 ---
 
@@ -170,15 +180,22 @@ No local server if manifest URLs point to your website.
 
 ---
 
-## ONLYOFFICE — zip + installer app
+## ONLYOFFICE — Mac installer + zip (experimental)
 
-**User steps:**
+**macOS (no Terminal):**
+
+1. Download `marinamoji-kaeriten-onlyoffice-mac.dmg`.
+2. **Right-click → Open** the installer if macOS warns.
+3. **Quit ONLYOFFICE** (Cmd+Q), run **Install marinaMoji Kaeriten (ONLYOFFICE)**.
+4. Reopen Writer → **Plugins → marinaMoji → marinaMoji Kaeriten**.
+
+**Manual (all platforms):**
 
 1. Download `marinamoji-kaeriten-onlyoffice.zip`.
-2. Run **Install marinaMoji Kaeriten (ONLYOFFICE).app** (copies folder into plugins directory), **or** follow drag-and-drop steps in the readme inside the zip.
-3. Restart ONLYOFFICE Writer → **Plugins → marinaMoji Kaeriten**.
+2. Unzip into `sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/` (see [onlyoffice/README.md](../onlyoffice/README.md)).
+3. Restart ONLYOFFICE Writer.
 
-Build: `plugin/packaging/build-release.sh` zips `plugin/onlyoffice/` (after `./build.sh`).
+Build: `plugin/packaging/build-release.sh` (zips `plugin/onlyoffice/` and builds Mac `.app` / `.dmg`).
 
 ---
 
@@ -186,11 +203,12 @@ Build: `plugin/packaging/build-release.sh` zips `plugin/onlyoffice/` (after `./b
 
 ```bash
 cd plugin/packaging
-export MARINAMOJI_PLUGIN_BASE="https://plugins.yourdomain.org/word"
+export MARINAMOJI_RELEASE_VERSION="0.3.7"
 ./build-release.sh
-# Upload dist/release/* to GitHub Release + static host
-./mac/build-word-dmg.sh   # optional: DMG with installer .app
+# Upload packaging/release/* to GitHub Release + website
 ```
+
+On macOS, `build-release.sh` also builds LibreOffice and ONLYOFFICE `.app` installers and `.dmg` wrappers.
 
 ---
 
@@ -205,10 +223,9 @@ Website should say: **Install marinaMoji first**, then install the Writer/Word e
 ## Checklist before publishing a release
 
 - [ ] `MarinaMojiKaeriten.oxt` opens in LO Extension Manager
-- [ ] `https://<domain>/word/taskpane.html` loads in Safari (no certificate warning)
-- [ ] Production manifest URLs all use `<domain>`, not `127.0.0.1`
-- [ ] Mac Word installer tested on a clean Mac account (Right-click → Open path documented)
-- [ ] GitHub Release assets + `SHA256SUMS.txt`
+- [ ] Mac LO installer tested (toolbar buttons work after restart)
+- [ ] Mac ONLYOFFICE installer lands in `sdkjs-plugins/{GUID}/`
+- [ ] GitHub Release assets + `SHA256SUMS.txt` + `INSTALL.txt`
 - [ ] Website install pages linked from README
 
 ---

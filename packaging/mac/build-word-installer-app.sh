@@ -14,10 +14,7 @@ if [[ ! -f "${MANIFEST}" ]]; then
 fi
 
 rm -rf "${OUT}"
-mkdir -p "${OUT}/Contents/Resources" "${OUT}/Contents/MacOS"
+osacompile -o "${OUT}" "${MAC}/install-word-addin.applescript"
 cp "${MANIFEST}" "${OUT}/Contents/Resources/manifest.production.xml"
-osacompile -o "${OUT}/Contents/MacOS/applet" "${MAC}/install-word-addin.applescript"
-/usr/bin/sed -i '' 's/applet/Install marinaMoji Kaeriten/' "${OUT}/Contents/Info.plist" 2>/dev/null || true
-# Ad-hoc sign (optional; users may still Right-click → Open)
 codesign --force --deep --sign - "${OUT}" 2>/dev/null || true
 echo "Built ${OUT}"

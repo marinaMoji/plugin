@@ -8,9 +8,28 @@ body {
   min-width: 220px;
 }
 
+header {
+  margin-bottom: 8px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+header .logo {
+  flex: 0 0 auto;
+  border-radius: 6px;
+}
+
 h1 {
   font-size: 15px;
   margin: 0 0 4px;
+}
+
+.brand h1 {
+  margin: 0;
 }
 
 h2 {

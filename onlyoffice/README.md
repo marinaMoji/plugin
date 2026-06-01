@@ -6,7 +6,7 @@ JavaScript plugin for **ONLYOFFICE Document Editor** (Writer). Same model as the
 - **View:** inline content controls with stacked display glyphs (一 / レ)
 - **Commands:** Render, Unrender, Refresh, Copy plain / TEI / LaTeX
 
-**Status (May 2026):** v0.1 scaffold — not yet QA’d on a live ONLYOFFICE install. LibreOffice remains the recommended editor for daily work.
+**Status (May 2026):** **alpha** — QA’d on ONLYOFFICE Desktop (macOS). Compound marks may stack imperfectly; LibreOffice remains the recommended editor for daily work.
 
 See [../docs/WORD_FINDINGS.md](../docs/WORD_FINDINGS.md) (interoperability) and [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
@@ -19,7 +19,15 @@ Paste from LibreOffice **does not** bring LO frames into ONLYOFFICE — format f
 
 ## Install
 
-### Desktop Editors (macOS) — recommended
+### Desktop Editors (macOS) — recommended (no Terminal)
+
+Download **`marinamoji-kaeriten-onlyoffice-mac.dmg`** from GitHub Releases, then:
+
+1. **Right-click → Open** the installer if macOS warns.
+2. **Quit ONLYOFFICE (Cmd+Q)**, run **Install marinaMoji Kaeriten (ONLYOFFICE)**.
+3. Reopen Writer → **Plugins → marinaMoji**.
+
+### Desktop Editors (macOS) — Terminal (developers)
 
 ```bash
 cd plugin/onlyoffice
@@ -37,7 +45,7 @@ Then **quit ONLYOFFICE (Cmd+Q)** and reopen Writer.
 
 ONLYOFFICE requires the folder name to be the plugin **GUID** from `config.json` (the part in `{…}` braces), **not** `marinamoji-kaeriten`. Putting files under `…/plugins/` does **not** work.
 
-**Find the plugin:** **Plugins** tab → **Plugin Manager** → **My plugins**, or the **Plugins** list → **marinaMoji** → **marinaMoji Kaeriten**.
+**Find the plugin:** **Plugins** tab → **Plugin Manager** → **My plugins**, or the **Plugins** list → **marinaMoji**.
 
 ### Manual install (macOS / Windows / Linux)
 
@@ -67,7 +75,7 @@ Then enable plugins in editor config (`plugins: true`).
 ## Use
 
 1. Type `說㆒㆑者` with marinaMoji.
-2. Open the **marinaMoji Kaeriten** sidebar.
+2. Open the **marinaMoji** sidebar.
 3. Click **Render** — paragraphs with mark clusters get inline views.
 4. Edit source with **Unrender**; do not edit inside the controls.
 5. **Refresh** after font changes.

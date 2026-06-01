@@ -45,14 +45,16 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
 | In scope (v1) | Later |
 |---------------|-------|
-| LO extension: frame render + refresh | Word add-in (textboxes) |
-| **Format kaeriten** + **Refresh** commands | Auto-format on save (optional) |
-| Canonical Unicode in document | TEI, LaTeX export (LO menu, v0.3.1+) |
-| Show source / Copy plain | 再読, okurigana |
+| LO extension: frame render + refresh | Auto-format on save (optional) |
+| Word add-in: content controls (dev; Mac QA pending) | Word textbox renderer (closer to manual experiments) |
+| **Format kaeriten** + **Refresh** commands | 再読, okurigana |
+| Canonical Unicode in document | |
+| Show source / Copy plain / TEI / LaTeX (LO + Word) | |
 
 | Out of scope (v1) | |
 |-------------------|---|
-| OnlyOffice frame parity | |
+| OnlyOffice frame parity (paste from LO) | |
+| OnlyOffice plugin (inline controls, dev) | |
 | Hidden metadata as canonical semantics | |
 | Auto-format while typing | |
 
@@ -67,6 +69,13 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 |-----|----------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Source vs view; metadata; commands; interoperability |
 | [libreoffice/README.md](libreoffice/README.md) | LO extension build and install |
+| [word/README.md](word/README.md) | Word add-in build and sideload |
+| [docs/WORD_ADDIN_DEV.md](docs/WORD_ADDIN_DEV.md) | Word Mac dev status, resume checklist, troubleshooting |
+| [docs/WORD_PLUGIN_RESEARCH.md](docs/WORD_PLUGIN_RESEARCH.md) | Word planning: Mac reality, certs, macros, parity |
+| [docs/ONLYOFFICE.md](docs/ONLYOFFICE.md) | ONLYOFFICE role, limits, workflow |
+| [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | GitHub/website releases, GUI installers, no App Store |
+| [docs/INSTALL-MAC-GATEKEEPER.md](docs/INSTALL-MAC-GATEKEEPER.md) | macOS Right-click → Open (unsigned downloads) |
+| [onlyoffice/README.md](onlyoffice/README.md) | ONLYOFFICE plugin install and use |
 | [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md) | LO experiments and frame parameters |
 | [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md) | Word experiments (May–June 2026) |
 | [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word textboxes |
@@ -80,17 +89,40 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
 - [mapping.json](mapping.json) — marks, display glyphs, render hints
 
-## LibreOffice extension (v0.1.0)
+## LibreOffice extension (v0.3.7 — alpha, recommended)
 
 Source and build instructions: [libreoffice/README.md](libreoffice/README.md)
 
+**End users (macOS):** download `marinamoji-kaeriten-libreoffice-mac.dmg` from GitHub Releases — no Terminal.
+
+**Developers:**
+
 ```bash
 cd libreoffice
-./install.sh    # Python macros → LibreOffice user profile (required on macOS)
-./build.sh      # MarinaMojiKaeriten.oxt (menu only)
-# Extension Manager → Add dist/MarinaMojiKaeriten.oxt → restart Writer
+./build.sh      # MarinaMojiKaeriten.oxt
+./install.sh    # optional: copy Python macros (same as Mac installer)
 ```
+
+## Microsoft Word add-in (parked)
+
+The Word add-in is **excluded from git** until the Mac renderer is stable. See [docs/WORD_ADDIN_DEV.md](docs/WORD_ADDIN_DEV.md) to resume development.
+
+## ONLYOFFICE plugin (v0.1.0 — alpha, experimental)
+
+**End users (macOS):** download `marinamoji-kaeriten-onlyoffice-mac.dmg` from GitHub Releases.
+
+```bash
+cd onlyoffice
+./build.sh
+./install-mac.sh   # developers only
+```
+
+Plugins → **marinaMoji Kaeriten** sidebar.
 
 ## Status
 
-**LibreOffice extension (alpha)** — format / show source / refresh. **Word add-in** not started.
+**LibreOffice extension (alpha)** — render / unrender / refresh / clipboard export. **Use this for real work today.**
+
+**ONLYOFFICE plugin (alpha, experimental)** — same commands via sidebar; inline content controls. Compound mark layout is imperfect.
+
+**Word add-in (parked)** — development paused; not shipped in releases.

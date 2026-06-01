@@ -20,7 +20,8 @@
     return {
       fontSizeRatio: Number(oo.font_size_ratio ?? lo.font_size_ratio ?? 0.42),
       minFontSizePt: Number(oo.min_font_size_pt ?? 6),
-      compoundLayout: oo.compound_layout || "soft_break",
+      compoundLayout: oo.compound_layout || "stack",
+      stackStepHps: Number(oo.stack_step_hps ?? 0),
     };
   }
 
@@ -79,18 +80,13 @@
   }
 
   function buildRenderPlan(paragraphs) {
-    const opts = renderOptions();
     const plan = [];
     for (const para of paragraphs) {
       const segments = MarinaMojiExport.buildSegments(para.text, byChar).map((seg) => {
         if (seg.type !== "kaeriten") return seg;
         return {
           ...seg,
-          glyphs: MarinaMojiExport.glyphsForInlineSdt(
-            seg.marks,
-            byChar,
-            opts.compoundLayout
-          ),
+          glyphLines: MarinaMojiExport.glyphLinesForMarks(seg.marks, byChar),
         };
       });
       const hasKaeriten = segments.some((s) => s.type === "kaeriten");
@@ -99,28 +95,75 @@
     return plan;
   }
 
-  function applyRenderPlan(plan, fontSizePt) {
+  function applyRenderPlan(plan, fontSizePt, compoundLayout, stackStepHps) {
     return new Promise((resolve, reject) => {
       Asc.scope.plan = JSON.stringify(plan);
       Asc.scope.fontSizePt = fontSizePt;
+      Asc.scope.compoundLayout = compoundLayout || "stack";
+      Asc.scope.stackStepHps = stackStepHps || 0;
       Asc.scope.sourcePrefix = SOURCE_PREFIX;
       window.Asc.plugin.callCommand(
         function () {
           var plan = JSON.parse(Asc.scope.plan);
           var fontSizePt = Asc.scope.fontSizePt || 8;
+          var compoundLayout = Asc.scope.compoundLayout || "stack";
+          var stackStepHps = Asc.scope.stackStepHps || 0;
           var sourcePrefix = Asc.scope.sourcePrefix || "MARINAMOJI:source=";
           var doc = Api.GetDocument();
 
-          function fillInlineSdtGlyphs(sdt, glyphs) {
+          function stackStep() {
+            if (stackStepHps > 0) return stackStepHps;
+            return Math.max(8, Math.round(fontSizePt * 1.4));
+          }
+
+          /** Vertical compound stack without AddLineBreak (breaks escape the inline SDT). */
+          function fillPositionStack(sdt, glyphLines) {
+            var n = glyphLines.length;
+            var step = stackStep();
+            var backTwips = -Math.round(fontSizePt * 20 * 0.92);
+            var mid = (n - 1) / 2.0;
+            for (var i = 0; i < n; i++) {
+              var gr = Api.CreateRun();
+              gr.SetFontSize(fontSizePt);
+              gr.SetPosition(Math.round(step * (n - 1 - i - mid)));
+              if (i > 0 && gr.SetSpacing) gr.SetSpacing(backTwips);
+              gr.AddText(glyphLines[i]);
+              sdt.AddElement(gr);
+            }
+          }
+
+          function fillInlineSdtGlyphs(sdt, glyphLines) {
             var n = sdt.GetElementsCount ? sdt.GetElementsCount() : 0;
             for (var k = n - 1; k >= 0; k--) {
               sdt.RemoveElement(k);
             }
-            // Glyphs use soft break (U+000B) between stacks — hard \n escapes the inline SDT.
-            var gr = Api.CreateRun();
-            gr.AddText(glyphs);
-            gr.SetFontSize(fontSizePt);
-            sdt.AddElement(gr);
+            if (!glyphLines || !glyphLines.length) return;
+
+            if (glyphLines.length === 1) {
+              var one = Api.CreateRun();
+              one.AddText(glyphLines[0]);
+              one.SetFontSize(fontSizePt);
+              sdt.AddElement(one);
+              return;
+            }
+
+            if (compoundLayout === "horizontal") {
+              var hRun = Api.CreateRun();
+              hRun.AddText(glyphLines.join(""));
+              hRun.SetFontSize(fontSizePt);
+              sdt.AddElement(hRun);
+              return;
+            }
+
+            if (compoundLayout === "soft_break") {
+              var sRun = Api.CreateRun();
+              sRun.AddText(glyphLines.join("\u000b"));
+              sRun.SetFontSize(fontSizePt);
+              sdt.AddElement(sRun);
+              return;
+            }
+
+            fillPositionStack(sdt, glyphLines);
           }
 
           function fillParagraph(oPara, segments) {
@@ -136,7 +179,7 @@
                 oPara.AddElement(run);
               } else if (seg.type === "kaeriten") {
                 var sdt = Api.CreateInlineLvlSdt();
-                fillInlineSdtGlyphs(sdt, seg.glyphs);
+                fillInlineSdtGlyphs(sdt, seg.glyphLines);
                 oPara.AddInlineLvlSdt(sdt);
                 sdt.SetTag(sourcePrefix + seg.marks);
                 if (sdt.SetAlias) sdt.SetAlias(seg.marks);
@@ -174,7 +217,7 @@
         }
         const opts = renderOptions();
         const fontSizePt = Math.max(opts.minFontSizePt, 8);
-        return applyRenderPlan(plan, fontSizePt).then((n) => {
+        return applyRenderPlan(plan, fontSizePt, opts.compoundLayout, opts.stackStepHps).then((n) => {
           setStatus("Rendered " + n + " paragraph(s).", false);
         });
       })
@@ -263,16 +306,23 @@
     Asc.scope.prefix = SOURCE_PREFIX;
     Asc.scope.byCharJson = JSON.stringify(byChar);
     Asc.scope.compoundLayout = opts.compoundLayout;
+    Asc.scope.stackStepHps = opts.stackStepHps;
     Asc.scope.fontSizePt = Math.max(opts.minFontSizePt, 8);
     window.Asc.plugin.callCommand(
       function () {
         var prefix = Asc.scope.prefix;
         var byChar = JSON.parse(Asc.scope.byCharJson || "{}");
-        var compoundLayout = Asc.scope.compoundLayout || "soft_break";
+        var compoundLayout = Asc.scope.compoundLayout || "stack";
+        var stackStepHps = Asc.scope.stackStepHps || 0;
         var fontSizePt = Asc.scope.fontSizePt || 8;
         var doc = Api.GetDocument();
 
-        function inlineGlyphs(marks) {
+        function stackStep() {
+          if (stackStepHps > 0) return stackStepHps;
+          return Math.max(8, Math.round(fontSizePt * 1.4));
+        }
+
+        function glyphLinesForMarksInline(marks) {
           var chars = marks.split("");
           chars.sort(function (a, b) {
             var oa = Number(byChar[a] ? byChar[a].stack_order : 0);
@@ -280,12 +330,58 @@
             if (oa !== ob) return oa - ob;
             return marks.indexOf(a) - marks.indexOf(b);
           });
-          var lines = chars.map(function (c) {
+          return chars.map(function (c) {
             return byChar[c] ? byChar[c].display_glyph : c;
           });
-          if (lines.length <= 1) return lines.join("");
-          if (compoundLayout === "horizontal") return lines.join("");
-          return lines.join("\u000b");
+        }
+
+        function fillPositionStack(cc, glyphLines) {
+          var n = glyphLines.length;
+          var step = stackStep();
+          var backTwips = -Math.round(fontSizePt * 20 * 0.92);
+          var mid = (n - 1) / 2.0;
+          for (var i = 0; i < n; i++) {
+            var gr = Api.CreateRun();
+            gr.SetFontSize(fontSizePt);
+            gr.SetPosition(Math.round(step * (n - 1 - i - mid)));
+            if (i > 0 && gr.SetSpacing) gr.SetSpacing(backTwips);
+            gr.AddText(glyphLines[i]);
+            cc.AddElement(gr);
+          }
+        }
+
+        function fillControlGlyphs(cc, glyphLines) {
+          var n = cc.GetElementsCount ? cc.GetElementsCount() : 0;
+          for (var k = n - 1; k >= 0; k--) {
+            cc.RemoveElement(k);
+          }
+          if (!glyphLines || !glyphLines.length) return;
+
+          if (glyphLines.length === 1) {
+            var one = Api.CreateRun();
+            one.AddText(glyphLines[0]);
+            one.SetFontSize(fontSizePt);
+            cc.AddElement(one);
+            return;
+          }
+
+          if (compoundLayout === "horizontal") {
+            var hRun = Api.CreateRun();
+            hRun.AddText(glyphLines.join(""));
+            hRun.SetFontSize(fontSizePt);
+            cc.AddElement(hRun);
+            return;
+          }
+
+          if (compoundLayout === "soft_break") {
+            var sRun = Api.CreateRun();
+            sRun.AddText(glyphLines.join("\u000b"));
+            sRun.SetFontSize(fontSizePt);
+            cc.AddElement(sRun);
+            return;
+          }
+
+          fillPositionStack(cc, glyphLines);
         }
 
         function marksFromControl(cc) {
@@ -320,15 +416,7 @@
         for (var i = 0; i < items.length; i++) {
           var cc = items[i].cc;
           var marks = items[i].marks;
-          var glyphs = inlineGlyphs(marks);
-          var n = cc.GetElementsCount ? cc.GetElementsCount() : 0;
-          for (var k = n - 1; k >= 0; k--) {
-            cc.RemoveElement(k);
-          }
-          var gr = Api.CreateRun();
-          gr.AddText(glyphs);
-          gr.SetFontSize(fontSizePt);
-          cc.AddElement(gr);
+          fillControlGlyphs(cc, glyphLinesForMarksInline(marks));
           count++;
         }
         return count;
@@ -344,26 +432,99 @@
     );
   }
 
-  function getSelectedOrDocText() {
-    return new Promise((resolve) => {
-      window.Asc.plugin.executeMethod("GetSelectedText", [], function (sel) {
-        if (sel && String(sel).length > 0) {
-          resolve({ text: String(sel), fullDocument: false });
-          return;
-        }
-        scanParagraphs().then((paragraphs) => {
-          resolve({
-            text: paragraphs.map((p) => p.text).join("\n"),
-            fullDocument: true,
-          });
+  function getTextForExport() {
+    return scanExportModel().then((model) => {
+      return new Promise((resolve) => {
+        window.Asc.plugin.executeMethod("GetSelectedText", [], function (sel) {
+          const selectedDisplay = sel && String(sel).length > 0 ? String(sel) : "";
+          resolve(
+            MarinaMojiExport.resolveExportText(
+              model.segments,
+              model.docCanonical,
+              selectedDisplay
+            )
+          );
         });
       });
     });
   }
 
+  /** Walk paragraph elements; use control tags for canonical marks, not display glyphs. */
+  function scanExportModel() {
+    return new Promise((resolve, reject) => {
+      Asc.scope.prefix = SOURCE_PREFIX;
+      window.Asc.plugin.callCommand(
+        function () {
+          var prefix = Asc.scope.prefix;
+          var doc = Api.GetDocument();
+
+          function marksFromControl(cc) {
+            var tag = cc.GetTag ? cc.GetTag() || "" : "";
+            if (tag.indexOf(prefix) === 0) return tag.substring(prefix.length);
+            var alias = cc.GetAlias ? cc.GetAlias() || "" : "";
+            if (/^[\u3190-\u319f]+$/.test(alias)) return alias;
+            return null;
+          }
+
+          function paragraphParts(para) {
+            var parts = [];
+            var ec = para.GetElementsCount();
+            for (var e = 0; e < ec; e++) {
+              var el = para.GetElement(e);
+              if (!el || !el.GetClassType) continue;
+              if (el.GetClassType() === "inlineLvlSdt") {
+                var marks = marksFromControl(el);
+                var display = el.GetText ? el.GetText() || "" : "";
+                parts.push({
+                  canonical: marks || display,
+                  display: display || marks || "",
+                });
+              } else if (el.GetText) {
+                var text = el.GetText() || "";
+                parts.push({ canonical: text, display: text });
+              }
+            }
+            return parts;
+          }
+
+          var segments = [];
+          var pn = doc.GetElementsCount();
+          for (var p = 0; p < pn; p++) {
+            var para = doc.GetElement(p);
+            if (!para || !para.GetClassType || para.GetClassType() !== "paragraph") {
+              continue;
+            }
+            if (segments.length) {
+              segments.push({ canonical: "\n", display: "\n" });
+            }
+            var parts = paragraphParts(para);
+            for (var i = 0; i < parts.length; i++) {
+              segments.push(parts[i]);
+            }
+          }
+
+          var docCanonical = "";
+          for (var s = 0; s < segments.length; s++) {
+            docCanonical += segments[s].canonical;
+          }
+          return JSON.stringify({ docCanonical: docCanonical, segments: segments });
+        },
+        false,
+        true,
+        function (result) {
+          try {
+            resolve(JSON.parse(result || '{"docCanonical":"","segments":[]}'));
+          } catch (e) {
+            reject(e);
+          }
+        }
+      );
+    });
+  }
+
   function runCopyPlain() {
     setStatus("Copying…");
-    getSelectedOrDocText()
+    getTextForExport()
       .then(({ text }) => copyToClipboard(MarinaMojiExport.exportPlainText(text)))
       .then(() => setStatus("Copied plain text.", false))
       .catch((err) => setStatus(String(err.message || err), true));
@@ -371,23 +532,23 @@
 
   function runCopyTei() {
     setStatus("Copying TEI…");
-    getSelectedOrDocText()
-      .then(({ text, fullDocument }) =>
-        copyToClipboard(MarinaMojiExport.exportTeiForClipboard(text, fullDocument))
+    getTextForExport()
+      .then(({ text }) =>
+        copyToClipboard(MarinaMojiExport.exportTeiForClipboard(text, false))
       )
-      .then(() => setStatus("Copied TEI. (Unrender first if views are shown.)", false))
+      .then(() => setStatus("Copied TEI fragment.", false))
       .catch((err) => setStatus(String(err.message || err), true));
   }
 
   function runCopyLatex() {
     setStatus("Copying LaTeX…");
-    getSelectedOrDocText()
-      .then(({ text, fullDocument }) =>
+    getTextForExport()
+      .then(({ text }) =>
         copyToClipboard(
-          MarinaMojiExport.exportLatexForClipboard(text, mappingData, fullDocument)
+          MarinaMojiExport.exportLatexForClipboard(text, mappingData, false)
         )
       )
-      .then(() => setStatus("Copied LaTeX. (Unrender first if views are shown.)", false))
+      .then(() => setStatus("Copied LaTeX fragment.", false))
       .catch((err) => setStatus(String(err.message || err), true));
   }
 

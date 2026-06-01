@@ -119,9 +119,9 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 
 ### v0.1 limitations (honest list)
 
-- **Compound stacks:** use soft line breaks (`U+000B`) inside inline controls — hard `\n` breaks out of the control. If stacking still fails, set `"compound_layout": "horizontal"` under `onlyoffice_inline` in `mapping.json` (glyphs side-by-side: 一レ).
+- **Compound stacks:** default `"stack"` uses `SetPosition` + tight spacing inside the inline control (no `AddLineBreak` — that escapes and breaks the line before the block). Tune with `"stack_step_hps"` (half-points; `0` = auto). Fallbacks: `"soft_break"` or `"horizontal"`.
 - **Unrender:** replaces the control in place (no `Delete()`) so display glyphs are not spilled to line start.
-- **Export (TEI/LaTeX):** reads visible paragraph text — **Unrender first** if views are shown, or export may see display glyphs instead of `㆒㆑`.
+- **Export (TEI/LaTeX):** reads canonical Unicode from control tags while views are shown (no Unrender required).
 - **API names** may differ slightly between ONLYOFFICE versions (`GetParentParagraph`, etc.).
 - **No import** of Word content controls or LO frames from other apps.
 

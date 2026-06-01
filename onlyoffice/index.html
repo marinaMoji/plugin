@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>marinaMoji Kaeriten</title>
+  <title>marinaMoji</title>
   <link rel="stylesheet" href="styles.css" />
   <script
     type="text/javascript"
@@ -13,7 +13,10 @@
 </head>
 <body>
   <header>
-    <h1>marinaMoji Kaeriten</h1>
+    <div class="brand">
+      <img class="logo" src="resources/img/icon-sidebar.png" width="32" height="32" alt="" />
+      <h1>marinaMoji</h1>
+    </div>
     <p class="lead">Unicode source <span class="sample">說㆒㆑者</span> → stacked views</p>
   </header>
 
@@ -34,7 +37,7 @@
       <button type="button" id="btn-tei">TEI</button>
       <button type="button" id="btn-latex">LaTeX</button>
     </div>
-    <p class="hint">Selection if highlighted, else whole document.</p>
+    <p class="hint">Selection if highlighted, else whole document. TEI/LaTeX copy a paste-ready fragment.</p>
   </section>
 
   <p id="status" class="status" role="status">Loading…</p>

@@ -1,6 +1,16 @@
 # LibreOffice extension build output
 libreoffice/dist/
 
+# Release artifacts (built by packaging/build-release.sh)
+packaging/release/
+
+# Word add-in (experimental — excluded from git until Mac renderer is stable)
+word/
+packaging/build-word-manifest.sh
+packaging/mac/build-word-dmg.sh
+packaging/mac/build-word-installer-app.sh
+packaging/mac/install-word-addin.applescript
+
 # Python
 __pycache__/
 *.py[cod]

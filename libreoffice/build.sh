@@ -16,6 +16,10 @@ cp -R "${SRC}/META-INF" "${BUILD}/"
 cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${BUILD}/Scripts/python/"
 cp "${ROOT}/../mapping.json" "${BUILD}/Scripts/python/marinamoji_mapping.json"
 
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  xattr -cr "${BUILD}" 2>/dev/null || true
+fi
+
 rm -f "${OXT}"
 (cd "${BUILD}" && zip -r -q "${OXT}" .)
 echo "Built ${OXT} (toolbar + Python in Scripts/python/)"

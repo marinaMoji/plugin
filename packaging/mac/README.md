@@ -4,32 +4,56 @@ Build double-click installers for **end users**. No Terminal required on their s
 
 See [../../docs/DISTRIBUTION.md](../../docs/DISTRIBUTION.md) for the full distribution strategy.
 
-## Word add-in installer
-
-**Prerequisite:** Host `plugin/word/dist/` on your website with valid HTTPS, then:
+## One-shot release build (macOS)
 
 ```bash
 cd plugin/packaging
+export MARINAMOJI_RELEASE_VERSION="0.3.7"   # optional label
+./build-release.sh
+```
+
+On macOS this also builds:
+
+| Output | Purpose |
+|--------|---------|
+| `Install marinaMoji Kaeriten (LibreOffice).app` | Copies LO Python macros + opens `.oxt` |
+| `marinamoji-kaeriten-libreoffice-mac.dmg` | DMG with installer + `.oxt` + readme |
+| `Install marinaMoji Kaeriten (ONLYOFFICE).app` | Copies plugin into `sdkjs-plugins/{GUID}/` |
+| `marinamoji-kaeriten-onlyoffice-mac.dmg` | DMG with installer + zip + readme |
+
+## LibreOffice installer
+
+```bash
+./mac/build-libreoffice-installer-app.sh
+./mac/build-libreoffice-dmg.sh
+```
+
+The `.app` bundles `MarinaMojiKaeriten.oxt` plus Python macro files. On macOS LibreOffice 26.x, bundled extension Python often fails to register; copying macros to the user profile fixes toolbar buttons.
+
+## ONLYOFFICE installer
+
+```bash
+./mac/build-onlyoffice-installer-app.sh
+./mac/build-onlyoffice-dmg.sh
+```
+
+Install path (must match `onlyoffice/install-mac.sh`):
+
+```text
+~/Library/Application Support/asc.onlyoffice.ONLYOFFICE/data/sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
+```
+
+**Wrong:** `…/plugins/marinamoji-kaeriten/` — ONLYOFFICE will not load the plugin there.
+
+## Word add-in installer (parked)
+
+Word packaging is gitignored until the Mac renderer is stable. When resumed:
+
+```bash
 export MARINAMOJI_PLUGIN_BASE="https://your-domain/word"
 ./build-release.sh
 ./mac/build-word-installer-app.sh
 ./mac/build-word-dmg.sh
-```
-
-Upload `release/marinamoji-kaeriten-word-mac.dmg` to GitHub Releases and your website.
-
-The `.app` copies `manifest.production.xml` into Word’s `wef` folder. Word loads the add-in from your URL — **no** `npm run serve` on the user’s Mac.
-
-## ONLYOFFICE installer
-
-1. Run `./build-release.sh` (creates `marinamoji-kaeriten-onlyoffice.zip`).
-2. Unzip into `release/marinamoji-kaeriten-onlyoffice/` for bundling, or adapt `build-onlyoffice-installer-app.sh` (same pattern as Word).
-
-Compile AppleScript:
-
-```bash
-osacompile -o "Install marinaMoji Kaeriten (ONLYOFFICE).app" install-onlyoffice-plugin.applescript
-# Copy unzipped plugin into MyApp.app/Contents/Resources/marinamoji-kaeriten-onlyoffice/
 ```
 
 ## Gatekeeper
@@ -37,9 +61,5 @@ osacompile -o "Install marinaMoji Kaeriten (ONLYOFFICE).app" install-onlyoffice-
 Installers are **not notarized**. Document **Right-click → Open** on the website. Optional ad-hoc sign:
 
 ```bash
-codesign --force --deep --sign - "Install marinaMoji Kaeriten.app"
+codesign --force --deep --sign - "Install marinaMoji Kaeriten (LibreOffice).app"
 ```
-
-## LibreOffice
-
-No `.app` required: ship **`MarinaMojiKaeriten.oxt`** only. Users double-click to install via Extension Manager.

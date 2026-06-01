@@ -64,14 +64,18 @@
     return chars.map((c) => byChar[c]?.display_glyph ?? c).join("\n");
   }
 
+  function glyphLinesForMarks(marks, byChar) {
+    return glyphsForMarks(marks, byChar)
+      .split("\n")
+      .filter((line) => line.length > 0);
+  }
+
   /**
-   * Glyphs for ONLYOFFICE inline SDT. Hard \\n (or AddLineBreak) escapes the control
-   * and can eat neighbouring kanji — use soft break (\\u000b) or horizontal join.
+   * Legacy string helper for soft_break / horizontal layouts.
    */
   function glyphsForInlineSdt(marks, byChar, layout) {
-    const stacked = glyphsForMarks(marks, byChar);
-    const lines = stacked.split("\n").filter((line) => line.length > 0);
-    if (lines.length <= 1) return stacked;
+    const lines = glyphLinesForMarks(marks, byChar);
+    if (lines.length <= 1) return lines[0] || "";
     if (layout === "horizontal") return lines.join("");
     return lines.join("\u000b");
   }
@@ -118,6 +122,65 @@
     return parts.join("");
   }
 
+  function mapDisplayRangeToCanonical(segments, startIdx, length) {
+    let dPos = 0;
+    let out = "";
+    const endIdx = startIdx + length;
+    for (const seg of segments) {
+      const segStart = dPos;
+      const segEnd = dPos + seg.display.length;
+      if (segEnd <= startIdx) {
+        dPos = segEnd;
+        continue;
+      }
+      if (segStart >= endIdx) break;
+      if (seg.canonical.length === seg.display.length) {
+        const overlapStart = Math.max(startIdx, segStart) - segStart;
+        const overlapEnd = Math.min(endIdx, segEnd) - segStart;
+        out += seg.canonical.substring(overlapStart, overlapEnd);
+      } else if (segStart >= startIdx && segEnd <= endIdx) {
+        out += seg.canonical;
+      } else {
+        out += seg.canonical;
+      }
+      dPos = segEnd;
+    }
+    return out;
+  }
+
+  function canonicalFromDisplaySelection(segments, selectedDisplay) {
+    if (!selectedDisplay) return null;
+    let disp = "";
+    let canon = "";
+    for (const seg of segments) {
+      disp += seg.display;
+      canon += seg.canonical;
+    }
+    if (selectedDisplay === disp) return canon;
+    if (selectedDisplay === canon) return selectedDisplay;
+    const idx = disp.indexOf(selectedDisplay);
+    if (idx < 0) return null;
+    return mapDisplayRangeToCanonical(segments, idx, selectedDisplay.length);
+  }
+
+  function buildExportSegments(parts) {
+    const segments = parts || [];
+    let docCanonical = "";
+    for (const part of segments) docCanonical += part.canonical;
+    return { docCanonical, segments };
+  }
+
+  function resolveExportText(segments, docCanonical, selectedDisplay) {
+    if (!selectedDisplay) {
+      return { text: docCanonical, fullDocument: true };
+    }
+    const mapped = canonicalFromDisplaySelection(segments, selectedDisplay);
+    if (mapped !== null && mapped.length > 0) {
+      return { text: mapped, fullDocument: false };
+    }
+    return { text: docCanonical, fullDocument: true };
+  }
+
   function buildSegments(text, byChar) {
     const clusters = findClusters(text);
     if (!clusters.length) return [{ type: "text", value: text || "" }];
@@ -141,7 +204,11 @@
     findClusters,
     mappingByChar,
     glyphsForMarks,
+    glyphLinesForMarks,
     glyphsForInlineSdt,
+    buildExportSegments,
+    resolveExportText,
+    canonicalFromDisplaySelection,
     buildSegments,
     exportPlainText: (text) => text || "",
     exportTeiFragment: (text) => {
@@ -170,6 +237,7 @@
       );
     },
     exportTeiForClipboard: (text, fullDocument) => {
+      // Clipboard: TEI fragment to paste into an existing file. Full document: exportTeiXml().
       if (fullDocument) return global.MarinaMojiExport.exportTeiXml(text);
       return global.MarinaMojiExport.exportTeiFragment(text);
     },

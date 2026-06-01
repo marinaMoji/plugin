@@ -1,38 +1,58 @@
 -- Copy marinaMoji Kaeriten into ONLYOFFICE Desktop plugins folder (macOS).
+-- Runs bundled install-onlyoffice-macos.sh (bash).
+
+on bundledResourcePath(fileName)
+	set mePosix to POSIX path of (path to me)
+	try
+		return do shell script "ME=" & quoted form of mePosix & "; F=" & quoted form of fileName & "; " & ¬
+			"if [ -f \"$ME/Contents/Resources/$F\" ]; then " & ¬
+			"printf '%s\\n' \"$ME/Contents/Resources/$F\"; " & ¬
+			"elif [ -f \"$(dirname \"$ME\")/../Resources/$F\" ]; then " & ¬
+			"printf '%s\\n' \"$(cd \"$(dirname \"$ME\")/../Resources\" && pwd)/$F\"; " & ¬
+			"else exit 1; fi"
+	on error
+		return ""
+	end try
+end bundledResourcePath
+
+on bundledPluginSourceDir()
+	set mePosix to POSIX path of (path to me)
+	try
+		return do shell script "ME=" & quoted form of mePosix & "; " & ¬
+			"if [ -d \"$ME/Contents/Resources/marinamoji-kaeriten-onlyoffice\" ]; then " & ¬
+			"printf '%s\\n' \"$ME/Contents/Resources/marinamoji-kaeriten-onlyoffice/\"; " & ¬
+			"elif [ -d \"$(dirname \"$ME\")/../Resources/marinamoji-kaeriten-onlyoffice\" ]; then " & ¬
+			"printf '%s\\n' \"$(cd \"$(dirname \"$ME\")/../Resources/marinamoji-kaeriten-onlyoffice\" && pwd)/\"; " & ¬
+			"else exit 1; fi"
+	on error
+		return ""
+	end try
+end bundledPluginSourceDir
 
 on run
-	set pluginFolderName to "marinamoji-kaeriten"
-	set destRoot to (POSIX path of (path to home folder)) & "Library/Application Support/asc.onlyoffice.ONLYOFFICE/plugins/"
-	set destPosix to destRoot & pluginFolderName & "/"
-	set srcPosix to my pluginSourcePath()
+	set scriptPath to my bundledResourcePath("install-onlyoffice-macos.sh")
+	set srcDir to my bundledPluginSourceDir()
 
-	if srcPosix is "" then
+	if scriptPath is "" or srcDir is "" then
 		display alert "Installer is incomplete." message "Plugin files not found in app bundle." as critical
 		return
 	end if
 
 	try
-		do shell script "mkdir -p " & quoted form of destRoot
-		do shell script "rm -rf " & quoted form of destPosix
-		do shell script "cp -R " & quoted form of srcPosix & " " & quoted form of destPosix
+		do shell script "bash " & quoted form of scriptPath & " " & quoted form of srcDir
 	on error errMsg
-		display alert "Could not install plugin." message errMsg as critical
+		if errMsg contains "ONLYOFFICE not found" or errMsg contains "exit code 2" then
+			display alert "ONLYOFFICE not found." message "Install ONLYOFFICE Desktop Editors, open Writer once, then run this installer again." as critical
+		else
+			display alert "Could not install plugin." message errMsg as critical
+		end if
 		return
 	end try
 
-	display dialog "marinaMoji Kaeriten was installed for ONLYOFFICE." & return & return & ¬
-		"Restart ONLYOFFICE Writer, then:" & return & ¬
-		"Plugins → marinaMoji → marinaMoji Kaeriten" ¬
+	display dialog "marinaMoji was installed for ONLYOFFICE." & return & return & ¬
+		"1. Quit ONLYOFFICE completely (Cmd+Q)." & return & ¬
+		"2. Reopen Writer." & return & ¬
+		"3. Plugins → marinaMoji" & return & return & ¬
+		"(Experimental — compound marks may stack imperfectly.)" ¬
 		buttons {"OK"} default button "OK" with title "Install complete"
 end run
-
-on pluginSourcePath()
-	try
-		set appPath to POSIX path of (path to me)
-		set candidate to appPath & "Contents/Resources/marinamoji-kaeriten-onlyoffice/"
-		do shell script "test -d " & quoted form of candidate
-		return candidate
-	on error
-		return ""
-	end try
-end pluginSourcePath
