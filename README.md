@@ -1,6 +1,6 @@
 # marinaMoji Office plugins (planned)
 
-Companion tools for [marinaMoji](../mozc): turn IME output (Unicode Kanbun marks) into professionally laid-out kaeriten (返り点) in word processors—especially **compound** marks (e.g. 一 + レ).
+Companion tools for [marinaMoji](https://github.com/marinaMoji/marinaMozc): turn IME output (Unicode Kanbun marks) into professionally laid-out kaeriten (返り点) in word processors—especially **compound** marks (e.g. 一 + レ).
 
 ## Problem
 
@@ -8,56 +8,68 @@ marinaMoji inserts **Unicode Kanbun** (e.g. `;r` → ㆑) for fast input. That t
 
 Font choice alone does not fix placement; the same U+3191 can look different sizes in gedit vs LibreOffice.
 
-## Solution (validated on LibreOffice)
+## Solution (validated on LibreOffice and Word)
 
 **Two layers:**
 
 | Layer | Content | Purpose |
 |-------|---------|---------|
 | **Canonical source** | `說㆒㆑者` (ordinary Unicode text) | marinaMoji input; search; git; TEI/LaTeX export; copy to other apps |
-| **Rendered view** | Tiny **anchored frame** (一 / レ stacked) after `說` | Scholarly print layout in Writer; PDF |
+| **Rendered view** | Anchored **frame** (LO) or **textbox** (Word) with stacked glyphs | Scholarly print layout; PDF; **not** the archival format |
 
-Frames are a **view**, not the source of truth. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Frames and textboxes are a **view**, not the source of truth. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-LibreOffice prototyping showed:
+**LibreOffice (2026):** ruby rejected; subscript fallback only; **borderless frame** primary — [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md).
 
-- **Ruby** — rejected (looks like furigana).
-- **Subscript only** — fallback for simple レ; not enough for compound kaeriten.
-- **Borderless frame anchored as character** — **primary** renderer; works in vertical text.
+**Microsoft Word (2026):** same conclusions — ruby rejected; **anchored textbox** primary; users must edit source, not boxes — [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md).
 
-Full test notes: [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md).
-
-## Workflow (v1)
+## Workflow (v1) — manual formatting only
 
 1. Type with marinaMoji: `說㆒㆑者`
-2. Run **Render kaeriten** (selection / paragraph / document)
-3. Edit in Writer; use **Refresh rendering** after mark or style changes
-4. **Copy as plain text** when leaving LibreOffice
+2. Run **Format kaeriten** (menu; same as *Render kaeriten* in docs) on selection / paragraph / document
+3. Edit **source text** (`說㆒㆑者`), not the annotation objects
+4. Run **Refresh rendering** after mark or paragraph style changes
+5. **Copy as plain text** when leaving LibreOffice or Word
 
-Auto-render on every keystroke is **deferred** (undo, cursor, IME).
+**Not in v1:** automatic format on every keystroke or IME commit (undo, cursor, and IME edge cases).
+
+## Metadata and export
+
+- **Meaning** lives in visible Unicode (`㆒㆑`), not in hidden Word/LO/OnlyOffice XML for v1.
+- **Optional** editor-local IDs may link a frame/textbox to a position for refresh only.
+- **TEI / LaTeX** export reads canonical text + [mapping.json](mapping.json).
+
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
 ## Scope
 
 | In scope (v1) | Later |
 |---------------|-------|
-| LO extension: frame render + refresh | Word renderer (EQ / subscript) |
-| Canonical Unicode in document | Auto-render on save |
-| Render / Show source / Copy plain | TEI, LaTeX export |
-| Compound mark clusters | 再読, okurigana |
+| LO extension: frame render + refresh | Word add-in (textboxes) |
+| **Format kaeriten** + **Refresh** commands | Auto-format on save (optional) |
+| Canonical Unicode in document | TEI, LaTeX export |
+| Show source / Copy plain | 再読, okurigana |
+
+| Out of scope (v1) | |
+|-------------------|---|
+| OnlyOffice frame parity | |
+| Hidden metadata as canonical semantics | |
+| Auto-format while typing | |
 
 ## Related repo
 
-- IME: `mozc/src/data/preedit/kaeriten.tsv`
-- Toolbar: `mozc/src/unix/ibus/mozc_toolbar.cc`
+- IME: `marinaMozc/src/data/preedit/kaeriten.tsv`
+- Toolbar: `marinaMozc/src/unix/ibus/mozc_toolbar.cc`, `marinaMozc/src/mac/mozc_toolbar.mm`
 
 ## Documentation
 
 | Doc | Contents |
 |-----|----------|
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Source vs view; commands; interoperability |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Source vs view; metadata; commands; interoperability |
 | [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md) | LO experiments and frame parameters |
-| [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word fallbacks |
-| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Typing order; compound clusters |
+| [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md) | Word experiments (May–June 2026) |
+| [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word textboxes |
+| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Typing order; compound clusters; user workflow |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased build plan |
 | [docs/BACKGROUND.md](docs/BACKGROUND.md) | Prior art survey |
 | [docs/SOURCES.md](docs/SOURCES.md) | Bibliography |
@@ -69,7 +81,4 @@ Auto-render on every keystroke is **deferred** (undo, cursor, IME).
 
 ## Status
 
-**Documentation + LO render prototype validated** — extension (`.oxt`) not shipped yet.
-=======
-# plugin
-Word processor plugin
+**Documentation + LO/Word render prototypes validated** — LibreOffice `.oxt` and Word add-in not shipped yet.

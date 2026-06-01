@@ -2,6 +2,8 @@
 
 Hands-on prototyping (2026) confirmed that LibreOffice Writer can display **compound kaeriten** (e.g. 一二点 + レ stacked) at a level acceptable for scholarly use. This document records what was tried, what failed, and the parameters for the chosen approach.
 
+Word parallel tests: [WORD_FINDINGS.md](WORD_FINDINGS.md). Shared architecture: [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Approaches tested
 
 ### 1. Ruby (Asian phonetic guide)
@@ -23,7 +25,7 @@ Hands-on prototyping (2026) confirmed that LibreOffice Writer can display **comp
 
 ### 3. Anchored borderless frame (chosen)
 
-Tiny **borderless frame** (or text box) anchored **as character**, containing stacked glyphs (e.g. 一 over レ).
+Tiny **borderless frame** anchored **as character**, containing stacked glyphs (e.g. 一 over レ).
 
 | Parameter | Starting value |
 |-----------|----------------|
@@ -49,23 +51,26 @@ Tiny **borderless frame** (or text box) anchored **as character**, containing st
 | Copy/paste inside LibreOffice | Pass | Annotation preserved |
 | Copy/paste to plain text (gedit) | **Fail** | Only underlying text; frames lost |
 | Copy/paste to OnlyOffice | **Fail** | Frame object not preserved |
-| Paragraph font 12 pt → 14 pt | **Problem** | Frame content keeps its own size; does not auto-scale |
+| Paragraph font 12 pt → 14 pt | **Problem** | Frame content keeps its own size until **Refresh rendering** |
 
 ## Conclusions
 
 1. **LibreOffice can render professional kaeriten**, including compound stacks — the main technical risk for LO is resolved.
-2. **LibreOffice has no native kaeriten type** (unlike ruby for furigana). A marinaMoji extension must **create and manage** its own annotation objects.
-3. **Frames must not be the source of truth** — they are a **rendered view**. Canonical meaning stays in Unicode source text (see [ARCHITECTURE.md](ARCHITECTURE.md)).
+2. **LibreOffice has no native kaeriten type** (unlike ruby for furigana). The extension must **create and manage** its own annotation objects.
+3. **Frames are a rendered view**, not the source of truth. Canonical meaning stays in Unicode (`說㆒㆑者`).
+4. Users **format manually** (**Format kaeriten**); they **edit source**, not frame contents.
 
 ## Implementation notes (UNO)
 
 - One frame per **mark cluster** after a base character (see [CONVENTIONS.md](CONVENTIONS.md#compound-kaeriten)).
-- On **Render**, remove Unicode marks from visible flow (delete or hide) and insert frame at anchor; store cluster metadata for refresh (bookmark name or hidden property — TBD in extension code).
-- **Refresh rendering** must rebuild frames when source marks change or paragraph font size changes.
-- Tag frames in a way the extension can find them later (e.g. custom frame name `marinaMoji:kaeriten:<id>`).
+- On **Format kaeriten**, hide or remove Unicode marks from visible flow and insert frame at anchor.
+- **Refresh rendering** rebuilds frames when source marks or paragraph font size change.
+- **Optional** editor-local tags (e.g. frame name `marinaMoji:kaeriten:<id>`) for finding objects on refresh — **not** for TEI/export semantics. See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
+- Do **not** auto-format on every keystroke in v1.
 
 ## Related
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — source vs view layers
-- [TARGET_LAYOUT.md](TARGET_LAYOUT.md) — LO primary vs Word fallback
+- [WORD_FINDINGS.md](WORD_FINDINGS.md) — Word textbox parallel
+- [TARGET_LAYOUT.md](TARGET_LAYOUT.md) — LO primary vs Word textboxes
 - [ROADMAP.md](ROADMAP.md) — phased extension work

@@ -30,7 +30,9 @@ Block **U+3190** ㆐ is “linked mark”; marinaMoji does not assign a `;` shor
 
 ## Formatter target glyphs (Word/LO v1)
 
-For layout, convert Kanbun code points to **normal Japanese characters + formatting**:
+The extension reads **canonical** Unicode in the document (`說㆒㆑者`), then **Format kaeriten** builds frames/textboxes. Subscript replacement is a **fallback** when the extension is unavailable.
+
+For fallback layout, convert Kanbun code points to **normal Japanese characters + formatting**:
 
 | Unicode | Replace with | Formatting |
 |---------|--------------|------------|
@@ -49,7 +51,7 @@ Multiple marks after one kanji form **one** rendered annotation, e.g.:
 說㆒㆑者  →  one frame at 說: 一 over レ  →  visible flow: 說者
 ```
 
-Rules: [CONVENTIONS.md](CONVENTIONS.md). Stack order: `stack_order` in `mapping.json`.
+Rules: [CONVENTIONS.md](CONVENTIONS.md). Stack order: `stack_order` in `mapping.json`. Format manually — see [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Verification
 

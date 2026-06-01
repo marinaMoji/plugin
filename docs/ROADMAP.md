@@ -7,49 +7,65 @@
 - [x] Initial architecture docs
 - [x] `mapping.json` stub
 - [x] LibreOffice prototyping: ruby / subscript / **frames**
-- [x] Decision: **canonical Unicode source + frame render view** ([LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md))
+- [x] Microsoft Word prototyping: ruby / subscript / **textboxes** ([WORD_FINDINGS.md](WORD_FINDINGS.md))
+- [x] Decision: **canonical Unicode source + disposable visual view** ([ARCHITECTURE.md](ARCHITECTURE.md))
+- [x] Decision: **manual Format kaeriten** in v1 (no auto-format while typing)
+- [x] Decision: **visible Unicode** is semantic layer; hidden metadata optional for refresh only
 
-## Phase 1 — LibreOffice extension (render from source)
+## Phase 1 — LibreOffice extension (format from source)
 
 - [ ] `.oxt` skeleton (Python UNO)
 - [ ] Parse mark clusters after base characters (see [CONVENTIONS.md](CONVENTIONS.md))
 - [ ] Frame builder: borderless, as-character anchor, compound stack
-- [ ] Commands: **Render selection**, **Render paragraph**, **Render document**
-- [ ] Remove or hide source marks after render (strategy TBD)
+- [ ] Menu: **Format kaeriten** (selection / paragraph / document)
+- [ ] Hide or remove source marks after format (strategy TBD; prefer Show source for editing)
+- [ ] Optional editor-local frame registry (refresh only — not export semantics)
 - [ ] Manual tests: simple レ, compound 一二レ, vertical text
 
-**Success criteria:** User types `說㆒㆑者` with marinaMoji, runs Render on paragraph, sees convincing 一/レ at 說 with `者` following, in 縦書き.
+**Success criteria:** User types `說㆒㆑者` with marinaMoji, runs **Format kaeriten** on paragraph, sees convincing 一/レ at 說 with `者` following, in 縦書き. User does **not** edit inside the frame.
 
 ## Phase 1.5 — Sync and source mode
 
-- [ ] **Refresh rendering** (idempotent rebuild frames from marks)
-- [ ] **Show source** / hide frames for editing Unicode
-- [ ] Frame registry (find marinaMoji frames for refresh)
-- [ ] Paragraph font-size change → refresh or relative frame sizing
+- [ ] **Refresh rendering** (idempotent rebuild from source marks)
+- [ ] **Show source** — edit `說㆒㆑者`; views hidden or removed
+- [ ] Find marinaMoji frames by editor-local tags (if metadata used)
+- [ ] Paragraph font-size change → user **Refresh** or relative frame sizing
 - [ ] **Copy as plain text** (canonical clipboard)
 
 ## Phase 2 — Export and fallback
 
-- [ ] **Export TEI** from canonical text + `mapping.json`
+- [ ] **Export TEI** from canonical visible text + `mapping.json` (not from frame objects)
 - [ ] **Export LaTeX** (experimental, `\kundoku`-style)
 - [ ] Subscript-only fallback macro for simple レ (no extension)
 
 ## Phase 3 — Word renderer
 
-- [ ] VBA or add-in: same canonical source, Word-native layout (subscript / EQ)
-- [ ] No expectation of importing LO frames into Word
+- [ ] Add-in or VBA: same canonical source, **textbox** renderer (see [WORD_FINDINGS.md](WORD_FINDINGS.md))
+- [ ] **Format kaeriten** + **Refresh rendering** + **Show source** (parity with LO commands)
+- [ ] Optional Word-local shape/bookmark IDs for refresh only
+- [ ] No import of LO frames — format from source in Word
 
 ## Phase 4 — Optional
 
-- [ ] Auto-render on save or idle (not on every keystroke in v1)
+- [ ] Auto-format on save or idle (**not** on every keystroke)
 - [ ] 漢文エディタ `[レ]` import
-- [ ] 再読 / okurigana (ruby + fields in Word; separate from kaeriten frames)
+- [ ] 再読 / okurigana (ruby + fields in Word; separate from kaeriten views)
 - [ ] OpenOffice QA
 - [ ] marinaMoji toolbar hook (speculative)
 
+## OnlyOffice (no dedicated phase in v1)
+
+- [ ] Document: Unicode source + subscript fallback; no frame parity with LO
+- [ ] Do not plan shared hidden metadata across LO / Word / OnlyOffice
+
 ## Deferred / rejected
 
-- Asian ruby as primary kaeriten — **rejected**
-- Anchored frames as source of truth — **rejected**
-- OnlyOffice frame compatibility — **out of scope**
-- Full automatic render while typing — **deferred** (undo/IME complexity)
+| Item | Status |
+|------|--------|
+| Asian ruby as primary kaeriten | **Rejected** |
+| Frames/textboxes as source of truth | **Rejected** |
+| Hidden metadata as canonical semantics | **Rejected** for v1 |
+| Cross-suite hidden schema (LO + Word + OnlyOffice) | **Rejected** for v1 |
+| OnlyOffice frame compatibility | **Out of scope** v1 |
+| Auto-format on every keystroke / IME commit | **Deferred** |
+| User edits inside annotation objects | **Rejected** — edit source only |
