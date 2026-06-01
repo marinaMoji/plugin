@@ -1,0 +1,2 @@
+# plugin
+Word processor plugin
