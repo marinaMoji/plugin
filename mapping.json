@@ -1,0 +1,168 @@
+{
+  "$schema": "marinaMoji kaeriten mapping (v1)",
+  "description": "Canonical Unicode marks from marinaMoji IME; display glyphs and render hints for LibreOffice extension and exporters.",
+  "version": 2,
+  "rendering": {
+    "libreoffice_primary": "anchored_frame",
+    "libreoffice_frame": {
+      "border": false,
+      "anchor": "as_character",
+      "content_align": "bottom",
+      "offset_mm_bottom": 0.2,
+      "stack_direction": "top_to_bottom_first_mark_first"
+    },
+    "fallback": "subscript"
+  },
+  "marks": [
+    {
+      "unicode": "U+3191",
+      "char": "㆑",
+      "marinamoji_shortcut": ";r",
+      "name": "re",
+      "display_glyph": "レ",
+      "stack_order": 10,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3192",
+      "char": "㆒",
+      "marinamoji_shortcut": ";1",
+      "name": "one",
+      "display_glyph": "一",
+      "stack_order": 0,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3193",
+      "char": "㆓",
+      "marinamoji_shortcut": ";2",
+      "name": "two",
+      "display_glyph": "二",
+      "stack_order": 1,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3194",
+      "char": "㆔",
+      "marinamoji_shortcut": ";3",
+      "name": "three",
+      "display_glyph": "三",
+      "stack_order": 2,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3195",
+      "char": "㆕",
+      "marinamoji_shortcut": ";4",
+      "name": "four",
+      "display_glyph": "四",
+      "stack_order": 3,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3196",
+      "char": "㆖",
+      "marinamoji_shortcut": ";u",
+      "name": "top",
+      "display_glyph": "上",
+      "stack_order": 0,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3197",
+      "char": "㆗",
+      "marinamoji_shortcut": ";m",
+      "name": "middle",
+      "display_glyph": "中",
+      "stack_order": 1,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3198",
+      "char": "㆘",
+      "marinamoji_shortcut": ";d",
+      "name": "bottom",
+      "display_glyph": "下",
+      "stack_order": 2,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+3199",
+      "char": "㆙",
+      "marinamoji_shortcut": ";k",
+      "name": "first",
+      "display_glyph": "甲",
+      "stack_order": 0,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319A",
+      "char": "㆚",
+      "marinamoji_shortcut": ";o",
+      "name": "second",
+      "display_glyph": "乙",
+      "stack_order": 1,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319B",
+      "char": "㆛",
+      "marinamoji_shortcut": ";h",
+      "name": "third",
+      "display_glyph": "丙",
+      "stack_order": 2,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319C",
+      "char": "㆜",
+      "marinamoji_shortcut": ";t",
+      "name": "fourth",
+      "display_glyph": "丁",
+      "stack_order": 3,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319D",
+      "char": "㆝",
+      "marinamoji_shortcut": ";te",
+      "name": "heaven",
+      "display_glyph": "天",
+      "stack_order": 0,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319E",
+      "char": "㆞",
+      "marinamoji_shortcut": ";ti",
+      "name": "earth",
+      "display_glyph": "地",
+      "stack_order": 1,
+      "format": "subscript"
+    },
+    {
+      "unicode": "U+319F",
+      "char": "㆟",
+      "marinamoji_shortcut": ";ji",
+      "name": "man",
+      "display_glyph": "人",
+      "stack_order": 2,
+      "format": "subscript"
+    }
+  ],
+  "punctuation_not_kanbun": [
+    {
+      "unicode": "U+30FB",
+      "char": "・",
+      "marinamoji_shortcut": ";.",
+      "note": "Inserted as-is; no kaeriten rendering"
+    },
+    {
+      "unicode": "U+3001",
+      "char": "、",
+      "marinamoji_shortcut": ";,",
+      "note": "Inserted as-is; no kaeriten rendering"
+    }
+  ],
+  "cluster_rule": "One contiguous run of marks (U+3190–U+319F) immediately after a single base character becomes one LibreOffice frame; glyphs sorted by stack_order ascending (top to bottom)."
+}
