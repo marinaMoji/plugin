@@ -14,13 +14,13 @@
 
 ## Phase 1 — LibreOffice extension (format from source)
 
-- [ ] `.oxt` skeleton (Python UNO)
-- [ ] Parse mark clusters after base characters (see [CONVENTIONS.md](CONVENTIONS.md))
-- [ ] Frame builder: borderless, as-character anchor, compound stack
-- [ ] Menu: **Format kaeriten** (selection / paragraph / document)
-- [ ] Hide or remove source marks after format (strategy TBD; prefer Show source for editing)
-- [ ] Optional editor-local frame registry (refresh only — not export semantics)
-- [ ] Manual tests: simple レ, compound 一二レ, vertical text
+- [x] `.oxt` skeleton (Python UNO) — [libreoffice/](../libreoffice/)
+- [x] Parse mark clusters after base characters (see [CONVENTIONS.md](CONVENTIONS.md))
+- [x] Frame builder: borderless, as-character anchor, compound stack
+- [x] Menu: **Format kaeriten** (selection / paragraph / document)
+- [x] Remove source marks on format; restore via **Show source** (`Description` stores marks)
+- [x] **Refresh rendering** (show source + format)
+- [ ] Manual QA: simple レ, compound 一二レ, vertical text, font-size refresh
 
 **Success criteria:** User types `說㆒㆑者` with marinaMoji, runs **Format kaeriten** on paragraph, sees convincing 一/レ at 說 with `者` following, in 縦書き. User does **not** edit inside the frame.
 

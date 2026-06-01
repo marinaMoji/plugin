@@ -74,9 +74,8 @@ Annotation objects should be **read-only** from the user’s perspective. Never 
 
 | Menu label (preferred) | Also called | Purpose |
 |------------------------|-------------|---------|
-| **Format kaeriten** | Render kaeriten | Selection / paragraph / document: source → frames or textboxes |
-| **Refresh rendering** | — | Rebuild all marinaMoji views from current source; fix font-scale drift |
-| **Show source** | — | Edit canonical Unicode; hide or remove views |
+| **Render kaeriten** | Format + refresh | Selection if highlighted, else document: source → frames; rescale existing frames |
+| **Unrender kaeriten** | Show source | Same scope: frames → Unicode marks for editing |
 | **Copy as plain text** | — | Clipboard = `說㆒㆑者` (no frames) |
 | **Export TEI** | — | From canonical text + `mapping.json` |
 | **Export LaTeX** | — | From canonical text (`\kundoku`-style, TBD) |

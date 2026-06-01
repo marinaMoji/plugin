@@ -66,6 +66,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | Doc | Contents |
 |-----|----------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Source vs view; metadata; commands; interoperability |
+| [libreoffice/README.md](libreoffice/README.md) | LO extension build and install |
 | [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md) | LO experiments and frame parameters |
 | [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md) | Word experiments (May–June 2026) |
 | [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word textboxes |
@@ -79,6 +80,17 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
 - [mapping.json](mapping.json) — marks, display glyphs, render hints
 
+## LibreOffice extension (v0.1.0)
+
+Source and build instructions: [libreoffice/README.md](libreoffice/README.md)
+
+```bash
+cd libreoffice
+./install.sh    # Python macros → LibreOffice user profile (required on macOS)
+./build.sh      # MarinaMojiKaeriten.oxt (menu only)
+# Extension Manager → Add dist/MarinaMojiKaeriten.oxt → restart Writer
+```
+
 ## Status
 
-**Documentation + LO/Word render prototypes validated** — LibreOffice `.oxt` and Word add-in not shipped yet.
+**LibreOffice extension (alpha)** — format / show source / refresh. **Word add-in** not started.

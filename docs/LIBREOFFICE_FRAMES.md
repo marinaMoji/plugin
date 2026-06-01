@@ -31,9 +31,12 @@ Tiny **borderless frame** anchored **as character**, containing stacked glyphs (
 |-----------|----------------|
 | Anchor | As character (to preceding kanji) |
 | Frame border | None |
-| Content alignment | Bottom |
-| Vertical offset | ~0.2 mm from bottom of line |
-| Font size | Small (fixed pt in v1; ratio to base font in v2) |
+| Frame spacing (margins) | 0 — `LeftMargin` … `BottomMargin` in UNO |
+| Frame padding (border distance) | 0 — `BorderDistance` / `*BorderDistance` in UNO |
+| Frame on line | `VertOrient` = CHAR_BOTTOM (not BOTTOM) |
+| Content in frame | `TextVerticalAdjust` = BOTTOM; height from glyph count |
+| Vertical nudge | `vert_orient_position_hmm` (1/100 mm; negative raises) |
+| Font size | `font_size_ratio` × host kanji height (fallback `font_size_pt`) |
 | Typical stack | Top → bottom per mark order in source (e.g. `㆒㆑` → 一 / レ) |
 
 | | |
@@ -51,7 +54,7 @@ Tiny **borderless frame** anchored **as character**, containing stacked glyphs (
 | Copy/paste inside LibreOffice | Pass | Annotation preserved |
 | Copy/paste to plain text (gedit) | **Fail** | Only underlying text; frames lost |
 | Copy/paste to OnlyOffice | **Fail** | Frame object not preserved |
-| Paragraph font 12 pt → 14 pt | **Problem** | Frame content keeps its own size until **Refresh rendering** |
+| Paragraph font 12 pt → 14 pt | Pass | **Refresh rendering** rescales from host kanji / paragraph style |
 
 ## Conclusions
 
@@ -67,6 +70,8 @@ Tiny **borderless frame** anchored **as character**, containing stacked glyphs (
 - **Refresh rendering** rebuilds frames when source marks or paragraph font size change.
 - **Optional** editor-local tags (e.g. frame name `marinaMoji:kaeriten:<id>`) for finding objects on refresh — **not** for TEI/export semantics. See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
 - Do **not** auto-format on every keystroke in v1.
+- **Toolbar** (v0.2.3+): `OfficeToolBar` in `Addons.xcu`; enable via **View → Toolbars → marinaMoji**.
+- **Toolbar/menu** (v0.3.0+): single `.oxt` install; `org.marinaMoji.kaeriten:…` URLs + `marinamoji_kaeriten_dispatch.py` ProtocolHandler. Optional `install.sh` only for user-profile macros / debugging.
 
 ## Related
 
