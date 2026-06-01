@@ -47,16 +47,28 @@ Plugin → rendering
 | **Problems** | Inadequate for compound kaeriten; poor horizontal positioning |
 | **Decision** | **Fallback** only |
 
-### Anchored textboxes
+### Content controls (add-in default)
 
-Tiny borderless textboxes anchored **as character**, with stacked glyphs (e.g. 一 / レ).
+Rich-text **content controls** with small glyphs and tag `MARINAMOJI:source=…`. On **Word for Mac** they often appear as **plain small inline text** with **no visible box** — the wrapper may appear briefly then unwrap. Compound marks can **split across document lines** when Word wraps. **Do not** insert raw `<w:p>` OOXML inside a control — it corrupts the file.
 
 | | |
 |---|---|
-| **Result** | Visually convincing; similar role to LO frames |
-| **Advantages** | Flexible positioning vs. frames in some cases |
-| **Problems** | Font-size changes do not scale box content; same search/copy limits as LO |
-| **Decision** | **Primary Word render primitive** (Phase 3) |
+| **Result** | Small glyphs beside kanji sometimes OK; **visible frame rare** on Mac |
+| **Problems** | Unrender needs tag or hidden bookmark if wrapper is lost |
+| **Decision** | **Default in add-in** ([mapping.json](../mapping.json) `word_primary: content_control`) |
+
+### Anchored textboxes (`insertTextBox`, WordApiDesktop 1.2)
+
+Manual experiments and add-in prototypes: tiny borderless text box after the kanji, stacked glyphs inside — in theory closer to LibreOffice frames.
+
+| | |
+|---|---|
+| **Result** | Manual tests: visually convincing on some builds |
+| **Add-in on Mac** | Box often at **page left margin** or **left of kanji**, not in the gap after the base character |
+| **Problems** | Floating shapes use page-relative `left:0`; Character anchoring inconsistent; 縦書き worse |
+| **Decision** | **Optional only** (`word_primary: textbox`); not default |
+
+**Full chronicle of add-in attempts:** [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md).
 
 ## Critical UX discovery
 
@@ -111,7 +123,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
 
 OnlyOffice does **not** preserve LibreOffice frame objects on paste. Do not plan shared hidden metadata across three suites for v1.
 
-OnlyOffice users should rely on **visible Unicode source** (and optional subscript fallback), not cross-app frame parity. See [ARCHITECTURE.md](ARCHITECTURE.md#onlyoffice).
+OnlyOffice users should rely on **visible Unicode source** (and optional subscript fallback), not cross-app frame parity. See [ARCHITECTURE.md](ARCHITECTURE.md#onlyoffice) and the full guide **[ONLYOFFICE.md](ONLYOFFICE.md)**.
 
 ## Future plugin features (same model)
 
@@ -123,8 +135,31 @@ These fit **semantic text + generated view**:
 - Scholarly transcription symbols
 - TEI/XML export from source
 
+## Office.js add-in (development, May 2026)
+
+Hands-on add-in in [word/](../word/). See **[WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md)** for everything tried (anchors, text boxes, unrender, 縦書き, bookmarks).
+
+| Topic | Choice |
+|-------|--------|
+| **Default renderer** | Locked **content controls** + hidden `_MMK_` bookmark |
+| **Optional renderer** | Floating **text boxes** if `mapping.json` sets `word_primary: textbox` |
+| **Mac reality** | Visible **box often absent**; small inline glyphs may remain |
+| **Dev URL** | `https://127.0.0.1:3000` — local HTTPS server required |
+| **Mac trust** | mkcert CA in system keychain, or Microsoft `office-addin-dev-certs` |
+| **Mac UI** | Ribbon on **Accueil → Kaeriten**; task pane from **Kaeriten pane** |
+| **Compléments browser** | Preview only — Office.js often never connects |
+
+**Status:** Render/Unrender work in development on Mac with limitations above; LibreOffice remains the reliable formatter.
+
+Resume checklist and troubleshooting: **[WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md)**.
+
 ## Related
 
+- [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md) — chronicle of add-in experiments (anchors, unrender, compound, vertical)
+- [WORD_PLUGIN_RESEARCH.md](WORD_PLUGIN_RESEARCH.md) — Mac add-in reality, certs, macros, parity matrix
+- [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) — Mac sideload, HTTPS, next session plan
+- [ONLYOFFICE.md](ONLYOFFICE.md) — ONLYOFFICE in the marinaMoji stack
+- [word/README.md](../word/README.md) — build and npm scripts
 - [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md) — LO parallel experiments
 - [TARGET_LAYOUT.md](TARGET_LAYOUT.md) — per-host renderers
 - [ROADMAP.md](ROADMAP.md) — Phase 3 Word work

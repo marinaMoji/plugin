@@ -1,0 +1,40 @@
+{
+  "name": "marinaMoji Kaeriten",
+  "nameLocale": {
+    "fr": "marinaMoji Kaeriten"
+  },
+  "guid": "asc.{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}",
+  "version": "0.1.0",
+  "minVersion": "7.0.0",
+  "description": "Render Kanbun kaeriten marks from marinaMoji Unicode source.",
+  "descriptionLocale": {
+    "fr": "Formater les marques kaeriten Unicode saisies avec marinaMoji."
+  },
+  "author": "marinaMoji",
+  "help": "https://github.com/marinaMoji/marinaMozc",
+  "baseUrl": "",
+  "group": {
+    "name": "marinaMoji",
+    "rank": 1
+  },
+  "variations": [
+    {
+      "description": "Kaeriten sidebar",
+      "descriptionLocale": {
+        "fr": "Volet Kaeriten"
+      },
+      "url": "index.html",
+      "icons": ["resources/img/icon.png", "resources/img/icon@2x.png"],
+      "isViewer": false,
+      "EditorsSupport": ["word"],
+      "isVisual": true,
+      "isModal": false,
+      "isInsideMode": true,
+      "initDataType": "none",
+      "initData": "",
+      "isUpdateOleOnResize": false,
+      "buttons": [],
+      "size": [320, 480]
+    }
+  ]
+}

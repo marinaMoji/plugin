@@ -69,9 +69,10 @@ Same canonical source; **textbox** renderer (validated May–June 2026). No Libr
 
 ## OnlyOffice
 
-- **No v1 frame/textbox renderer** — paste from LO loses frame objects.
-- Rely on **visible Unicode source** in the document.
-- **Copy as plain text** for interchange; subscript fallback if needed.
+- **Plugin (v0.1):** inline content controls via `Api.CreateInlineLvlSdt()` — see [onlyoffice/README.md](../onlyoffice/README.md).
+- Paste from LO **loses frame objects** — re-render from Unicode source in ONLYOFFICE.
+- Rely on **visible Unicode source** in the document for interchange.
+- **Copy as plain text** / TEI / LaTeX from the plugin sidebar.
 - Do not depend on hidden metadata shared with LO or Word.
 
 ## Okurigana (both platforms, later)

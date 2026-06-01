@@ -40,10 +40,14 @@
 
 ## Phase 3 — Word renderer
 
-- [ ] Add-in or VBA: same canonical source, **textbox** renderer (see [WORD_FINDINGS.md](WORD_FINDINGS.md))
-- [ ] **Format kaeriten** + **Refresh rendering** + **Show source** (parity with LO commands)
-- [ ] Optional Word-local shape/bookmark IDs for refresh only
-- [ ] No import of LO frames — format from source in Word
+- [x] Office.js add-in skeleton — [word/](../word/)
+- [x] Same canonical source; **content control** renderer v0.1 (textbox API deferred; see [WORD_FINDINGS.md](WORD_FINDINGS.md))
+- [x] **Render** + **Refresh** + **Unrender** + clipboard export (parity with LO toolbar)
+- [x] Content-control `tag` stores source marks (`MARINAMOJI:source=…`) for refresh
+- [x] No import of LO frames — format from source in Word
+- [x] Mac dev tooling: HTTPS server, mkcert, `doctor`, task pane + Accueil ribbon ([WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md))
+- [ ] **Mac end-to-end:** Office.js connects from **Accueil → Kaeriten pane** (not Compléments preview only)
+- [ ] Manual QA on Word for macOS (縦書き, font-size refresh, compound clusters)
 
 ## Phase 4 — Optional
 
@@ -53,9 +57,11 @@
 - [ ] OpenOffice QA
 - [ ] marinaMoji toolbar hook (speculative)
 
-## OnlyOffice (no dedicated phase in v1)
+## OnlyOffice plugin
 
-- [ ] Document: Unicode source + subscript fallback; no frame parity with LO
+- [x] Plugin skeleton — [onlyoffice/](../onlyoffice/) (sidebar, export, inline content controls)
+- [ ] Install + QA on ONLYOFFICE Desktop or Document Server
+- [ ] Document: Unicode source; no frame parity with LO on paste
 - [ ] Do not plan shared hidden metadata across LO / Word / OnlyOffice
 
 ## Deferred / rejected
