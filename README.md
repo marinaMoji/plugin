@@ -1,6 +1,6 @@
 # marinaMoji Office plugins (planned)
 
-Companion tools for [marinaMoji](https://github.com/marinaMoji/marinaMozc): turn IME output (Unicode Kanbun marks) into professionally laid-out kaeriten (返り点) in word processors—especially **compound** marks (e.g. 一 + レ).
+Companion tools for [marinaMoji](https://github.com/marinaMoji/marinaMoji): turn IME output (Unicode Kanbun marks) into professionally laid-out kaeriten (返り点) in word processors—especially **compound** marks (e.g. 一 + レ).
 
 ## Problem
 
@@ -60,8 +60,8 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
 ## Related repo
 
-- IME: `marinaMozc/src/data/preedit/kaeriten.tsv`
-- Toolbar: `marinaMozc/src/unix/ibus/mozc_toolbar.cc`, `marinaMozc/src/mac/mozc_toolbar.mm`
+- IME: `marinaMoji/src/data/preedit/kaeriten.tsv`
+- Toolbar: `marinaMoji/src/unix/ibus/mozc_toolbar.cc`, `marinaMoji/src/mac/mozc_toolbar.mm`
 
 ## Documentation
 

@@ -12,7 +12,7 @@ marinaMoji solves **fast input** of mark symbols. This project solves **presenta
 
 Unicode block **Kanbun** (U+3190–U+319F) is ideal for:
 
-- IME direct input (marinaMoji `;r`, `;1`, …)
+- IME direct input (marinaMoji `;r`, `;1`, … — see [marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji))
 - Plain-text interchange and corpus search
 
 It is weak for:

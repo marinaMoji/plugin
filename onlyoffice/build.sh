@@ -2,7 +2,7 @@
 # Sync mapping.json and regenerate ONLYOFFICE plugin icons from marinaMoji logos.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-MOZC="${ROOT}/../../../marinaMozc/src/unix/ibus/toolbar_icons"
+MOZC="${ROOT}/../../../marinaMoji/src/unix/ibus/toolbar_icons"
 LIGHT_SVG="${ROOT}/resources/light/logo_square_light.svg"
 DARK_SVG="${ROOT}/resources/dark/logo_square_dark.svg"
 IMG="${ROOT}/resources/img"

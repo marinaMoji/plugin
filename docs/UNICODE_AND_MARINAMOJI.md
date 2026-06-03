@@ -1,6 +1,6 @@
 # Unicode Kanbun ↔ marinaMoji shortcuts
 
-IME definitions live in `mozc/src/data/preedit/kaeriten.tsv` (DirectInput).
+IME definitions live in the **marinaMoji** repository at `src/data/preedit/kaeriten.tsv` ([github.com/marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji)), in Direct (ASCII) input mode.
 
 Machine-readable mapping: [../mapping.json](../mapping.json).
 

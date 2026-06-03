@@ -9,7 +9,7 @@
 | [Wordで漢文を打つ方法・その1](https://furukoto.hateblo.jp/entry/2021/05/04/000335) | ふること | EQ field structure for okurigana + レ点 |
 | [Wordで漢文入力 — 再読文字](https://www.shuiren.org/chuden/toyoshi/kanbun/03.htm) | 睡人亭 | Nested EQ / field codes for 再読 |
 | [漢文エディタ](https://www2s.biglobe.ne.jp/~Taiju/leaf/tjsoft05_kanbun.htm) | 大島太柔 | Tag workflow `[レ]` → export; Unicode U+3190+ discovery |
-| marinaMoji `kaeriten.tsv` | this repo | Authoritative IME shortcut → code point table |
+| marinaMoji `kaeriten.tsv` | [marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji) → `src/data/preedit/kaeriten.tsv` | Authoritative IME shortcut → code point table |
 
 ## Secondary
 

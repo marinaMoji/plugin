@@ -5,7 +5,7 @@ set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 RELEASE="${PACKAGING}/release"
 TAG="${MARINAMOJI_RELEASE_TAG:-plugins-v0.3.7}"
-REPO="${MARINAMOJI_GITHUB_REPO:-marinaMoji/marinaMozc}"
+REPO="${MARINAMOJI_GITHUB_REPO:-marinaMoji/marinaMoji}"
 
 if ! command -v gh >/dev/null 2>&1; then
   echo "Install GitHub CLI: brew install gh && gh auth login"
@@ -36,7 +36,7 @@ cat > "${NOTES}" <<EOF
 | \`INSTALL.txt\` | Plain-language install steps |
 | \`SHA256SUMS.txt\` | Checksums |
 
-Install the [marinaMoji IME](https://github.com/marinaMoji/marinaMozc) first, then the office plugin for your editor.
+Install the [marinaMoji IME](https://github.com/marinaMoji/marinaMoji) first, then the office plugin for your editor.
 
 See \`plugin/docs/DISTRIBUTION.md\` in the source tree for full documentation.
 EOF

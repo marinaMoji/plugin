@@ -7,7 +7,8 @@
     <node oor:name="OfficeToolBar">
       <node oor:name="org.marinaMoji.kaeriten.toolbar" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
-          <value xml:lang="en">marinaMoji</value>
+          <value>marinaMoji</value>
+          <value xml:lang="en-US">marinaMoji</value>
         </prop>
         <prop oor:name="Context" oor:type="xs:string">
           <value>com.sun.star.text.TextDocument</value>
@@ -17,7 +18,8 @@
             <value>org.marinaMoji.kaeriten:render_kaeriten</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
-            <value xml:lang="en">Render kaeriten</value>
+            <value>Render kaeriten</value>
+            <value xml:lang="en-US">Render kaeriten</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>
@@ -31,7 +33,8 @@
             <value>org.marinaMoji.kaeriten:unrender_kaeriten</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
-            <value xml:lang="en">Unrender kaeriten</value>
+            <value>Unrender kaeriten</value>
+            <value xml:lang="en-US">Unrender kaeriten</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>
@@ -50,7 +53,8 @@
             <value>org.marinaMoji.kaeriten:copy_plain_text</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
-            <value xml:lang="en">Copy plain text</value>
+            <value>Copy plain text</value>
+            <value xml:lang="en-US">Copy plain text</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>
@@ -64,7 +68,8 @@
             <value>org.marinaMoji.kaeriten:export_tei</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
-            <value xml:lang="en">Copy TEI</value>
+            <value>Copy TEI</value>
+            <value xml:lang="en-US">Copy TEI</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>
@@ -78,13 +83,81 @@
             <value>org.marinaMoji.kaeriten:export_latex</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
-            <value xml:lang="en">Copy LaTeX</value>
+            <value>Copy LaTeX</value>
+            <value xml:lang="en-US">Copy LaTeX</value>
           </prop>
           <prop oor:name="Target" oor:type="xs:string">
             <value>_self</value>
           </prop>
           <prop oor:name="Context" oor:type="xs:string">
             <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+      </node>
+    </node>
+    <node oor:name="Images">
+      <node oor:name="org.marinaMoji.kaeriten.render" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:render_kaeriten</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/render_kaeriten.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/render_kaeriten_big.png</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.unrender" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:unrender_kaeriten</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/unrender_kaeriten.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/unrender_kaeriten_big.png</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.copy_plain" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:copy_plain_text</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/copy_plain_text.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/copy_plain_text_big.png</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.export_tei" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:export_tei</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/export_tei.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/export_tei_big.png</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.export_latex" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:export_latex</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/export_latex.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/export_latex_big.png</value>
           </prop>
         </node>
       </node>

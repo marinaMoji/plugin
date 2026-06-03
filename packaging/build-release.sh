@@ -79,7 +79,7 @@ Download marinamoji-kaeriten-onlyoffice-mac.dmg (Mac) or marinamoji-kaeriten-onl
 Mac: run "Install marinaMoji Kaeriten (ONLYOFFICE)", quit ONLYOFFICE, reopen Writer
 Manual: unzip into sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
 
-Install the marinaMoji IME first (main marinaMozc repo).
+Install the marinaMoji IME first (main marinaMoji repo).
 
 Verify: SHA256SUMS.txt
 EOF

@@ -47,6 +47,6 @@ xattr -cr "/path/to/Install marinaMoji Kaeriten.app"
 | LibreOffice | Website → download `.oxt` → double-click |
 | Word | Website → download `.dmg` → run installer app |
 | ONLYOFFICE | Website → download zip or installer app |
-| marinaMoji IME | Main repo / website (separate installer) |
+| marinaMoji IME | [marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji) or website (separate installer) |
 
 See [DISTRIBUTION.md](DISTRIBUTION.md).

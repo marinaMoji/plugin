@@ -214,7 +214,7 @@ On macOS, `build-release.sh` also builds LibreOffice and ONLYOFFICE `.app` insta
 
 ## IME (marinaMoji) is separate
 
-The **input method** (typing `;r` → ㆑) is installed from the main **marinaMozc** repo (`.pkg` / instructions there). Office plugins only **format** text already typed.
+The **input method** (typing `;r` → ㆑) is installed from [github.com/marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji) (`.pkg` / Linux install instructions there). This **plugin** repo only **formats** text already typed.
 
 Website should say: **Install marinaMoji first**, then install the Writer/Word extension you use.
 
