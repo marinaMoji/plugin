@@ -129,6 +129,31 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 ---
 
+## Renderer E: Inline pictures (`insertInlinePictureFromBase64`) — Mac default (June 2026)
+
+**Why (the turning point):** Every renderer above asks Word for Mac to preserve a **live view object** — a content control, a floating/inline text box, or an OOXML `wp:inline` drawing. Word for Mac **flattens, unwraps, or corrupts** all of them, and the round-trip (Unrender) kept failing no matter how many times we patched the bookmark / `seenMarks` logic. Inline pictures are different: they are a **first-class Office.js object** that Word for Mac actually keeps across save/reload, they **flow with the text** like a character, and they **reliably retain `altTextDescription`**.
+
+**Idea:** Draw the mark cluster (single レ, or a stacked 一/レ) on an off-screen `<canvas>` in the task-pane webview — which has the system CJK fonts — export it to a base64 PNG, and insert it **in place of the marks run** via [`Range.insertInlinePictureFromBase64`](https://learn.microsoft.com/en-us/javascript/api/word/word.range?view=word-js-preview#word-word-range-insertinlinepicturefrombase64-member(1)). Compound stacking is trivial because *we* paint the glyphs; we never fight Word's layout engine.
+
+| Command | How |
+|---------|-----|
+| **Render** | `問㆒㆑` → `問` + inline PNG; alt text `MARINAMOJI:kaeriten:id=…;source=㆒㆑` |
+| **Unrender** | Walk `body.inlinePictures`, read alt text, `getRange("Whole").insertText(marks, Replace)` |
+| **Refresh** | Redraw PNG at current host font size; replace picture in place |
+| **Export** | Read source marks from alt text; picture shows as `\uFFFC` in text, spliced to `問㆒㆑` (no document mutation) |
+
+**Geometry:** each glyph cell ≈ half an em (`glyph_ratio`, default 0.5) of the base kanji's font; a single mark is one cell, a compound stack is one column of N cells (or a row if `compound_layout: "row"`). Drawn at `supersample`× (default 4) for crisp print, then sized in points via `pic.width`/`pic.height`. Background is transparent (publication-safe); `color` defaults to black.
+
+**Requirement set:** `WordApi 1.2` (`insertInlinePictureFromBase64`) + `1.1` (`body.inlinePictures`, `altTextDescription`). `wordHasInlinePictureApi()` guards the path; falls back to the previous renderer if unavailable.
+
+**Trade-off:** the view is a raster image, so it is not selectable text and not searchable — but the view is **disposable** (always re-derived from the source marks), and the source round-trips perfectly via the alt text. Accessibility/search live on the **source**, not the view.
+
+**Code:** `plugin/word/src/wordInlinePicture.js` (`drawKaeritenImage`, `insertKaeritenInlinePicture`, `listMarinaMojiInlinePictures`, `unrenderOneInlinePicture`, `refreshInlinePicture`); wired in `render.js` (`renderClusterWithInlinePicture`, plus unrender/refresh/export). Config: [mapping.json](../mapping.json) `word_primary: "inline_picture"` + `word_inline_picture` block.
+
+**Revert:** set `word_primary` back to `ooxml` (or `content_control`) in [mapping.json](../mapping.json) to use the earlier renderers.
+
+---
+
 ## Placement and cluster handling (both renderers)
 
 | Attempt | Notes |
@@ -213,7 +238,9 @@ We do **not** author `wp:anchor` or `wp:inline` by hand in the add-in; Word gene
 | Content control (bounding box) | Partial (small text) | Fragile | Untested | Tag + bookmark | Rarely visible |
 | Content control (plain inline) | Partial | Fragile | Untested | Tag + bookmark | No |
 | Floating text box (Renderer B) | Poor | Poor | Poor | Alt-text on shape | Briefly / wrong place |
-| **Inline text box (`textWrap.inline`)** | **⏳ not tried** | **⏳** | **⏳** | Alt-text (planned) | **⏳** |
+| Inline text box (`textWrap.inline`) | Flattens on Mac | Flattens | ⏳ | Unreliable | Briefly |
+| OOXML `wp:inline` (Renderer D) | Flattens / corrupts | Flattens | No | Unreliable | Sometimes |
+| **Inline picture (Renderer E)** | **Yes (image)** | **Yes (painted)** | **⏳** | **Yes (alt text)** | **Yes (image)** |
 | **LO frames** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 
 ---

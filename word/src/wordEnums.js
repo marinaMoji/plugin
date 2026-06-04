@@ -31,6 +31,7 @@ export const W = {
   breakSoftLine: () => pick(Word?.BreakType, "lineBreak", "LineBreak"),
   rangeEnd: () => pick(Word?.RangeLocation, "end", "End"),
   rangeStart: () => pick(Word?.RangeLocation, "start", "Start"),
+  rangeWhole: () => pick(Word?.RangeLocation, "whole", "Whole"),
   locBefore: () => pick(Word?.LocationRelation, "before", "Before"),
   locAfter: () => pick(Word?.LocationRelation, "after", "After"),
   locEqual: () => pick(Word?.LocationRelation, "equal", "Equal"),

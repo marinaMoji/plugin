@@ -59,6 +59,13 @@ import {
   buildClusterReplaceOoxmlVariants,
 } from "./wordOoxml.js";
 import {
+  wordHasInlinePictureApi,
+  insertKaeritenInlinePicture,
+  listMarinaMojiInlinePictures,
+  unrenderOneInlinePicture,
+  refreshInlinePicture,
+} from "./wordInlinePicture.js";
+import {
   sanityCheckOoxml,
   probeOoxmlWithWord,
   ooxmlErrorDetail,
@@ -99,18 +106,29 @@ function wordRenderOptions(mappingData) {
   const inline = r.word_inline_textbox || {};
   const lo = r.libreoffice_frame || {};
   const primary = (r.word_primary || "content_control").toLowerCase();
+  const img = r.word_inline_picture || {};
+  const useInlinePicture =
+    primary === "inline_picture" ||
+    primary === "image" ||
+    primary === "picture" ||
+    r.word_use_inline_picture === true ||
+    (isWordMac() && r.word_mac_use_inline_picture === true);
   const useOoxml =
-    primary === "ooxml" ||
-    primary === "inline_ooxml" ||
-    (isWordMac() && r.word_mac_use_ooxml === true);
+    !useInlinePicture &&
+    (primary === "ooxml" ||
+      primary === "inline_ooxml" ||
+      (isWordMac() && r.word_mac_use_ooxml === true));
   const preferInlineOnMac =
-    !useOoxml && r.word_mac_prefer_inline_textbox !== false;
+    !useInlinePicture && !useOoxml && r.word_mac_prefer_inline_textbox !== false;
   let useInlineTextBox =
-    primary === "inline_textbox" ||
-    primary === "inline_text_box" ||
-    primary === "inline";
-  const useTextBox = primary === "textbox" || primary === "text_box";
+    !useInlinePicture &&
+    (primary === "inline_textbox" ||
+      primary === "inline_text_box" ||
+      primary === "inline");
+  const useTextBox =
+    !useInlinePicture && (primary === "textbox" || primary === "text_box");
   if (
+    !useInlinePicture &&
     !useInlineTextBox &&
     !useTextBox &&
     preferInlineOnMac &&
@@ -133,9 +151,45 @@ function wordRenderOptions(mappingData) {
     ),
     minFontSizePt: Number(box.min_font_size_pt ?? 6),
     useOoxml,
+    useInlinePicture,
     useInlineTextBox,
     useTextBox,
     preferInlineOnMac,
+    imageFontFamily: img.font_family ?? null,
+    imageColor: img.color ?? "#000000",
+    imageBackground: img.background ?? null,
+    imageGlyphRatio: Number(img.glyph_ratio ?? 0.42),
+    imageCompoundGlyphRatio:
+      img.compound_glyph_ratio != null && img.compound_glyph_ratio !== ""
+        ? Number(img.compound_glyph_ratio)
+        : null,
+    imageGlyphFill: Number(img.glyph_fill ?? 0.94),
+    imageLineGapRatio: Number(img.line_gap_ratio ?? 0),
+    imageCompoundLineGapRatio:
+      img.compound_line_gap_ratio != null && img.compound_line_gap_ratio !== ""
+        ? Number(img.compound_line_gap_ratio)
+        : null,
+    imageSupersample: Number(img.supersample ?? 4),
+    imageBoxHeightEm:
+      img.box_height_em != null && img.box_height_em !== ""
+        ? Number(img.box_height_em)
+        : 0,
+    imageHeadroomEm:
+      img.headroom_em != null && img.headroom_em !== ""
+        ? Number(img.headroom_em)
+        : null,
+    imageBaselineAnchor: img.baseline_anchor ?? "bottom",
+    imageBelowBaselineEm: Number(img.below_baseline_em ?? 0.42),
+    imageBaselineShiftPt:
+      img.baseline_shift_pt != null && img.baseline_shift_pt !== ""
+        ? Number(img.baseline_shift_pt)
+        : resolveBaselineShiftPt(inline) || -5,
+    imageDescentEm: Number(img.descent_em ?? 0),
+    imageGlyphNudgeEm: Number(img.glyph_nudge_em ?? 0.02),
+    imageRow:
+      String(
+        img.compound_layout ?? box.word_mac_compound_layout ?? "stack"
+      ).toLowerCase() === "row",
     textFrameVerticalAlign: contentAlign,
     textFrameHorizontalAlign: contentAlignHorizontal,
     textFrameMarginTop: Number(box.margin_top_pt ?? lo.margin_top_pt ?? marginAll),
@@ -745,6 +799,62 @@ async function renderClusterWithOoxml(
   );
 }
 
+/** Renderer E: replace the marks run with an inline PNG of the kaeriten. */
+async function renderClusterWithInlinePicture(
+  context,
+  clusterRange,
+  baseChar,
+  marks,
+  byChar,
+  opts
+) {
+  const baseRange = await baseRangeAtClusterStart(
+    context,
+    clusterRange,
+    baseChar
+  );
+  if (!baseRange) {
+    throw new Error(`Could not locate base character “${baseChar}” in cluster.`);
+  }
+  baseRange.font.load("size");
+  await context.sync();
+  const hostPt = baseRange.font.size || 12;
+
+  const marksRange = await marksRangeInCluster(
+    context,
+    baseRange,
+    clusterRange,
+    marks
+  );
+  if (!marksRange) {
+    throw new Error(
+      `Could not find marks “${marks}” after “${baseChar}”. ` +
+        "Put the whole cluster on one line, select it, then Render again."
+    );
+  }
+
+  const viewId = nextKaeritenViewId();
+  const imageOpts = { ...opts, row: opts.imageRow };
+  await insertKaeritenInlinePicture(
+    context,
+    marksRange,
+    marks,
+    byChar,
+    hostPt,
+    imageOpts,
+    viewId
+  );
+
+  clusterRange.load("text");
+  await context.sync();
+  if (clusterStillHasMarks(clusterRange.text)) {
+    throw new Error(
+      `Marks still present after rendering “${baseChar}${marks}”.`
+    );
+  }
+  return { method: "inlinePicture" };
+}
+
 async function renderClustersInRange(context, workRange, mappingData) {
   workRange.load("text");
   await context.sync();
@@ -782,7 +892,16 @@ async function renderClustersInRange(context, workRange, mappingData) {
         if (!baseRange) continue;
 
         try {
-          if (opts.useOoxml) {
+          if (opts.useInlinePicture && wordHasInlinePictureApi()) {
+            await renderClusterWithInlinePicture(
+              context,
+              clusterRange,
+              baseChar,
+              marks,
+              byChar,
+              opts
+            );
+          } else if (opts.useOoxml) {
             await renderClusterWithOoxml(
               context,
               clusterRange,
@@ -1271,13 +1390,23 @@ export async function unrenderKaeritenDocument(context, mappingData) {
       }
     }
   }
+  let pictureItems = [];
+  if (wordHasInlinePictureApi()) {
+    pictureItems = await listMarinaMojiInlinePictures(context, workRange);
+  }
   const bookmarkItems = await listMarinaMojiBookmarks(context, workRange);
 
   const restoredBoxKeys = new Set();
   const boxRecoveries = [];
   const emergencyStubs = [];
-  const totalViews = ccItems.length + boxItems.length;
+  const totalViews = ccItems.length + boxItems.length + pictureItems.length;
   let restoredCount = 0;
+
+  for (const { pic, marks } of pictureItems) {
+    if (await unrenderOneInlinePicture(context, pic, marks)) {
+      restoredCount += 1;
+    }
+  }
 
   for (const { shape, marks } of boxItems) {
     const resolved =
@@ -1451,10 +1580,36 @@ async function refreshInlineBoxViaOoxml(
 export async function refreshKaeritenDocument(context, mappingData) {
   const byChar = mappingByChar(mappingData);
   const opts = wordRenderOptions(mappingData);
-  const { ccItems, boxItems } = await listMarinaMojiViewsInScope(
+  const { ccItems, boxItems, workRange } = await listMarinaMojiViewsInScope(
     context,
     mappingData
   );
+
+  let pictureItems = [];
+  if (wordHasInlinePictureApi()) {
+    pictureItems = await listMarinaMojiInlinePictures(context, workRange);
+  }
+  for (const { pic, marks, viewId } of pictureItems) {
+    const baseRange = await baseKanjiAdjacentBefore(
+      context,
+      pic.getRange(W.rangeWhole())
+    );
+    let hostPt = 12;
+    if (baseRange) {
+      baseRange.font.load("size");
+      await context.sync();
+      hostPt = baseRange.font.size || 12;
+    }
+    await refreshInlinePicture(
+      context,
+      pic,
+      marks,
+      byChar,
+      hostPt,
+      { ...opts, row: opts.imageRow },
+      viewId
+    );
+  }
 
   for (const { cc, marks } of ccItems) {
     const glyphText = glyphsForMarks(marks, byChar);
@@ -1504,7 +1659,7 @@ export async function refreshKaeritenDocument(context, mappingData) {
   }
 
   await context.sync();
-  return ccItems.length + boxItems.length;
+  return ccItems.length + boxItems.length + pictureItems.length;
 }
 
 /** Find marinaMoji views for export (relaxed shape scan when selection omits inline boxes). */
@@ -1530,7 +1685,11 @@ async function listMarinaMojiViewsForExport(context, mappingData, workRange) {
       }
     }
   }
-  return { ccItems, boxItems, displayLookup };
+  let pictureItems = [];
+  if (wordHasInlinePictureApi()) {
+    pictureItems = await listMarinaMojiInlinePictures(context, workRange);
+  }
+  return { ccItems, boxItems, pictureItems, displayLookup };
 }
 
 async function exportTupleForView(
@@ -1545,6 +1704,8 @@ async function exportTupleForView(
   if (!resolved) return null;
   const baseRange = await findBaseRangeForView(context, workRange, viewRange);
   if (!baseRange) return null;
+  baseRange.load("text");
+  await context.sync();
   const baseChar = (baseRange.text || "").replace(/\r/g, "");
   if (!baseChar) return null;
   const index = await baseOffsetInWorkRange(context, workRange, baseRange);
@@ -1565,14 +1726,15 @@ async function readCanonicalTextInRange(
   workRange,
   mappingData,
   ccItems,
-  boxItems
+  boxItems,
+  pictureItems = []
 ) {
   const byChar = mappingByChar(mappingData);
   workRange.load("text");
   await context.sync();
   const raw = (workRange.text || "").replace(/\r/g, "");
 
-  if (!ccItems.length && !boxItems.length) {
+  if (!ccItems.length && !boxItems.length && !pictureItems.length) {
     return raw;
   }
 
@@ -1607,6 +1769,17 @@ async function readCanonicalTextInRange(
     );
     if (t) tuples.push(t);
   }
+  for (const { pic, marks } of pictureItems) {
+    const t = await exportTupleForView(
+      context,
+      workRange,
+      pic.getRange(W.rangeWhole()),
+      marks,
+      "",
+      byChar
+    );
+    if (t) tuples.push(t);
+  }
 
   if (!tuples.length) {
     return raw;
@@ -1618,7 +1791,7 @@ async function readCanonicalTextInRange(
 export async function canonicalTextForExport(context, mappingData) {
   const workRange = await getWorkRange(context);
   const fullDocument = await selectionIsEmpty(context);
-  const { ccItems, boxItems } = await listMarinaMojiViewsForExport(
+  const { ccItems, boxItems, pictureItems } = await listMarinaMojiViewsForExport(
     context,
     mappingData,
     workRange
@@ -1628,7 +1801,8 @@ export async function canonicalTextForExport(context, mappingData) {
     workRange,
     mappingData,
     ccItems,
-    boxItems
+    boxItems,
+    pictureItems
   );
   return { text, fullDocument };
 }

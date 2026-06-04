@@ -152,6 +152,43 @@ assert.equal(encodeKaeritenSourceTag("㆑", "x1").includes("id=x1"), true);
 assert.equal(isViewIdBookmarkName("_MMK_ID_v1"), true);
 assert.equal(marksFromBookmarkName("_MMK_ID_v1"), null);
 
+const {
+  orderedGlyphs,
+  imageMetricsFromHost,
+  inlinePictureBaselineShiftPt,
+} = await import("../src/wordInlinePicture.js");
+assert.equal(inlinePictureBaselineShiftPt(12, { imageBaselineShiftPt: -5 }), -5);
+assert.equal(
+  Math.round(inlinePictureBaselineShiftPt(18, { imageBaselineShiftPt: -4 }) * 10) / 10,
+  -6
+);
+assert.deepEqual(orderedGlyphs("㆒㆑", byChar), ["一", "レ"]);
+assert.deepEqual(orderedGlyphs("㆑", byChar), ["レ"]);
+const single = imageMetricsFromHost(12, 1, {});
+assert.equal(single.rows, 1);
+assert.equal(single.columns, 1);
+assert.equal(Math.round(single.widthPt), 5);
+assert.equal(Math.round(single.contentHeightPt), 5);
+assert.equal(Math.round(single.heightPt), 5);
+assert.equal(Math.round(single.contentTopPt), 0);
+const stack = imageMetricsFromHost(12, 2, {
+  imageCompoundGlyphRatio: 0.34,
+  imageCompoundLineGapRatio: -0.15,
+});
+assert.equal(stack.rows, 2);
+assert.equal(Math.round(stack.contentHeightPt), 8);
+assert.equal(Math.round(stack.heightPt), 8);
+assert.equal(Math.round(stack.contentTopPt), 0);
+const tall = imageMetricsFromHost(12, 3, {
+  imageCompoundGlyphRatio: 0.34,
+  imageCompoundLineGapRatio: -0.15,
+});
+assert.equal(Math.round(tall.contentHeightPt), 11);
+assert.equal(Math.round(tall.heightPt), 11);
+const row = imageMetricsFromHost(12, 2, { row: true });
+assert.equal(row.columns, 2);
+assert.equal(Math.round(row.widthPt), 10);
+
 assert.equal(rawLengthForNormalizedPrefix("一\n上", "一上"), 3);
 const orphan = findOrphanViewClusters("あのレ漢文", lookup);
 assert.equal(orphan.length, 1);
