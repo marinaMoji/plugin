@@ -15,13 +15,13 @@ Font choice alone does not fix placement; the same U+3191 can look different siz
 | Layer | Content | Purpose |
 |-------|---------|---------|
 | **Canonical source** | `說㆒㆑者` (ordinary Unicode text) | marinaMoji input; search; git; TEI/LaTeX export; copy to other apps |
-| **Rendered view** | Anchored **frame** (LO) or **textbox** (Word) with stacked glyphs | Scholarly print layout; PDF; **not** the archival format |
+| **Rendered view** | LO **frame** (as character); Word **content control** (v0.1) or **inline text box** (target) | Scholarly print layout; PDF; **not** the archival format |
 
 Frames and textboxes are a **view**, not the source of truth. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 **LibreOffice (2026):** ruby rejected; subscript fallback only; **borderless frame** primary — [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md).
 
-**Microsoft Word (2026):** same conclusions — ruby rejected; **anchored textbox** primary; users must edit source, not boxes — [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md).
+**Microsoft Word (2026):** ruby rejected; **content controls** default in add-in; **inline text box** (`textWrap.inline`) documented as next spike toward LO-like layout — [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md), [docs/WORD_ADDIN_ATTEMPTS.md](docs/WORD_ADDIN_ATTEMPTS.md).
 
 ## Workflow (v1) — manual formatting only
 

@@ -4,7 +4,7 @@ Chronicle of **Office.js** experiments for marinaMoji Kaeriten on **Word for Mac
 
 **LibreOffice** (working daily driver) inserts a borderless **frame anchored as character** after the base kanji, then removes the Unicode marks from the line. Word has no equivalent API; everything below is an attempt to approximate that behaviour.
 
-**Current code** (plugin/word/, not yet stable on Mac): **content controls** as the default renderer ([mapping.json](../mapping.json) `word_primary: content_control`), plus hidden **bookmarks** so Unrender can find views when Word strips the control wrapper.
+**Current code** (plugin/word/, Mac QA ongoing): **OOXML `wp:inline` text boxes** as the default ([mapping.json](../mapping.json) `word_primary: ooxml`) — atomic cluster replace via `insertOoxml`. Fallback: content controls / inline `insertTextBox` when `word_mac_use_ooxml: false`.
 
 ---
 
@@ -53,7 +53,9 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 ## Renderer B: Floating text boxes (`insertTextBox`)
 
-**Idea:** Use **WordApiDesktop 1.2** `range.insertTextBox()` — borderless box, stacked glyphs inside — similar to LO frames ([WORD_FINDINGS.md](WORD_FINDINGS.md) manual experiments).
+**Idea:** Use **WordApiDesktop 1.2** [`Paragraph.insertTextBox`](https://learn.microsoft.com/en-us/javascript/api/word/word.paragraph?view=word-js-preview#word-word-paragraph-inserttextbox-method) — borderless box, stacked glyphs inside — similar to LO frames ([WORD_FINDINGS.md](WORD_FINDINGS.md) manual experiments).
+
+**Microsoft docs:** `insertTextBox` **inserts a floating text box** (default geometry often `left:0`, `top:0`). That is not the same as LibreOffice “anchor as character”; it is closer to OOXML **anchored** drawings (`wp:anchor`), not **`wp:inline`**.
 
 | Attempt | Result on Word Mac |
 |--------|---------------------|
@@ -69,7 +71,61 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 **Decision in code:** Text boxes are **off by default**. Enabled only if [mapping.json](../mapping.json) sets `"word_primary": "textbox"` (not the current default).
 
-**Code:** `plugin/word/src/wordTextBox.js`, `wordRenderOptions()` in `render.js`.
+**Code:** `plugin/word/src/wordTextBox.js` (`anchorTextBoxToCharacter` targets **floating** shapes), `wordRenderOptions()` in `render.js`.
+
+---
+
+## Renderer D: OOXML `wp:inline` (`insertOoxml`) — Mac default (June 2026)
+
+**Idea:** Replace the **entire cluster** in one step (`問㆒㆑` → `問` + inline drawing), matching the LibreOffice rule: one atomic unit, no `moveStart` / delete-then-insert.
+
+| Piece | Role |
+|--------|------|
+| `buildClusterReplaceOoxml()` | `plugin/word/src/wordOoxml.js` — `pkg:package` with `wp:inline` + `wps:txbx` |
+| `wp:docPr descr` | `MARINAMOJI:source=㆒㆑` for **Unrender** (same as shape alt text) |
+| `mapping.json` | `word_primary: ooxml`, `word_mac_use_ooxml: true` |
+
+**Risks:** Earlier tests showed **document corruption** when OOXML included extra `<w:p>` inside content controls. This path replaces **document text** only; if Word reports “problem with its content”, revert `word_primary` to `content_control`.
+
+**Safeguards (June 2026):** `wordOoxmlProbe.js` — structural checks, then `insertOoxml` at **document end** (probe) and delete before replacing the cluster (`word_mac_ooxml_probe_with_word`). Word has no validate-only API; probe + API fallback is the practical guard.
+
+**Code:** `renderClusterWithOoxml()` in `render.js`, `probeOoxmlWithWord()` in `wordOoxmlProbe.js`.
+
+---
+
+## Renderer C: Inline text box (`textWrap.type = inline`) — implemented, QA pending
+
+**Idea (June 2026, from API review):** After `insertTextBox`, set [`shape.textWrap.type = Word.ShapeTextWrapType.inline`](https://learn.microsoft.com/en-us/javascript/api/word/word.shapetextwraptype?view=word-js-preview) (“Places the shape **in line with text**”). That is the Office.js equivalent of flowing with the paragraph — much closer to LO **frame anchored as character** / OOXML **`wp:inline`** than Renderer B’s float + `relativeHorizontalPosition: Character` + `left`/`top` nudges.
+
+**Microsoft docs (inline shapes):** On [`Word.Shape`](https://learn.microsoft.com/en-us/javascript/api/word/word.shape?view=word-js-preview), `left`, `top`, and `relativeHorizontalPosition` **return 0 and cannot be set** for inline shapes. Renderer C **does not** call `anchorTextBoxToCharacter()`; sizing is only `width`/`height` on insert.
+
+| Step | Status |
+|------|--------|
+| Insert at collapsed range after base kanji (same as LO strip-then-insert order) | ✅ |
+| `textWrap.type = inline` immediately after insert | ✅ |
+| Borderless box + stacked glyphs in `shape.body` | ✅ (`fillTextBoxGlyphs`) |
+| Metadata: `altTextDescription = MARINAMOJI:source=…` (same as Renderer B) | ✅ |
+| Unrender / Refresh via shape scan + bookmarks | ✅ (same shape path as B) |
+| QA: horizontal 横書き — mark moves with line break | ⏳ |
+| QA: Word Mac + Word Windows (`WordApiDesktop` 1.2) | ⏳ |
+| QA: 縦書き | ⏳ (skipped in code; falls back to content control) |
+
+**Spike checklist (one cluster `說㆒㆑`):**
+
+1. Require `Office.context.requirements.isSetSupported("WordApiDesktop", "1.2")`.
+2. `insertTextBox("", { width, height })` at gap after 說.
+3. `shape.textWrap.type = Word.ShapeTextWrapType.inline`; `await context.sync()`.
+4. Do **not** set `relativeHorizontalPosition`, `left`, or `top`.
+5. Compare screenshot to LO frame; verify line-wrap behaviour.
+6. If inline fails on Mac, log `shape.textWrap.type` after insert and consider [`insertOoxml`](https://learn.microsoft.com/en-us/javascript/api/word/word.paragraph?view=word-js-preview#word-word-paragraph-insertooxml-method) (fragile; see Renderer A OOXML corruption).
+
+**Official samples:** [manage-shapes-text-boxes.yaml](https://github.com/OfficeDev/office-js-snippets/blob/prod/samples/word/45-shapes/manage-shapes-text-boxes.yaml) (wrap examples use `square`; extend with `inline`).
+
+**Code:** `insertKaeritenInlineTextBox()` in `plugin/word/src/wordTextBox.js`.
+
+**Mac default (2026-06):** When `word_mac_prefer_inline_textbox` is true (default in [mapping.json](../mapping.json)), Word on Mac uses inline text boxes even if `word_primary` is `content_control`. Inline path: set `textWrap` **before** frame styling; fixed `width`/`height` + `autoSize: none`. **OOXML default:** `wp:inline`, zero `bodyPr` insets, `a:noFill` + no outline (publication-safe). **Optional hack:** `word_mac_force_solid_fill` + `word_mac_fill_color` (e.g. `FFFFFF`) + `word_mac_no_outline` — try if Mac still flattens; document as workaround, not the real fix (colour must not be required for correctness). Content-control fallback on Mac uses `appearance: tags` (not `boundingBox` / `cannotEdit`, which unwrap).
+
+**LO parity (2026-06):** Render finds the **whole cluster** (`searchClusterOccurrences`), deletes the **marks run** with `marksRangeAfterBase` + `delete` (no `moveStart`/`moveEnd`), then inserts the view at `baseRange.getRange(End)` (`說` + box + `者`). Font size and margins apply to `shape.body.getRange()` (TextFrame text), not the shape wrapper. Mac may still spill plain glyphs — `clearPlainTextBetweenBaseAndShape` uses `expandTo` only. Shared helpers: `plugin/word/src/wordRange.js`.
 
 ---
 
@@ -81,10 +137,11 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 | Search `漢㆒` only | Cluster too short → only first mark stripped |
 | Find each mark **in order** after base (`marksRangeAfterBase`) | Needed for compound |
 | `expandTo` last mark | Sometimes works; per-char search more reliable |
-| `getRange(End)` for insertion gap | **Unreliable on Mac** → `moveEnd` / `moveStart` collapse workaround |
+| `getRange(End)` for insertion gap | Use **only** `baseRange.getRange(End)` — do **not** use VBA-style `moveStart`/`moveEnd` (not reliable Office.js on Mac) |
+| Index-based `rangeAtTextOffsets` | **Removed** — use search + `expandTo` per mark/glyph (`wordRange.js`) |
 | Render **back-to-front** in selection | Avoid index shift when deleting marks |
 
-**Code:** `searchClusterOccurrences`, `stripMarksFromCluster`, `anchorAfterBaseKanji`, `collapsedRangeAfterKanji` in `render.js`.
+**Code:** `searchClusterOccurrences`, `deleteMarksFromCluster`, `wordRange.js` (`marksRangeAfterBase`, `insertPointAfterBase`) in `render.js`.
 
 ---
 
@@ -115,9 +172,11 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 | Require **selection** for Unrender | Avoids silent full-doc scan |
 | Only touch controls with **`MARINAMOJI:source=`** tag or mark-only Title | No guesswork from glyph shape |
 | Hidden bookmark `_MMK_<hex>…` per view | Lets Unrender find glyphs when **CC wrapper is gone** |
+| Scan **all document** bookmarks (not only `getBookmarks` on selection) | Mac often omitted `_MMK_` from selection-scoped bookmark list |
+| Orphan fallback: exact display-glyph match + font ≤ ~42% of base | Only when CC/shape/bookmark all missing; avoids blind “any small レ” |
 | Text box: `shape.select` + `insertText` | `select` can grab **too much** text; guarded by selection length |
 
-**Observed:** After Render, **no box** and Unrender finds **nothing** → CC already unwrapped; bookmark path must run (newer code).
+**Observed:** After Render, **no box** and Unrender finds **nothing** → CC already unwrapped; use bookmark scan + orphan fallback (2026-06).
 
 **Code:** `unrenderKaeritenDocument`, `unrenderOneControl`, `listMarinaMojiBookmarks` in `render.js`.
 
@@ -135,13 +194,26 @@ Documented fully in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 ---
 
+## OOXML vocabulary (Word vs LibreOffice)
+
+| Term in conversation | LibreOffice | Word OOXML (approx.) | marinaMoji today |
+|----------------------|-------------|----------------------|------------------|
+| Anchor as character | UNO frame `anchor as character` | `wp:inline` drawing | CC (inline text); LO frames |
+| Floating box beside text | Floating frame | `wp:anchor` drawing | Renderer B (`insertTextBox` default) |
+| In-flow small glyphs | — | Plain runs / content control | Renderer A (default) |
+
+We do **not** author `wp:anchor` or `wp:inline` by hand in the add-in; Word generates XML from Office.js calls unless we use `insertOoxml`.
+
+---
+
 ## Summary table
 
 | Approach | Beside kanji (horizontal) | Compound | 縦書き | Unrender reliable | LO-like box |
 |----------|---------------------------|----------|--------|-------------------|-------------|
 | Content control (bounding box) | Partial (small text) | Fragile | Untested | Tag + bookmark | Rarely visible |
 | Content control (plain inline) | Partial | Fragile | Untested | Tag + bookmark | No |
-| Floating text box | Poor | Poor | Poor | Alt-text on shape | Briefly / wrong place |
+| Floating text box (Renderer B) | Poor | Poor | Poor | Alt-text on shape | Briefly / wrong place |
+| **Inline text box (`textWrap.inline`)** | **⏳ not tried** | **⏳** | **⏳** | Alt-text (planned) | **⏳** |
 | **LO frames** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 
 ---
@@ -165,13 +237,14 @@ in [mapping.json](../mapping.json). Implementation files:
 
 ## What would be worth trying next
 
-Not implemented; listed for future sessions:
+Prioritized for future sessions:
 
-1. **OOXML** custom anchor outside Office.js high-level API (high effort, fragile).
-2. **Word for Windows** only — check if content controls keep bounding box more reliably.
-3. **Accept inline small glyphs** as the Mac “view” and improve **Unrender/Refresh** only (pragmatic v0.1).
-4. **Field codes** or **style-based** marks (no wrapper) with metadata in `STYLEREF` / custom style names.
-5. Re-test **text box** after a confirmed **Character** anchor with measured `left` from host font metrics.
+1. **Renderer C spike:** `insertTextBox` + `textWrap.type = inline` (see above) — best MS-documented path toward LO “as character” without raw OOXML.
+2. **Pragmatic v0.1:** Keep content controls; improve **Unrender/Refresh** + bookmarks when the CC wrapper vanishes on Mac.
+3. **Word for Windows:** Check whether content controls keep a visible bounding box more reliably than Mac.
+4. **OOXML:** Custom `wp:inline` via `insertOoxml` only if Renderer C fails (high effort; Renderer A showed `<w:p>` inside CC corrupts files).
+5. **Field codes** or **style-based** marks (no wrapper) with metadata in custom style names.
+6. **Do not prioritize:** More `relativeHorizontalPosition: Character` + `left`/`top` tuning on **floating** boxes — that fights the default `insertTextBox` model per Microsoft docs.
 
 ---
 

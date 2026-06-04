@@ -92,14 +92,19 @@ The **current add-in** uses **content controls** because they are easier to tag 
 | Approach | Office.js API | Mac Word | Fits kaeriten? |
 |----------|---------------|----------|----------------|
 | **Content controls** | `range.insertContentControl()`, `cc.tag`, `cc.cannotEdit` | **Yes** (Word API 1.1+) | **Good v0.1** — stacked lines inside CC |
-| **Floating textboxes** | `range.insertTextBox()` | **Yes** on desktop — **`WordApiDesktop` 1.2+** | **Better layout** — closer to LO frames; more code |
+| **Floating textboxes** | `paragraph.insertTextBox()` (documented as **floating**) | **Yes** — **`WordApiDesktop` 1.2+** | Implemented as optional Renderer B; **Mac QA poor** |
+| **Inline text box** | `insertTextBox` + `shape.textWrap.type = inline` | **Yes** (same requirement set) | **Best next spike** — in-line with text; no `left`/`top` |
+| **Inline picture** | `insertInlinePictureFromBase64` | Yes | **Wrong primitive** — images only, not stacked text |
+| **Raw OOXML** | `paragraph.insertOoxml()` | Yes | **Fallback** if inline wrap fails; fragile |
 | **Ruby / phonetic guide** | — | Yes but wrong typography | **Reject** |
 | **Subscript only** | `font.subscript` | Yes | **Fallback** for simple レ |
 
 Sources:
 
 - [Word.ContentControl](https://learn.microsoft.com/en-us/javascript/api/word/word.contentcontrol)
-- [WordApiDesktop 1.2](https://learn.microsoft.com/en-us/javascript/api/requirement-sets/word/word-api-desktop-1-2-requirement-set) (`insertTextBox`)
+- [WordApiDesktop 1.2](https://learn.microsoft.com/en-us/javascript/api/requirement-sets/word/word-api-desktop-1-2-requirement-set) (`insertTextBox`, shape wrap)
+- [Word.ShapeTextWrapType](https://learn.microsoft.com/en-us/javascript/api/word/word.shapetextwraptype?view=word-js-preview) (`inline`)
+- [Word.Paragraph.insertTextBox](https://learn.microsoft.com/en-us/javascript/api/word/word.paragraph?view=word-js-preview#word-word-paragraph-inserttextbox-method)
 
 Always check support:
 
@@ -109,24 +114,24 @@ Office.context.requirements.isSetSupported("WordApiDesktop", "1.2")
 
 ### Comparison for marinaMoji
 
-| Criterion | Content controls | Textboxes (`insertTextBox`) |
-|-----------|------------------|-----------------------------|
-| Match LO frame layout | Approximate | **Closer** |
-| Tag / store source marks | **Easy** (`tag`) | Need shape name or alternative |
-| Lock from editing | **Built-in** | Manual protection |
-| Font size refresh | Rescale inner text (current approach) | Same problem as LO — **Refresh** command |
-| Search `說` + `者` across mark | **Fails** when object between chars | Same (expected) |
-| Copy plain text | Unicode may survive; views may not | Same |
-| Implementation cost | **Done** in `plugin/word/` | New work + anchor options |
-| Word on the web | Content controls supported | Desktop-oriented APIs |
+| Criterion | Content controls | Floating text box (Renderer B) | Inline text box (Renderer C, planned) |
+|-----------|------------------|--------------------------------|--------------------------------------|
+| Match LO “as character” | Approximate (in-flow text) | **Poor** on Mac (float + nudges) | **Promising** per MS `textWrap.inline` |
+| Tag / store source marks | **Easy** (`tag`) | `altTextDescription` | Same as B |
+| Lock from editing | **Built-in** | Manual | Manual |
+| Font size refresh | Rescale inner text | **Refresh** command | Same |
+| Search `說` + `者` across mark | **Fails** when object between chars | Same (expected) | Same (expected) |
+| Implementation cost | **Done** | Done but off by default | Small delta on `wordTextBox.js` |
+| Word on the web | Supported | Desktop-oriented | Desktop-oriented |
 
 ### Recommendation
 
 | Phase | Choice |
 |-------|--------|
 | **v0.1 (now)** | **Keep content controls** until Mac connection QA passes |
-| **v0.2 (if Word matters)** | Prototype **one** `insertTextBox` cluster; compare to LO screenshot |
-| **Do not** | Block v0.1 on textboxes |
+| **v0.2 (if Word matters)** | Spike **Renderer C:** `insertTextBox` + `textWrap.type = inline` on one cluster (`說㆒㆑`); compare to LO screenshot on Mac and Windows |
+| **Do not** | Block v0.1 on textboxes; **do not** invest more in float + `Character` + `left`/`top` tuning without trying `inline` first |
+| **Later** | `insertOoxml` (`wp:inline`) only if Renderer C fails |
 
 ---
 

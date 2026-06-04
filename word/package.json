@@ -1,0 +1,35 @@
+{
+  "name": "marinamoji-kaeriten-word",
+  "version": "0.1.2",
+  "private": true,
+  "description": "marinaMoji Kaeriten — Microsoft Word add-in",
+  "scripts": {
+    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch",
+    "serve": "NODE_OPTIONS=--use-system-ca node scripts/serve-https.mjs",
+    "serve:stop": "node scripts/serve-stop.mjs",
+    "trust": "bash scripts/trust-mac.sh",
+    "trust:fix": "bash scripts/trust-fix.sh",
+    "setup:certs": "bash scripts/setup-mkcert.sh",
+    "doctor": "NODE_OPTIONS=--use-system-ca node scripts/doctor.mjs",
+    "diagnose": "NODE_OPTIONS=--use-system-ca node scripts/https-diagnose.mjs",
+    "reset-word": "bash scripts/reset-word-mac.sh",
+    "start": "npm run build && concurrently -k -n serve,word \"npm run serve\" \"node scripts/wait-and-sideload.mjs\"",
+    "start:server-only": "npm run build && npm run serve",
+    "sideload": "office-addin-debugging start manifest.xml desktop",
+    "stop": "office-addin-debugging stop manifest.xml",
+    "validate": "office-addin-manifest validate manifest.xml",
+    "test": "node tests/test_export.mjs && node tests/test_ooxml.mjs"
+  },
+  "devDependencies": {
+    "@microsoft/office-js": "^1.1.110",
+    "concurrently": "^9.1.2",
+    "copy-webpack-plugin": "^12.0.2",
+    "http-server": "^14.1.1",
+    "office-addin-debugging": "^6.1.1",
+    "office-addin-dev-certs": "^1.13.5",
+    "office-addin-manifest": "^1.13.6",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
+  }
+}

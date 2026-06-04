@@ -15,6 +15,7 @@ The add-in loads HTML from a **local HTTPS server** (`https://127.0.0.1:3000`). 
 
 ## What we fixed this session
 
+- **OOXML render (Mac default):** geometry scales with **surrounding kanji size** (same idea as LO `frame_width_hmm * host/12`): `frame_width_hmm`, `font_size_ratio` `"12:5"`, `compound_line_spacing_pt` (4 at 12 pt host, scales up for larger text). Shape chrome defaults to **borderless** (`a:noFill` + `a:ln/noFill`); stability comes from `wp:inline` and zero `wps:bodyPr` insets, not visible colour. Rebuild: `./build.sh && npm run serve`.
 - **HTTPS dev server** with mkcert (`certs/`) or Microsoft dev certs fallback
 - **`npm run doctor`** — checks certs, `dist/`, sideload manifest, server
 - **`npm run serve`** — must print **HTTPS trusted — OK for Word** (not FATAL)
@@ -133,7 +134,12 @@ Minimal Word check: `https://127.0.0.1:3000/hello.html` — if this shows green 
 
 ### C. Code / product (after QA)
 
-1. Decide: keep **content controls** v0.1 or invest in **textboxes** (`insertTextBox`) for closer match to [WORD_FINDINGS.md](WORD_FINDINGS.md) layout.
+1. QA **Renderer C (box persistence):** rebuild, `npm run serve`, test horizontal `說㆒㆑` on Mac — default uses **inline text box** via `word_mac_prefer_inline_textbox` (see [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md)). Expect a small pale box after the kanji, not only 6 pt plain レ.
+2. **Box margins / alignment:** edit `word_inline_textbox` in [mapping.json](../mapping.json) — `content_align` (top/middle/bottom), `content_align_horizontal` (left/center/right), `margin_*_pt` (Word text-frame insets, same role as LO frame margins).
+3. **Compound marks on Mac** (`說㆒㆑`): default `word_mac_compound_layout: "stack"` (一 above レ inside the box). If glyphs appear **both in the line and in the box** at 12 pt, rebuild — the add-in inserts an empty box, fills it at small size, then deletes plain-text duplicates **only** in the gap before/after the shape (not inside the box). Try `"row"` if stacking still fails.
+4. **Mac fill workaround (optional):** if inline shapes still flatten, set in [mapping.json](../mapping.json) `word_mac_force_solid_fill: true`, `word_mac_fill_color: "FFFFFF"`, `word_mac_no_outline: true`. This is a **compatibility hack** (Word may take a different rendering path when a solid fill is present)—not the conceptual fix. Leave flags `false` for publication output.
+5. **Refresh / Unrender:** tagged inline box (`MARINAMOJI:kaeriten:id=…;source=㆒㆑` or legacy `MARINAMOJI:source=…` alt text). **Unrender order:** content controls → text boxes (insert marks after base, then delete box) → bookmarks last (metadata cleanup only; never `insertReplace` on the bookmark span). Dedup uses per-shape alt/id keys, not marks alone (two boxes can both be `㆑`). Select the whole word (e.g. `問㆒㆑題`).
+6. **Copy plain / TEI / LaTeX:** does **not** unrender the document. Reads `MARINAMOJI:source=…` from each inline box, finds the base kanji via Word ranges, and splices ㆒㆑ into the export string (Word selection text often shows only `問題` without marks). Clipboard: task-pane box + ⌘C if automatic copy fails on Word Mac.
 2. Align README trust docs (mkcert-first vs `npm run trust`).
 3. Windows sideload path (Upload My Add-in) — separate test.
 4. Update [ROADMAP.md](ROADMAP.md) Phase 3 when Mac QA passes.
@@ -145,6 +151,7 @@ Use **LibreOffice** for real editing; treat Word add-in as preview development o
 ## Related files
 
 - [word/README.md](../word/README.md) — build and install
-- [WORD_FINDINGS.md](WORD_FINDINGS.md) — textbox vs ruby experiments
+- [WORD_FINDINGS.md](WORD_FINDINGS.md) — renderers (CC, floating vs inline text box)
+- [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md) — Renderer A/B/C chronicle + Microsoft API links
 - [ROADMAP.md](ROADMAP.md) — Phase 3 checklist
 - [ARCHITECTURE.md](ARCHITECTURE.md) — source vs view

@@ -21,7 +21,7 @@ It is weak for:
 - Placement in vertical layout
 - Print-quality PDF without a renderer
 
-**LibreOffice and Word prototyping (2026)** confirmed that **anchored visual objects** (frames / textboxes) can produce acceptable compound kaeriten, provided **canonical Unicode source** (`說㆒㆑者`) stays authoritative and views are regenerated with a manual **Format kaeriten** command—not edited inside the boxes. See [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md), [WORD_FINDINGS.md](WORD_FINDINGS.md), [ARCHITECTURE.md](ARCHITECTURE.md).
+**LibreOffice and Word prototyping (2026)** confirmed that **disposable view objects** (LO frames; Word content controls and text boxes) can produce acceptable compound kaeriten when **canonical Unicode source** (`說㆒㆑者`) stays authoritative and views are regenerated with a manual **Format kaeriten** command—not edited inside the views. Word’s next documented API path for LO-like “as character” placement is **`insertTextBox` + `textWrap.type = inline`** (not default floating insert). See [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md), [WORD_FINDINGS.md](WORD_FINDINGS.md), [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md), [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Existing approaches (summary)
 

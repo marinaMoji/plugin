@@ -57,16 +57,30 @@ Rich-text **content controls** with small glyphs and tag `MARINAMOJI:source=…`
 | **Problems** | Unrender needs tag or hidden bookmark if wrapper is lost |
 | **Decision** | **Default in add-in** ([mapping.json](../mapping.json) `word_primary: content_control`) |
 
-### Anchored textboxes (`insertTextBox`, WordApiDesktop 1.2)
+### Text boxes (`insertTextBox`, WordApiDesktop 1.2)
 
 Manual experiments and add-in prototypes: tiny borderless text box after the kanji, stacked glyphs inside — in theory closer to LibreOffice frames.
 
 | | |
 |---|---|
 | **Result** | Manual tests: visually convincing on some builds |
-| **Add-in on Mac** | Box often at **page left margin** or **left of kanji**, not in the gap after the base character |
-| **Problems** | Floating shapes use page-relative `left:0`; Character anchoring inconsistent; 縦書き worse |
+| **Add-in on Mac (floating path)** | Box often at **page left margin** or **left of kanji**, not in the gap after the base character |
+| **Problems** | Microsoft documents `insertTextBox` as inserting a **floating** text box; our optional renderer then sets `relativeHorizontalPosition: Character` and manual `left`/`top` — still unreliable; 縦書き worse |
 | **Decision** | **Optional only** (`word_primary: textbox`); not default |
+
+**Not the same as OOXML `wp:anchor` in our code:** we never inject raw WordprocessingML. Floating `insertTextBox` is the API’s default; LibreOffice “anchor as character” is closer to **`wp:inline`** or Office.js **`textWrap.type = inline`** on a shape (documented but **not yet implemented** in the add-in).
+
+| Renderer | Office.js | Status |
+|----------|-----------|--------|
+| A — content controls | `insertContentControl` | **Default** in add-in |
+| B — floating text box | `insertTextBox` + Character position + nudge | Optional; failed Mac QA |
+| C — inline text box | `insertTextBox` + `textWrap.type = inline` | **Planned spike** — see [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md) |
+
+**API references:**
+
+- [Paragraph.insertTextBox](https://learn.microsoft.com/en-us/javascript/api/word/word.paragraph?view=word-js-preview#word-word-paragraph-inserttextbox-method) — “floating text box”
+- [ShapeTextWrapType.inline](https://learn.microsoft.com/en-us/javascript/api/word/word.shapetextwraptype?view=word-js-preview) — “in line with text”
+- [WordApiDesktop 1.2](https://learn.microsoft.com/en-us/javascript/api/requirement-sets/word/word-api-desktop-1-2-requirement-set)
 
 **Full chronicle of add-in attempts:** [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md).
 
@@ -142,8 +156,9 @@ Hands-on add-in in [word/](../word/). See **[WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_
 | Topic | Choice |
 |-------|--------|
 | **Default renderer** | Locked **content controls** + hidden `_MMK_` bookmark |
-| **Optional renderer** | Floating **text boxes** if `mapping.json` sets `word_primary: textbox` |
-| **Mac reality** | Visible **box often absent**; small inline glyphs may remain |
+| **Optional renderer** | Floating **text boxes** if `mapping.json` sets `word_primary: textbox` (Mac QA poor) |
+| **Next spike (documented)** | **Inline text box:** `insertTextBox` + `textWrap.type = inline` — [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md) |
+| **Mac reality** | Visible **box often absent** with CC; small inline glyphs may remain |
 | **Dev URL** | `https://127.0.0.1:3000` — local HTTPS server required |
 | **Mac trust** | mkcert CA in system keychain, or Microsoft `office-addin-dev-certs` |
 | **Mac UI** | Ribbon on **Accueil → Kaeriten**; task pane from **Kaeriten pane** |

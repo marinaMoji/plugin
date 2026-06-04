@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>marinaMoji Kaeriten</title>
+  <link rel="stylesheet" href="taskpane.css" />
+  <script>
+    window.__mmBoot = function (msg, isErr) {
+      var el = document.getElementById("boot");
+      if (el) {
+        el.textContent = msg;
+        el.className = "boot" + (isErr ? " err" : "");
+      }
+    };
+    window.onerror = function (msg) {
+      window.__mmBoot("Error: " + msg, true);
+    };
+  </script>
+  <script>
+    (function () {
+      window.Office = window.Office || {};
+      window.__mmOfficeReadyFired = false;
+      function mmSignalReady() {
+        if (window.__mmOfficeReadyFired) return;
+        window.__mmOfficeReadyFired = true;
+        window.dispatchEvent(new CustomEvent("mm-office-ready"));
+      }
+      Office.initialize = function () {
+        mmSignalReady();
+      };
+      function loadLocalOfficeJs() {
+        if (window.__mmLocalOfficeLoading) return;
+        window.__mmLocalOfficeLoading = true;
+        var s = document.createElement("script");
+        s.src = "office.js";
+        s.onload = function () {
+          setTimeout(mmSignalReady, 0);
+        };
+        s.onerror = function () {
+          window.__mmBoot &&
+            window.__mmBoot(
+              "office.js failed to load. Run npm run build && npm run serve.",
+              true
+            );
+        };
+        document.head.appendChild(s);
+      }
+      var hosted = document.createElement("script");
+      hosted.src =
+        "https://appsforoffice.microsoft.com/lib/1/hosted/office.js";
+      hosted.crossOrigin = "anonymous";
+      hosted.onload = function () {
+        setTimeout(function () {
+          if (!window.__mmOfficeReadyFired && typeof Office !== "undefined") {
+            if (Office.onReady) Office.onReady(mmSignalReady);
+          }
+        }, 0);
+      };
+      hosted.onerror = loadLocalOfficeJs;
+      document.head.appendChild(hosted);
+      setTimeout(function () {
+        if (typeof Office === "undefined" || !Office.onReady) loadLocalOfficeJs();
+      }, 5000);
+    })();
+  </script>
+</head>
+<body>
+  <p id="boot" class="boot">Loading marinaMoji…</p>
+
+  <div id="app" class="app" hidden>
+    <header>
+      <h1>marinaMoji Kaeriten</h1>
+      <p class="lead">Type marks with marinaMoji, e.g. <span class="sample">說㆒㆑者</span>, then format.</p>
+      <p class="hint">Renders small marks <strong>after</strong> the kanji (inline controls; 縦書き supported). <strong>Unrender</strong> restores ㆒㆑ Unicode.</p>
+    </header>
+
+    <section>
+      <h2>Format</h2>
+      <div class="btn-row">
+        <button type="button" id="btn-render">Render</button>
+        <button type="button" id="btn-unrender">Unrender</button>
+        <button type="button" id="btn-refresh">Refresh</button>
+      </div>
+      <p class="hint"><strong>Select</strong> the text with marks (e.g. 漢㆒㆑字), then Render. For Unrender, select the formatted line too (not an empty cursor).</p>
+      <p id="launch-hint" class="hint launch-hint" hidden>
+        If you opened this from <strong>Compléments</strong> (add-in browser), Word only shows a preview.
+        Open a document, then <strong>Accueil → Kaeriten → Kaeriten pane</strong>, with <code>npm run serve</code> running.
+      </p>
+    </section>
+
+    <section>
+      <h2>Copy</h2>
+      <div class="btn-row">
+        <button type="button" id="btn-plain">Plain text</button>
+        <button type="button" id="btn-tei">TEI</button>
+        <button type="button" id="btn-latex">LaTeX</button>
+      </div>
+      <p class="hint">Export leaves rendered kaeriten in the document. If copy fails, use the box below and ⌘C.</p>
+      <textarea id="export-copy" class="export-copy" hidden readonly rows="5" spellcheck="false" aria-label="Export text for manual copy"></textarea>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </div>
+
+  <script src="taskpane.js"></script>
+</body>
+</html>

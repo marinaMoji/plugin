@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Run npm scripts from plugin/word no matter what your current directory is.
+# Usage:  /path/to/plugin/word/mm run serve
+#     or: cd .../plugin/word && ./mm run serve
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "${ROOT}"
+if [[ ! -f package.json ]]; then
+  echo "Expected package.json in ${ROOT}" >&2
+  exit 1
+fi
+if [[ $# -eq 0 ]]; then
+  echo "marinaMoji Word add-in — run from: ${ROOT}" >&2
+  echo "" >&2
+  echo "Examples:" >&2
+  echo "  ./mm run setup:certs" >&2
+  echo "  ./mm run serve" >&2
+  echo "  ./mm run diagnose" >&2
+  echo "  ./mm run doctor" >&2
+  exit 1
+fi
+exec npm "$@"

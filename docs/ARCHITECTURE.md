@@ -31,7 +31,7 @@ If font changes, an object is deleted, or the document is re-imported, the plugi
 ┌─────────────────────────────────────────────────────────┐
 │  Rendering layer (host-specific)                         │
 │  LibreOffice: borderless frame anchored as character     │
-│  Word:        borderless textbox anchored as character   │
+│  Word:        view layer (CC default; inline text box TBD) │
 │  • print-quality kanbun • PDF • read-only for users      │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -127,7 +127,7 @@ Export pipelines **never** depend on reading frame/textbox pixels as the semanti
 | Asian ruby (LO / Word) | **Rejected** — furigana-like placement |
 | Subscript / small Unicode only | **Fallback** — simple レ |
 | Anchored frame (LO) | **Primary LO renderer** — [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md) |
-| Anchored textbox (Word) | **Primary Word renderer** — [WORD_FINDINGS.md](WORD_FINDINGS.md) |
+| Anchored textbox (Word) | **Target Word renderer** (publication layout) — inline `textWrap` spike; CC is **v0.1 default** — [WORD_FINDINGS.md](WORD_FINDINGS.md) |
 | Hidden XML as canonical semantics | **Deferred** — plain Unicode is enough for v1 |
 | Auto-format while typing | **Deferred** — manual **Format kaeriten** in v1 |
 
@@ -147,13 +147,17 @@ Details: [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md).
 
 ## Microsoft Word (Phase 3)
 
-Same **canonical source**; different **renderer**:
+Same **canonical source**; different **renderer** (swappable without changing the IME):
 
-- **Primary:** tiny borderless **textboxes** anchored as character (compound stacks), same workflow as LO frames.
-- **Fallback:** subscript / EQ fields for simple marks or legacy docs.
+| Renderer | Role | Status |
+|----------|------|--------|
+| **Content controls** | In-flow small glyphs + `MARINAMOJI:source=` tag | **Default** in add-in ([mapping.json](../mapping.json)) |
+| **Floating text box** | `insertTextBox` + position nudges | Optional; **poor Mac QA** |
+| **Inline text box** | `insertTextBox` + `textWrap.type = inline` | **Documented spike** — closest Office.js match to LO “as character” |
+| **Subscript / EQ** | Fallback for simple marks | Per [mapping.json](../mapping.json) |
+
 - Word add-in uses the same `mapping.json`; does **not** import LibreOffice frames — re-format from source in Word.
-
-Users edit `說㆒㆑者`, not textbox innards. See [WORD_FINDINGS.md](WORD_FINDINGS.md).
+- Users edit `說㆒㆑者`, not view innards. See [WORD_FINDINGS.md](WORD_FINDINGS.md), [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md).
 
 ## OnlyOffice
 

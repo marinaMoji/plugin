@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <title>marinaMoji Kaeriten commands</title>
+  <script>
+    (function () {
+      window.Office = window.Office || {};
+      window.__mmOfficeReadyFired = false;
+      function mmSignalReady() {
+        if (window.__mmOfficeReadyFired) return;
+        window.__mmOfficeReadyFired = true;
+        window.dispatchEvent(new CustomEvent("mm-office-ready"));
+      }
+      Office.initialize = function () {
+        mmSignalReady();
+      };
+      function loadLocalOfficeJs() {
+        if (window.__mmLocalOfficeLoading) return;
+        window.__mmLocalOfficeLoading = true;
+        var s = document.createElement("script");
+        s.src = "office.js";
+        s.onload = function () {
+          setTimeout(mmSignalReady, 0);
+        };
+        document.head.appendChild(s);
+      }
+      var hosted = document.createElement("script");
+      hosted.src =
+        "https://appsforoffice.microsoft.com/lib/1/hosted/office.js";
+      hosted.crossOrigin = "anonymous";
+      hosted.onload = function () {
+        setTimeout(function () {
+          if (!window.__mmOfficeReadyFired && typeof Office !== "undefined") {
+            if (Office.onReady) Office.onReady(mmSignalReady);
+          }
+        }, 0);
+      };
+      hosted.onerror = loadLocalOfficeJs;
+      document.head.appendChild(hosted);
+      setTimeout(function () {
+        if (typeof Office === "undefined" || !Office.onReady) loadLocalOfficeJs();
+      }, 5000);
+    })();
+  </script>
+  <script src="commands.js" type="text/javascript"></script>
+</head>
+<body>
+  <!-- Function file for ribbon ExecuteFunction handlers -->
+</body>
+</html>

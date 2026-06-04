@@ -41,7 +41,8 @@
 ## Phase 3 — Word renderer
 
 - [x] Office.js add-in skeleton — [word/](../word/)
-- [x] Same canonical source; **content control** renderer v0.1 (textbox API deferred; see [WORD_FINDINGS.md](WORD_FINDINGS.md))
+- [x] Same canonical source; **content control** renderer v0.1 (see [WORD_FINDINGS.md](WORD_FINDINGS.md))
+- [ ] **Word Renderer C spike:** `insertTextBox` + `shape.textWrap.type = inline` (horizontal `說㆒㆑`); Mac + Windows — [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md)
 - [x] **Render** + **Refresh** + **Unrender** + clipboard export (parity with LO toolbar)
 - [x] Content-control `tag` stores source marks (`MARINAMOJI:source=…`) for refresh
 - [x] No import of LO frames — format from source in Word

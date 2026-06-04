@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Production manifest: replace MARINAMOJI_PLUGIN_BASE with https://your-domain/word (no trailing slash) before release. -->
+<OfficeApp
+  xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+  xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+  xsi:type="TaskPaneApp">
+  <Id>7f3c8b2a-9d4e-4f1a-b6c2-8e5a1d3f9b7c</Id>
+  <Version>0.1.2.0</Version>
+  <ProviderName>marinaMoji</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="marinaMoji Kaeriten"/>
+  <Description DefaultValue="Render Kanbun kaeriten marks from marinaMoji Unicode source."/>
+  <IconUrl DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-64.png"/>
+  <SupportUrl DefaultValue="https://github.com/marinaMoji/marinaMozc"/>
+  <AppDomains>
+    <AppDomain>MARINAMOJI_PLUGIN_BASE</AppDomain>
+    <AppDomain>https://appsforoffice.microsoft.com</AppDomain>
+  </AppDomains>
+  <Hosts>
+    <Host Name="Document"/>
+  </Hosts>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="MARINAMOJI_PLUGIN_BASE/taskpane.html"/>
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="WordApi" MinVersion="1.1"/>
+      <Set Name="WordApiDesktop" MinVersion="1.2"/>
+    </Sets>
+  </Requirements>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_1">
+    <Hosts>
+      <Host xsi:type="Document">
+        <DesktopFormFactor>
+          <FunctionFile resid="Commands.Url"/>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab idMso="TabHome">
+              <Group id="KaeritenGroup">
+                <Label resid="Group.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16"/>
+                  <bt:Image size="32" resid="Icon.32"/>
+                  <bt:Image size="80" resid="Icon.80"/>
+                </Icon>
+                <Control xsi:type="Button" id="ShowPaneButton">
+                  <Label resid="ShowPane.Label"/>
+                  <Supertip>
+                    <Title resid="ShowPane.Label"/>
+                    <Description resid="ShowPane.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>MarinaMojiPane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="RenderButton">
+                  <Label resid="Render.Label"/>
+                  <Supertip>
+                    <Title resid="Render.Label"/>
+                    <Description resid="Render.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>renderKaeriten</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="UnrenderButton">
+                  <Label resid="Unrender.Label"/>
+                  <Supertip>
+                    <Title resid="Unrender.Label"/>
+                    <Description resid="Unrender.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>unrenderKaeriten</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="RefreshButton">
+                  <Label resid="Refresh.Label"/>
+                  <Supertip>
+                    <Title resid="Refresh.Label"/>
+                    <Description resid="Refresh.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>refreshKaeriten</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="CopyPlainButton">
+                  <Label resid="CopyPlain.Label"/>
+                  <Supertip>
+                    <Title resid="CopyPlain.Label"/>
+                    <Description resid="CopyPlain.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>copyPlainText</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="CopyTeiButton">
+                  <Label resid="CopyTei.Label"/>
+                  <Supertip>
+                    <Title resid="CopyTei.Label"/>
+                    <Description resid="CopyTei.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>copyTei</FunctionName>
+                  </Action>
+                </Control>
+                <Control xsi:type="Button" id="CopyLatexButton">
+                  <Label resid="CopyLatex.Label"/>
+                  <Supertip>
+                    <Title resid="CopyLatex.Label"/>
+                    <Description resid="CopyLatex.Tip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16"/>
+                    <bt:Image size="32" resid="Icon.32"/>
+                    <bt:Image size="80" resid="Icon.80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>copyLatex</FunctionName>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="MARINAMOJI_PLUGIN_BASE/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="MARINAMOJI_PLUGIN_BASE/taskpane.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="Group.Label" DefaultValue="Kaeriten"/>
+        <bt:String id="ShowPane.Label" DefaultValue="Kaeriten pane"/>
+        <bt:String id="Render.Label" DefaultValue="Render"/>
+        <bt:String id="Unrender.Label" DefaultValue="Unrender"/>
+        <bt:String id="Refresh.Label" DefaultValue="Refresh"/>
+        <bt:String id="CopyPlain.Label" DefaultValue="Copy plain"/>
+        <bt:String id="CopyTei.Label" DefaultValue="Copy TEI"/>
+        <bt:String id="CopyLatex.Label" DefaultValue="Copy LaTeX"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="ShowPane.Tip" DefaultValue="Open the marinaMoji Kaeriten task pane."/>
+        <bt:String id="Render.Tip" DefaultValue="Turn 說㆒㆑者 into stacked kaeriten views."/>
+        <bt:String id="Unrender.Tip" DefaultValue="Restore Unicode marks and remove kaeriten views."/>
+        <bt:String id="Refresh.Tip" DefaultValue="Update kaeriten views after font or mark changes."/>
+        <bt:String id="CopyPlain.Tip" DefaultValue="Copy canonical Unicode to the clipboard."/>
+        <bt:String id="CopyTei.Tip" DefaultValue="Copy TEI XML to the clipboard."/>
+        <bt:String id="CopyLatex.Tip" DefaultValue="Copy LaTeX to the clipboard."/>
+      </bt:LongStrings>
+      <bt:Images>
+        <bt:Image id="Icon.16" DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-16.png"/>
+        <bt:Image id="Icon.32" DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-32.png"/>
+        <bt:Image id="Icon.80" DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-80.png"/>
+      </bt:Images>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

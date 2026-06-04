@@ -8,7 +8,7 @@
 | Layer | LibreOffice | Word | OnlyOffice (v1) |
 |-------|-------------|------|-----------------|
 | Source | `說㆒㆑者` | `說㆒㆑者` | `說㆒㆑者` |
-| Primary view | Anchored **frame** | Anchored **textbox** | None (use source or subscript fallback) |
+| Primary view | Anchored **frame** | **Content control** (v0.1); **inline text box** (target) | None (use source or subscript fallback) |
 | Export input | Source + `mapping.json` | Source + `mapping.json` | Source + `mapping.json` |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md), [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md), [WORD_FINDINGS.md](WORD_FINDINGS.md).
@@ -48,15 +48,24 @@ Triggered by **Format kaeriten**, not ruby.
 - Phonetic guide API places text like **furigana**, not kaeriten.
 - Cannot naturally stack compound marks.
 
-## Microsoft Word — Phase 3 (textbox-based)
+## Microsoft Word — Phase 3 (view renderers)
 
-Same canonical source; **textbox** renderer (validated May–June 2026). No LibreOffice frame import.
+Same canonical source; **disposable view** beside the base kanji (May–June 2026 experiments). No LibreOffice frame import.
 
-### Primary: anchored textbox
+### Default (v0.1): content controls
 
-- Same role as LO frames: borderless, as-character anchor, stacked glyphs.
-- Better positioning flexibility in some cases; same font-scale and search limitations.
-- Users edit `說㆒㆑者`, not textbox content.
+- In-flow rich-text controls; small stacked glyphs; tag `MARINAMOJI:source=…`.
+- On Word Mac the visible box often **unwraps**; bookmarks support Unrender when the wrapper is lost.
+
+### Target (publication layout): inline text box
+
+- **Goal:** same role as LO frames — borderless box, **in line with text**, compound stacks.
+- **API path (documented, not yet in code):** [`insertTextBox`](https://learn.microsoft.com/en-us/javascript/api/word/word.paragraph?view=word-js-preview#word-word-paragraph-inserttextbox-method) then [`textWrap.type = inline`](https://learn.microsoft.com/en-us/javascript/api/word/word.shapetextwraptype?view=word-js-preview). Do **not** rely on default floating insert + `left`/`top` (failed Mac QA).
+- Users edit `說㆒㆑者`, not shape body text.
+
+### Optional / failed: floating text box
+
+- `word_primary: textbox` in [mapping.json](../mapping.json) — optional; poor horizontal/vertical placement on Mac. See [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md).
 
 ### Fallback: subscript / EQ
 

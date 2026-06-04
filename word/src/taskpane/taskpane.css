@@ -1,0 +1,133 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.45;
+  margin: 0;
+  padding: 16px;
+  color: #1a1a1a;
+  min-width: 260px;
+}
+
+.boot {
+  font-size: 13px;
+  padding: 10px 12px;
+  background: #f0f4f8;
+  border-radius: 6px;
+  margin: 0 0 12px;
+}
+
+.boot.err {
+  background: #fdecea;
+  color: #8a1f11;
+}
+
+.app[hidden] {
+  display: none !important;
+}
+
+h1 {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #555;
+  margin: 16px 0 8px;
+}
+
+.lead {
+  margin: 0 0 8px;
+  color: #333;
+}
+
+.sample {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+button {
+  font-size: 13px;
+  padding: 8px 12px;
+  border: 1px solid #4a7c9b;
+  border-radius: 6px;
+  background: #4a7c9b;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #3d6a85;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.hint {
+  font-size: 11px;
+  color: #666;
+  margin: 8px 0 0;
+}
+
+.export-copy {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid #c5d4e0;
+  border-radius: 6px;
+  padding: 8px;
+  resize: vertical;
+  min-height: 4em;
+}
+
+.export-copy[hidden] {
+  display: none !important;
+}
+
+.status {
+  min-height: 1.2em;
+  margin-top: 14px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.status.ok {
+  background: #e8f4ea;
+  color: #1e5631;
+}
+
+.status.err {
+  background: #fdecea;
+  color: #8a1f11;
+}
+
+.launch-hint {
+  background: #fff8e6;
+  border: 1px solid #e6c200;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 10px;
+}
+
+footer {
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid #ddd;
+}
