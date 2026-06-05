@@ -63,6 +63,7 @@ Each release tag (e.g. `plugins-v0.3.7`) attaches:
 |-------|----------|
 | `MarinaMojiKaeriten.oxt` | LibreOffice extension (all platforms) |
 | `marinamoji-kaeriten-libreoffice-mac.dmg` | Mac GUI installer + `.oxt` + readme |
+| `marinamoji-kaeriten.plugin` | ONLYOFFICE Plugin Manager install (7.4+) |
 | `marinamoji-kaeriten-onlyoffice.zip` | ONLYOFFICE plugin folder (manual install) |
 | `marinamoji-kaeriten-onlyoffice-mac.dmg` | Mac GUI installer + zip + readme |
 | `INSTALL.txt` | Plain-language install summary |

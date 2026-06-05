@@ -28,8 +28,9 @@ else
   echo "== Skip Word (parked — set MARINAMOJI_INCLUDE_WORD=1 to build Word assets)"
 fi
 
-echo "== ONLYOFFICE zip"
+echo "== ONLYOFFICE .plugin + zip"
 (cd "${PLUGIN}/onlyoffice" && ./build.sh)
+cp "${PLUGIN}/onlyoffice/dist/marinamoji-kaeriten.plugin" "${RELEASE}/"
 (
   cd "${PLUGIN}/onlyoffice"
   zip -r -q "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip" \
@@ -75,9 +76,10 @@ Download marinamoji-kaeriten-libreoffice-mac.dmg
 The Mac installer copies Python macros (required on LibreOffice 26.x) and opens the .oxt.
 
 --- ONLYOFFICE (experimental) ---
-Download marinamoji-kaeriten-onlyoffice-mac.dmg (Mac) or marinamoji-kaeriten-onlyoffice.zip
+Download marinamoji-kaeriten-onlyoffice-mac.dmg (Mac), marinamoji-kaeriten.plugin, or marinamoji-kaeriten-onlyoffice.zip
 Mac: run "Install marinaMoji Kaeriten (ONLYOFFICE)", quit ONLYOFFICE, reopen Writer
-Manual: unzip into sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
+Plugin Manager (7.4+): Plugins → Plugin Manager → Install plugin manually → select .plugin
+Manual zip: unzip into sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
 
 Install the marinaMoji IME first (main marinaMoji repo).
 
