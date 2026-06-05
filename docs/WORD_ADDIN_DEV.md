@@ -130,7 +130,7 @@ Minimal Word check: `https://127.0.0.1:3000/hello.html` — if this shows green 
 2. Compound: `說㆒㆑者`.
 3. Change paragraph font size → **Refresh**.
 4. **Copy TEI** / **Copy LaTeX** into a text editor.
-5. Optional: 縦書き paragraph.
+5. **縦書き paragraph:** same **cropped PNG + bottom-centered stack** as 横書き; only `vertical_baseline_shift_pt` differs. No wide strip / OOXML extent patch (Word Mac then places marks on the column-left). Compounds stack (`vertical_compound_layout`: `"stack"`). Alt text **`flow=v`**. If **`flow=h`**, set `"word_assume_vertical": true`, then Unrender → Render.
 
 ### C. Code / product (after QA)
 

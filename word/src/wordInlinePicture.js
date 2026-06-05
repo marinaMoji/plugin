@@ -27,11 +27,77 @@ import {
   parseKaeritenSourceTag,
 } from "./exportCore.js";
 import { scaleWithHost } from "./wordBoxLayout.js";
+import { kaeritenImageUseRowLayout } from "./wordLayout.js";
+import { ptToEmu } from "./wordOoxml.js";
 
 const PX_PER_PT = 96 / 72;
 const DEFAULT_SUPERSAMPLE = 4;
 const DEFAULT_FONT_FAMILY =
   '"Hiragino Mincho ProN","YuMincho","Yu Mincho","MS Mincho","Songti SC","SimSun",serif';
+
+/** Inject run position and (for 縦書き) a wide inline extent into Word's OOXML for the picture. */
+export function patchKaeritenPictureOoxml(pkgXml, opts = {}) {
+  if (!pkgXml || typeof pkgXml !== "string") return pkgXml;
+  let xml = pkgXml;
+  const shiftHp = Math.round(Number(opts.shiftHalfPoints ?? 0));
+  const wideCx = opts.wideCxEmu != null ? Number(opts.wideCxEmu) : null;
+  const wideCy = opts.wideCyEmu != null ? Number(opts.wideCyEmu) : null;
+  const distREmu = opts.distREmu != null ? Number(opts.distREmu) : null;
+  const distLEmu = opts.distLEmu != null ? Number(opts.distLEmu) : null;
+
+  if (shiftHp) {
+    if (/<w:rPr[^>]*>[\s\S]*?<w:drawing>/.test(xml)) {
+      if (/<w:position\s/.test(xml)) {
+        xml = xml.replace(
+          /<w:position\s+w:val="-?\d+"\s*\/>/,
+          `<w:position w:val="${shiftHp}"/>`
+        );
+      } else {
+        xml = xml.replace(
+          /(<w:rPr[^>]*>)/,
+          `$1<w:position w:val="${shiftHp}"/>`
+        );
+      }
+    } else {
+      xml = xml.replace(
+        /<w:r>\s*(<w:drawing>)/,
+        `<w:r><w:rPr><w:position w:val="${shiftHp}"/></w:rPr>$1`
+      );
+    }
+  }
+
+  if (wideCx && wideCx > 0) {
+    xml = xml.replace(/<wp:extent cx="\d+"/, `<wp:extent cx="${wideCx}"`);
+  }
+  if (wideCy && wideCy > 0) {
+    xml = xml.replace(/<wp:extent cx="\d+" cy="\d+"/, (m) =>
+      m.replace(/cy="\d+"/, `cy="${wideCy}"`)
+    );
+  }
+
+  const distL = distLEmu && distLEmu > 0 ? distLEmu : 0;
+  const distR = distREmu && distREmu > 0 ? distREmu : 0;
+  if (distL || distR) {
+    xml = xml.replace(/<wp:inline([^>]*)\/>/g, (tag) => {
+      if (tag.includes("distL=") || tag.includes("distR=")) return tag;
+      const inner = tag.slice(0, -2);
+      return `${inner} distT="0" distB="0" distL="${distL}" distR="${distR}"/>`;
+    });
+    xml = xml.replace(/<wp:inline([^>]*)>/g, (tag, attrs) => {
+      if (attrs.includes("distL=") || attrs.includes("distR=") || tag.endsWith("/>")) {
+        return tag;
+      }
+      return `<wp:inline distT="0" distB="0" distL="${distL}" distR="${distR}"${attrs}>`;
+    });
+  }
+
+  return xml;
+}
+
+export function inlinePictureShiftHalfPoints(hostPt, opts = {}) {
+  const pt = inlinePictureBaselineShiftPt(hostPt, opts);
+  return pt ? Math.round(pt * 2) : 0;
+}
 
 /** WordApi 1.2 (insertInlinePictureFromBase64) + 1.1 (body.inlinePictures, altText). */
 export function wordHasInlinePictureApi() {
@@ -63,11 +129,22 @@ export function orderedGlyphs(marks, byChar) {
  *
  * Single column of glyphs (stack) by default; a single row when `row` is true.
  */
+/** Merge render opts with 横書き / 縦書き layout flags for inline pictures. */
+export function imageOptsForFlow(opts, vertical, markCount) {
+  const row = kaeritenImageUseRowLayout(vertical, markCount, opts);
+  const nudgeKey = vertical ? "imageVerticalGlyphNudgeEm" : "imageGlyphNudgeEm";
+  const nudge =
+    opts[nudgeKey] != null && opts[nudgeKey] !== ""
+      ? Number(opts[nudgeKey])
+      : Number(opts.imageGlyphNudgeEm ?? 0.02);
+  return { ...opts, vertical: !!vertical, row, imageGlyphNudgeEm: nudge };
+}
+
 export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
   const em = hostPt > 0 ? hostPt : 12;
   const n = Math.max(1, glyphCount);
   const row = !!opts.row && n > 1;
-  const isCompound = !row && n > 1;
+  const isCompound = n > 1;
 
   const glyphRatio = Number(opts.imageGlyphRatio ?? 0.42);
   const compoundRatio =
@@ -76,30 +153,46 @@ export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
       : glyphRatio;
   const cellPt = em * (isCompound ? compoundRatio : glyphRatio);
 
-  const defaultGap = isCompound ? -0.15 : 0;
+  const defaultGap = isCompound ? (row ? -0.08 : -0.15) : 0;
   const gapKey = isCompound ? "imageCompoundLineGapRatio" : "imageLineGapRatio";
-  const gapPt =
+  let gapPt =
     cellPt *
     Number(
       opts[gapKey] ??
         opts.imageLineGapRatio ??
         (isCompound ? defaultGap : 0)
     );
+  if (
+    opts.imageCompoundTouch &&
+    isCompound &&
+    !row
+  ) {
+    gapPt = -cellPt * Number(opts.imageCompoundTouchOverlapRatio ?? 0.72);
+  }
 
   const columns = row ? n : 1;
   const rows = row ? 1 : n;
-  const widthPt = cellPt * columns + (row ? gapPt * (n - 1) : 0);
-  const contentHeightPt = cellPt * rows + (row ? 0 : gapPt * (rows - 1));
+  const inkWidthPt = cellPt * columns + (row ? gapPt * (n - 1) : 0);
+  const inkHeightPt = cellPt * rows + (row ? 0 : gapPt * (rows - 1));
+  let widthPt = inkWidthPt;
+  let heightPt;
+  let slotPadPt = 0;
+  const verticalStrip = false;
+
+  const contentHeightPt = inkHeightPt;
 
   const boxHeightEm = Number(opts.imageBoxHeightEm ?? 0);
   const belowEm = Number(opts.imageBelowBaselineEm ?? 0.42);
   const anchor = String(opts.imageBaselineAnchor ?? "bottom").toLowerCase();
   const bottomPadPt = em * Number(opts.imageDescentEm ?? 0);
 
-  let heightPt;
   let contentTopPt;
 
-  if (boxHeightEm > 0) {
+  if (!verticalStrip) {
+    heightPt = inkHeightPt;
+  }
+
+  if (!verticalStrip && boxHeightEm > 0) {
     heightPt = em * boxHeightEm;
     if (anchor === "top") {
       const belowBandPt = em * belowEm;
@@ -109,8 +202,10 @@ export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
       const bandTop = bandBottom - em * belowEm;
       contentTopPt = Math.max(bandTop, bandBottom - contentHeightPt);
     }
-  } else {
+  } else if (!verticalStrip) {
     heightPt = contentHeightPt + bottomPadPt;
+    contentTopPt = 0;
+  } else {
     contentTopPt = 0;
   }
 
@@ -125,6 +220,9 @@ export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
     contentTopPt,
     topPadPt,
     bottomPadPt,
+    inkWidthPt,
+    slotPadPt,
+    verticalStrip,
     columns,
     rows,
   };
@@ -144,11 +242,12 @@ export function drawKaeritenImage(marks, byChar, hostPt, opts = {}) {
   const supersample = Number(opts.imageSupersample ?? DEFAULT_SUPERSAMPLE);
   const scale = PX_PER_PT * supersample;
 
-  const widthPx = Math.max(1, Math.round(metrics.widthPt * scale));
-  const heightPx = Math.max(1, Math.round(metrics.heightPt * scale));
   const cellPx = metrics.cellPt * scale;
   const gapPx = metrics.gapPt * scale;
   const nudgePx = metrics.cellPt * scale * Number(opts.imageGlyphNudgeEm ?? 0.02);
+
+  const widthPx = Math.max(1, Math.round(metrics.widthPt * scale));
+  const heightPx = Math.max(1, Math.round(metrics.heightPt * scale));
 
   const canvas = document.createElement("canvas");
   canvas.width = widthPx;
@@ -162,26 +261,28 @@ export function drawKaeritenImage(marks, byChar, hostPt, opts = {}) {
   }
 
   ctx.fillStyle = opts.imageColor ?? "#000000";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "bottom";
   const fontPx = cellPx * Number(opts.imageGlyphFill ?? 0.94);
   ctx.font = `${fontPx}px ${opts.imageFontFamily || DEFAULT_FONT_FAMILY}`;
 
+  ctx.textAlign = "center";
+  ctx.textBaseline = "bottom";
   const bandBottomPx =
     metrics.heightPt * scale - metrics.bottomPadPt * scale - nudgePx;
-
   glyphs.forEach((glyph, i) => {
     const col = metrics.rows === 1 ? i : 0;
-    const stackFromBottom =
-      metrics.rows === 1 ? 0 : glyphs.length - 1 - i;
+    const stackFromBottom = metrics.rows === 1 ? 0 : glyphs.length - 1 - i;
     const cx = (cellPx + (metrics.rows === 1 ? gapPx : 0)) * col + cellPx / 2;
-    const cy =
-      bandBottomPx - (cellPx + gapPx) * stackFromBottom;
+    const cy = bandBottomPx - (cellPx + gapPx) * stackFromBottom;
     ctx.fillText(glyph, cx, cy);
   });
 
   const base64 = canvas.toDataURL("image/png").split(",")[1] || "";
-  return { base64, widthPt: metrics.widthPt, heightPt: metrics.heightPt };
+  return {
+    base64,
+    widthPt: metrics.widthPt,
+    heightPt: metrics.heightPt,
+    metrics,
+  };
 }
 
 function applyPictureGeometry(pic, widthPt, heightPt) {
@@ -194,9 +295,24 @@ function applyPictureGeometry(pic, widthPt, heightPt) {
   pic.height = heightPt;
 }
 
-/** Run position (pt) for the inline picture; negative = lower on the line. */
+/**
+ * Run position (pt) for the inline picture via Font.position.
+ * 横書き: negative ≈ lower (toward baseline). 縦書き: tune separately (often small positive).
+ */
 export function inlinePictureBaselineShiftPt(hostPt, opts = {}) {
-  let pt = Number(opts.imageBaselineShiftPt ?? opts.baselineShiftPt ?? -5);
+  const vertical = !!opts.vertical;
+  let pt;
+  if (vertical) {
+    pt = Number(
+      opts.imageVerticalBaselineShiftPt ??
+        opts.verticalBaselineShiftPt ??
+        opts.imageBaselineShiftPt ??
+        opts.baselineShiftPt ??
+        -5
+    );
+  } else {
+    pt = Number(opts.imageBaselineShiftPt ?? opts.baselineShiftPt ?? -5);
+  }
   if (!pt) return 0;
   return scaleWithHost(pt, hostPt, opts);
 }
@@ -207,13 +323,50 @@ export function inlinePictureBaselineShiftPt(hostPt, opts = {}) {
  */
 export async function applyInlinePictureRunPosition(context, pic, hostPt, opts) {
   const shiftPt = inlinePictureBaselineShiftPt(hostPt, opts);
-  if (!shiftPt) return;
+  if (shiftPt) {
+    try {
+      const range = pic.getRange(W.rangeWhole());
+      range.font.position = shiftPt;
+      await context.sync();
+    } catch {
+      /* optional on some hosts */
+    }
+  }
+}
+
+/** Patch WordprocessingML so the inline picture slot is wide and shifted (縦書き). */
+export async function applyInlinePictureOoxmlLayout(
+  context,
+  pic,
+  hostPt,
+  metrics,
+  opts
+) {
+  if (!opts?.vertical || !metrics?.verticalStrip) return;
   try {
     const range = pic.getRange(W.rangeWhole());
-    range.font.position = shiftPt;
+    const pkg = range.getOoxml();
     await context.sync();
+    const shiftHp = inlinePictureShiftHalfPoints(hostPt, opts);
+    const wideCx = ptToEmu(metrics?.widthPt ?? hostPt);
+    const wideCy = ptToEmu(metrics?.heightPt ?? hostPt);
+    const distPt = scaleWithHost(Number(opts.imageVerticalDistPt ?? 3), hostPt, opts);
+    const distSide = String(opts.imageVerticalDistSide ?? "L").toUpperCase();
+    const distEmu = ptToEmu(distPt);
+    const patchOpts = {
+      shiftHalfPoints: shiftHp,
+      wideCxEmu: wideCx,
+      wideCyEmu: wideCy,
+    };
+    if (distSide === "R") patchOpts.distREmu = distEmu;
+    else patchOpts.distLEmu = distEmu;
+    const patched = patchKaeritenPictureOoxml(pkg.value, patchOpts);
+    if (patched && patched !== pkg.value) {
+      range.insertOoxml(patched, W.insertReplace());
+      await context.sync();
+    }
   } catch {
-    /* optional on some hosts */
+    /* getOoxml/insertOoxml optional on some hosts */
   }
 }
 
@@ -230,19 +383,22 @@ export async function insertKaeritenInlinePicture(
   opts,
   viewId
 ) {
-  const { base64, widthPt, heightPt } = drawKaeritenImage(
-    marks,
-    byChar,
-    hostPt,
-    opts
+  const drawn = drawKaeritenImage(marks, byChar, hostPt, opts);
+  const pic = marksRange.insertInlinePictureFromBase64(
+    drawn.base64,
+    W.insertReplace()
   );
-  const pic = marksRange.insertInlinePictureFromBase64(base64, W.insertReplace());
   pic.altTextTitle = "marinaMoji kaeriten";
-  pic.altTextDescription = encodeKaeritenSourceTag(marks, viewId);
-  applyPictureGeometry(pic, widthPt, heightPt);
+  pic.altTextDescription = encodeKaeritenSourceTag(
+    marks,
+    viewId,
+    opts.vertical ? "v" : "h"
+  );
+  applyPictureGeometry(pic, drawn.widthPt, drawn.heightPt);
   await context.sync();
   await applyInlinePictureRunPosition(context, pic, hostPt, opts);
-  return { pic, widthPt, heightPt };
+  await applyInlinePictureOoxmlLayout(context, pic, hostPt, drawn.metrics, opts);
+  return { pic, widthPt: drawn.widthPt, heightPt: drawn.heightPt };
 }
 
 async function pictureOverlapsWorkRange(context, workRange, pic) {
@@ -303,18 +459,27 @@ export async function refreshInlinePicture(
   opts,
   viewId
 ) {
-  const { base64, widthPt, heightPt } = drawKaeritenImage(
-    marks,
-    byChar,
-    hostPt,
-    opts
-  );
+  const drawn = drawKaeritenImage(marks, byChar, hostPt, opts);
   const range = pic.getRange(W.rangeWhole());
-  const fresh = range.insertInlinePictureFromBase64(base64, W.insertReplace());
+  const fresh = range.insertInlinePictureFromBase64(
+    drawn.base64,
+    W.insertReplace()
+  );
   fresh.altTextTitle = "marinaMoji kaeriten";
-  fresh.altTextDescription = encodeKaeritenSourceTag(marks, viewId);
-  applyPictureGeometry(fresh, widthPt, heightPt);
+  fresh.altTextDescription = encodeKaeritenSourceTag(
+    marks,
+    viewId,
+    opts.vertical ? "v" : "h"
+  );
+  applyPictureGeometry(fresh, drawn.widthPt, drawn.heightPt);
   await context.sync();
   await applyInlinePictureRunPosition(context, fresh, hostPt, opts);
+  await applyInlinePictureOoxmlLayout(
+    context,
+    fresh,
+    hostPt,
+    drawn.metrics,
+    opts
+  );
   return fresh;
 }

@@ -38,6 +38,7 @@ import {
 } from "./wordTextBox.js";
 import { isWordMac } from "./wordHost.js";
 import { isVerticalFlow } from "./wordLayout.js";
+import { getCompoundTouch } from "./wordRuntimeOpts.js";
 import {
   insertPointAfterBase,
   marksRangeAfterBase,
@@ -64,6 +65,7 @@ import {
   listMarinaMojiInlinePictures,
   unrenderOneInlinePicture,
   refreshInlinePicture,
+  imageOptsForFlow,
 } from "./wordInlinePicture.js";
 import {
   sanityCheckOoxml,
@@ -150,6 +152,7 @@ function wordRenderOptions(mappingData) {
       box.font_size_ratio ?? lo.font_size_ratio ?? "12:5"
     ),
     minFontSizePt: Number(box.min_font_size_pt ?? 6),
+    wordAssumeVertical: r.word_assume_vertical === true,
     useOoxml,
     useInlinePicture,
     useInlineTextBox,
@@ -169,6 +172,11 @@ function wordRenderOptions(mappingData) {
       img.compound_line_gap_ratio != null && img.compound_line_gap_ratio !== ""
         ? Number(img.compound_line_gap_ratio)
         : null,
+    imageCompoundTouchOverlapRatio:
+      img.compound_touch_overlap_ratio != null &&
+      img.compound_touch_overlap_ratio !== ""
+        ? Number(img.compound_touch_overlap_ratio)
+        : 0.72,
     imageSupersample: Number(img.supersample ?? 4),
     imageBoxHeightEm:
       img.box_height_em != null && img.box_height_em !== ""
@@ -186,10 +194,57 @@ function wordRenderOptions(mappingData) {
         : resolveBaselineShiftPt(inline) || -5,
     imageDescentEm: Number(img.descent_em ?? 0),
     imageGlyphNudgeEm: Number(img.glyph_nudge_em ?? 0.02),
+    imageVerticalGlyphNudgeEm:
+      img.vertical_glyph_nudge_em != null && img.vertical_glyph_nudge_em !== ""
+        ? Number(img.vertical_glyph_nudge_em)
+        : null,
+    imageVerticalBaselineShiftPt:
+      img.vertical_baseline_shift_pt != null &&
+      img.vertical_baseline_shift_pt !== ""
+        ? Number(img.vertical_baseline_shift_pt)
+        : null,
+    imageVerticalCompoundLayout: img.vertical_compound_layout ?? "row",
+    imageVerticalSidePadEm:
+      img.vertical_side_pad_em != null && img.vertical_side_pad_em !== ""
+        ? Number(img.vertical_side_pad_em)
+        : 0.08,
+    imageVerticalAlongPadEm:
+      img.vertical_along_pad_em != null && img.vertical_along_pad_em !== ""
+        ? Number(img.vertical_along_pad_em)
+        : 0.04,
+    imageVerticalColumnEm:
+      img.vertical_column_em != null && img.vertical_column_em !== ""
+        ? Number(img.vertical_column_em)
+        : 1,
+    imageVerticalAlongEm:
+      img.vertical_along_em != null && img.vertical_along_em !== ""
+        ? Number(img.vertical_along_em)
+        : 0,
+    imageVerticalStripEm:
+      img.vertical_strip_em != null && img.vertical_strip_em !== ""
+        ? Number(img.vertical_strip_em)
+        : 0.08,
+    imageVerticalSlotWidthEm:
+      img.vertical_slot_width_em != null && img.vertical_slot_width_em !== ""
+        ? Number(img.vertical_slot_width_em)
+        : 1.8,
+    imageVerticalFloatLeftEm:
+      img.vertical_float_left_em != null && img.vertical_float_left_em !== ""
+        ? Number(img.vertical_float_left_em)
+        : 0.88,
+    imageVerticalDistPt:
+      img.vertical_dist_pt != null && img.vertical_dist_pt !== ""
+        ? Number(img.vertical_dist_pt)
+        : 0,
+    imageVerticalDistSide: img.vertical_dist_side ?? "L",
+    wordVerticalRenderer: String(
+      img.vertical_renderer ?? "picture"
+    ).toLowerCase(),
     imageRow:
       String(
         img.compound_layout ?? box.word_mac_compound_layout ?? "stack"
       ).toLowerCase() === "row",
+    imageCompoundTouch: getCompoundTouch() || img.compound_touch === true,
     textFrameVerticalAlign: contentAlign,
     textFrameHorizontalAlign: contentAlignHorizontal,
     textFrameMarginTop: Number(box.margin_top_pt ?? lo.margin_top_pt ?? marginAll),
@@ -517,7 +572,7 @@ async function insertKaeritenView(
   opts,
   insertAnchor
 ) {
-  const vertical = await isVerticalFlow(context, baseRange);
+  const vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
   const glyphLayout = vertical && marks.length > 1 ? "row" : "stack";
   const glyphText = glyphsForMarks(marks, byChar);
 
@@ -700,19 +755,18 @@ async function renderClusterWithOoxml(
   if (!baseRange) {
     throw new Error(`Could not locate base character “${baseChar}” in cluster.`);
   }
-  const vertical = await isVerticalFlow(context, baseRange);
-  if (vertical) {
-    throw new Error(
-      "OOXML kaeriten is not supported in vertical (縦書き) layout yet. Use horizontal text."
-    );
-  }
   baseRange.font.load("size");
   await context.sync();
   const hostPt = baseRange.font.size || 12;
+  const vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
   const glyphText = glyphsForMarks(marks, byChar);
   const viewId = nextKaeritenViewId();
   const layout =
-    marks.length > 1 && !opts.macCompoundRow ? "stack" : "row";
+    vertical && marks.length > 1
+      ? "row"
+      : marks.length > 1 && !opts.macCompoundRow
+        ? "stack"
+        : "row";
   const layoutOpts = { ...opts, hostFontPt: hostPt };
   const variants = buildClusterReplaceOoxmlVariants(
     baseChar,
@@ -799,6 +853,50 @@ async function renderClusterWithOoxml(
   );
 }
 
+/**
+ * 縦書き fallback: small floating text box pinned to the kanji with a large
+ * character-relative left offset (puts marks on the column-right / 肩 side).
+ */
+async function renderClusterWithVerticalFloat(
+  context,
+  clusterRange,
+  baseChar,
+  marks,
+  byChar,
+  baseRange,
+  marksRange,
+  opts
+) {
+  marksRange.delete();
+  await context.sync();
+
+  const insertAnchor = insertPointAfterBase(baseRange);
+  const box = await insertKaeritenTextBox(
+    context,
+    insertAnchor,
+    baseRange,
+    marks,
+    byChar,
+    opts,
+    "floating"
+  );
+  await tagKaeritenView(
+    context,
+    box.shape.body.getRange(),
+    marks,
+    box.viewId
+  );
+
+  clusterRange.load("text");
+  await context.sync();
+  if (clusterStillHasMarks(clusterRange.text)) {
+    throw new Error(
+      `Marks still present after float render for “${baseChar}${marks}”.`
+    );
+  }
+  return { method: "verticalFloatTextBox", shape: box.shape };
+}
+
 /** Renderer E: replace the marks run with an inline PNG of the kaeriten. */
 async function renderClusterWithInlinePicture(
   context,
@@ -819,6 +917,17 @@ async function renderClusterWithInlinePicture(
   baseRange.font.load("size");
   await context.sync();
   const hostPt = baseRange.font.size || 12;
+  const vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
+  if (vertical && opts.wordVerticalRenderer === "ooxml") {
+    return renderClusterWithOoxml(
+      context,
+      clusterRange,
+      baseChar,
+      marks,
+      byChar,
+      opts
+    );
+  }
 
   const marksRange = await marksRangeInCluster(
     context,
@@ -833,8 +942,27 @@ async function renderClusterWithInlinePicture(
     );
   }
 
+  // Floating boxes misplace badly in 縦書き on Word Mac; inline PNG only there.
+  const useVerticalFloat =
+    vertical &&
+    opts.wordVerticalRenderer === "float" &&
+    wordHasTextBoxApi() &&
+    !isWordMac();
+  if (useVerticalFloat) {
+    return renderClusterWithVerticalFloat(
+      context,
+      clusterRange,
+      baseChar,
+      marks,
+      byChar,
+      baseRange,
+      marksRange,
+      opts
+    );
+  }
+
   const viewId = nextKaeritenViewId();
-  const imageOpts = { ...opts, row: opts.imageRow };
+  const imageOpts = imageOptsForFlow(opts, vertical, marks.length);
   await insertKaeritenInlinePicture(
     context,
     marksRange,
@@ -1595,10 +1723,12 @@ export async function refreshKaeritenDocument(context, mappingData) {
       pic.getRange(W.rangeWhole())
     );
     let hostPt = 12;
+    let vertical = false;
     if (baseRange) {
       baseRange.font.load("size");
       await context.sync();
       hostPt = baseRange.font.size || 12;
+      vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
     }
     await refreshInlinePicture(
       context,
@@ -1606,14 +1736,18 @@ export async function refreshKaeritenDocument(context, mappingData) {
       marks,
       byChar,
       hostPt,
-      { ...opts, row: opts.imageRow },
+      imageOptsForFlow(opts, vertical, marks.length),
       viewId
     );
   }
 
   for (const { cc, marks } of ccItems) {
     const glyphText = glyphsForMarks(marks, byChar);
-    const vertical = await isVerticalFlow(context, cc.getRange());
+    const vertical = await isVerticalFlow(
+      context,
+      cc.getRange(),
+      opts.wordAssumeVertical
+    );
     const glyphLayout = vertical && marks.length > 1 ? "row" : "stack";
     const ccRange = await fillContentControlGlyphs(
       context,
@@ -1633,7 +1767,7 @@ export async function refreshKaeritenDocument(context, mappingData) {
     const anchorRange = shape.body.getRange();
     const baseRange = await baseKanjiAdjacentBefore(context, anchorRange);
     const vertical = baseRange
-      ? await isVerticalFlow(context, baseRange)
+      ? await isVerticalFlow(context, baseRange, opts.wordAssumeVertical)
       : false;
 
     if (!bodyText && isMarinaMojiTextBox(shape) && opts.useOoxml && baseRange) {

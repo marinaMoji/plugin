@@ -156,12 +156,58 @@ const {
   orderedGlyphs,
   imageMetricsFromHost,
   inlinePictureBaselineShiftPt,
+  imageOptsForFlow,
+  patchKaeritenPictureOoxml,
 } = await import("../src/wordInlinePicture.js");
+const { kaeritenImageUseRowLayout, ooxmlIndicatesVerticalFlow } = await import(
+  "../src/wordLayout.js"
+);
+assert.equal(ooxmlIndicatesVerticalFlow('<w:pPr><w:textDirection w:val="tbRl"/></w:pPr>'), true);
+assert.equal(ooxmlIndicatesVerticalFlow('<w:sectPr><w:textDirection w:val="tbRlV"/></w:sectPr>'), true);
+assert.equal(ooxmlIndicatesVerticalFlow('<w:textDirection w:val="lrTb"/>'), false);
 assert.equal(inlinePictureBaselineShiftPt(12, { imageBaselineShiftPt: -5 }), -5);
 assert.equal(
   Math.round(inlinePictureBaselineShiftPt(18, { imageBaselineShiftPt: -4 }) * 10) / 10,
   -6
 );
+assert.equal(inlinePictureBaselineShiftPt(12, { vertical: true, imageVerticalBaselineShiftPt: 6 }), 6);
+assert.equal(inlinePictureBaselineShiftPt(12, { vertical: true, imageBaselineShiftPt: -5 }), -5);
+assert.equal(kaeritenImageUseRowLayout(false, 2, { imageRow: false }), false);
+assert.equal(kaeritenImageUseRowLayout(true, 2, {}), true);
+assert.equal(imageOptsForFlow({ imageRow: false }, true, 2).row, true);
+assert.equal(imageOptsForFlow({ imageRow: false }, false, 2).row, false);
+const vertRow = imageMetricsFromHost(12, 2, {
+  row: true,
+  vertical: true,
+  imageCompoundGlyphRatio: 0.34,
+  imageCompoundLineGapRatio: -0.08,
+});
+assert.equal(vertRow.rows, 1);
+assert.equal(vertRow.columns, 2);
+assert.equal(vertRow.verticalStrip, false);
+assert.equal(Math.round(vertRow.widthPt), 8);
+assert.equal(Math.round(vertRow.heightPt), 4);
+const vertCrop = imageMetricsFromHost(12, 1, { vertical: true });
+assert.equal(vertCrop.verticalStrip, false);
+assert.equal(Math.round(vertCrop.widthPt), 5);
+assert.equal(Math.round(vertCrop.heightPt), 5);
+const touchStack = imageMetricsFromHost(12, 2, {
+  vertical: true,
+  imageCompoundTouch: true,
+  imageCompoundGlyphRatio: 0.34,
+  imageCompoundTouchOverlapRatio: 0.72,
+});
+assert.equal(touchStack.rows, 2);
+assert.equal(Math.round(touchStack.heightPt), 5);
+
+assert.equal(encodeKaeritenSourceTag("㆑", "t1", "v").includes("flow=v"), true);
+const patched = patchKaeritenPictureOoxml(
+  '<w:r><w:drawing><wp:inline><wp:extent cx="1000" cy="500"/></wp:inline></w:drawing></w:r>',
+  { shiftHalfPoints: -10, wideCxEmu: 20000, distREmu: 30000 }
+);
+assert.equal(patched.includes('w:val="-10"'), true);
+assert.equal(patched.includes('cx="20000"'), true);
+assert.equal(patched.includes('distR="30000"'), true);
 assert.deepEqual(orderedGlyphs("㆒㆑", byChar), ["一", "レ"]);
 assert.deepEqual(orderedGlyphs("㆑", byChar), ["レ"]);
 const single = imageMetricsFromHost(12, 1, {});

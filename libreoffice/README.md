@@ -1,6 +1,6 @@
 # marinaMoji Kaeriten — LibreOffice extension
 
-Turns Unicode Kanbun source (`說㆒㆑者`) into borderless **anchored frames** with stacked glyphs (一 / レ).
+Turns Unicode Kanbun source (`說㆒㆑者`) into small **anchored images** with painted kaeriten glyphs (一 / レ). Legacy borderless frames remain readable/unrenderable.
 
 ## Requirements
 
@@ -66,10 +66,10 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 
 1. Type `說㆒㆑者` with marinaMoji
 2. Toolbar **Render kaeriten**
-3. Edit source with **Unrender**; do not edit inside frames
+3. Edit source with **Unrender**; do not edit inside rendered images/frames
 4. **Copy plain text** / **Copy TEI** / **Copy LaTeX** — paste elsewhere
 
-Export reads **Unicode source** (including marks from frames if still rendered). See [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+Export reads **Unicode source** (including marks from rendered images/frames). See [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
 ## Development
 

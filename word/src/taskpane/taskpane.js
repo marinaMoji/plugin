@@ -9,6 +9,10 @@ import {
   runCopyLatex,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
+import {
+  getCompoundTouch,
+  setCompoundTouch,
+} from "../wordRuntimeOpts.js";
 
 function setStatus(text, kind) {
   const el = document.getElementById("status");
@@ -65,8 +69,24 @@ function wire(id, fn, doneMsg) {
   });
 }
 
+function wireCompoundTouch() {
+  const box = document.getElementById("opt-compound-touch");
+  if (!box) return;
+  box.checked = getCompoundTouch();
+  box.addEventListener("change", () => {
+    setCompoundTouch(box.checked);
+    setStatus(
+      box.checked
+        ? "Compound marks will touch on next Render / Refresh."
+        : "Normal compound spacing on next Render / Refresh.",
+      "ok"
+    );
+  });
+}
+
 function initUi() {
   showApp();
+  wireCompoundTouch();
   wire(
     "btn-render",
     async () => {

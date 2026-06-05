@@ -76,6 +76,21 @@ button:disabled {
   cursor: wait;
 }
 
+.opt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.opt-row input {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
 .hint {
   font-size: 11px;
   color: #666;

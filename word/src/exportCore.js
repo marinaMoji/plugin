@@ -26,10 +26,16 @@ export function nextKaeritenViewId() {
 }
 
 /** Tag on CC / shape alt text. New renders use a unique id + source marks. */
-export function encodeKaeritenSourceTag(marks, viewId = null) {
+export function encodeKaeritenSourceTag(marks, viewId = null, flow = null) {
   const id = viewId || nextKaeritenViewId();
   const source = normalizeMarks(marks);
-  return `${KAERITEN_TAG_PREFIX}id=${id};source=${source}`;
+  const flowBit =
+    flow === "v" || flow === "vertical"
+      ? ";flow=v"
+      : flow === "h" || flow === "horizontal"
+        ? ";flow=h"
+        : "";
+  return `${KAERITEN_TAG_PREFIX}id=${id};source=${source}${flowBit}`;
 }
 
 /**

@@ -211,11 +211,12 @@ async function sanitizeGapBeforeInsert(context, baseRange, byChar) {
  * Floating insertTextBox defaults to page coordinates (left:0 = left margin).
  * Pin the box to the anchor character so it sits after the kanji, not left of the line.
  */
-async function anchorTextBoxToCharacter(context, shape, hostFontPt, vertical) {
+async function anchorTextBoxToCharacter(context, shape, hostFontPt, vertical, opts) {
   shape.relativeHorizontalPosition = W.relHorizCharacter();
   if (vertical) {
     shape.relativeVerticalPosition = W.relVertLine();
-    shape.left = hostFontPt > 0 ? Math.round(hostFontPt * 0.12) : 0;
+    const leftEm = Number(opts?.imageVerticalFloatLeftEm ?? 0.88);
+    shape.left = hostFontPt > 0 ? Math.round(hostFontPt * leftEm) : 0;
     shape.top = 0;
   } else {
     shape.relativeVerticalPosition = W.relVertLine();
@@ -307,7 +308,8 @@ async function applyTextBoxBodyAlignment(
   fontPt,
   hostPt,
   lineCount,
-  lineSpacingPt
+  lineSpacingPt,
+  vertical = false
 ) {
   const hAlign =
     (opts?.boxExtraWidthRightPt ?? 0) > 0
@@ -584,7 +586,8 @@ async function finalizeInlineKaeritenBox(
     fontPt,
     hostPt,
     lineCount,
-    lineSpacingPt
+    lineSpacingPt,
+    vertical
   );
   try {
     shape.width = size.width;
@@ -625,7 +628,11 @@ export async function insertKaeritenTextBox(
   baseRange.font.load("size");
   await context.sync();
   const hostFontPt = baseRange.font.size;
-  const vertical = await isVerticalFlow(context, baseRange);
+  const vertical = await isVerticalFlow(
+    context,
+    baseRange,
+    opts?.wordAssumeVertical === true
+  );
   const size = textBoxSize(opts, lineCount, hostFontPt, vertical);
   const boxSeed =
     inlineLayout && isWordMac()
@@ -637,14 +644,18 @@ export async function insertKaeritenTextBox(
     height: size.height,
   });
   const viewId = nextKaeritenViewId();
-  shape.altTextDescription = encodeKaeritenSourceTag(marks, viewId);
+  shape.altTextDescription = encodeKaeritenSourceTag(
+    marks,
+    viewId,
+    vertical ? "v" : "h"
+  );
   await context.sync();
 
   if (inlineLayout) {
     await applyInlineTextWrap(context, shape);
     await applyTextBoxFrameStyle(context, shape, vertical, true, opts);
   } else {
-    await anchorTextBoxToCharacter(context, shape, hostFontPt, vertical);
+    await anchorTextBoxToCharacter(context, shape, hostFontPt, vertical, opts);
     await applyTextBoxFrameStyle(context, shape, vertical, false, opts);
   }
 
@@ -690,9 +701,10 @@ export async function insertKaeritenTextBox(
       size.fontPt,
       hostFontPt,
       lineCount,
-      lineSpacingPt
+      lineSpacingPt,
+      vertical
     );
-    await anchorTextBoxToCharacter(context, shape, hostFontPt, vertical);
+    await anchorTextBoxToCharacter(context, shape, hostFontPt, vertical, opts);
   }
   await context.sync();
   return {
@@ -1248,6 +1260,7 @@ export async function refreshKaeritenTextBox(
     fontPt,
     hostFontPt,
     lineCount,
-    lineSpacingPt
+    lineSpacingPt,
+    vertical
   );
 }

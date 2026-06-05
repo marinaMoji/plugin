@@ -10,7 +10,9 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 from collections import namedtuple
+from xml.sax.saxutils import escape as _xml_escape
 
 import uno
 
@@ -25,21 +27,45 @@ except ImportError:
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
     from com.sun.star.text.VertOrientation import CHAR_BOTTOM as _VERT_CHAR_BOTTOM
+    from com.sun.star.text.VertOrientation import CHAR_TOP as _VERT_CHAR_TOP
+    from com.sun.star.text.VertOrientation import CHAR_CENTER as _VERT_CHAR_CENTER
     from com.sun.star.text.WrapTextMode import NONE as _WRAP_NONE
     from com.sun.star.style.LineSpacingMode import FIX as _LINE_FIX
     from com.sun.star.drawing.TextVerticalAdjust import BOTTOM as _TEXT_VERT_BOTTOM
+    from com.sun.star.drawing.TextVerticalAdjust import CENTER as _TEXT_VERT_CENTER
     from com.sun.star.drawing.TextHorizontalAdjust import CENTER as _TEXT_HORIZ_CENTER
 except ImportError:
     AS_CHARACTER = 1
     _VERT_CHAR_BOTTOM = 6
+    _VERT_CHAR_TOP = 4
+    _VERT_CHAR_CENTER = 5
     _WRAP_NONE = 0
     _LINE_FIX = 2
     _TEXT_VERT_BOTTOM = 2
+    _TEXT_VERT_CENTER = 1
     _TEXT_HORIZ_CENTER = 1
 
+# Vertical (縦書き) paragraph/page WritingMode2 values: TB_RL=2, TB_LR=3.
+_VERTICAL_WRITING_MODES = (2, 3)
+# Frame WritingMode for 縦書き frames so their own text stacks top→bottom
+# (one column, no line breaks between compound glyphs). TB_RL = 2.
+_FRAME_WRITING_TB_RL = 2
+# 1 pt = 0.3527…mm → 1/100 mm conversion for flush (em-tight) vertical sizing.
+_PT_TO_HMM = 35.2778
+
+# Map mapping.json names → VertOrientation constants. In 縦書き the as-character
+# frame's VertOrient controls the *horizontal* side of the column (axis rotates).
+_VERT_ORIENT_BY_NAME = {
+    "char_bottom": _VERT_CHAR_BOTTOM,
+    "char_top": _VERT_CHAR_TOP,
+    "char_center": _VERT_CHAR_CENTER,
+}
+
 _CLUSTER_RE = re.compile(r"([^\u3190-\u319f\s])([\u3190-\u319f]+)")
+_MARKS_RE = re.compile(r"[\u3190-\u319f]+")
 _SOURCE_PREFIX = "MARINAMOJI:source="
 _KaeritenCluster = namedtuple("KaeritenCluster", ("base_char", "marks", "start", "end"))
+_GRAPHIC_NAME = "marinaMoji_kaeriten_image"
 
 
 def _marks_start(cluster):
@@ -103,7 +129,11 @@ def _load_mapping():
 class _MarkMapper(object):
     def __init__(self):
         data = _load_mapping()
-        lo = data.get("rendering", {}).get("libreoffice_frame", {})
+        rendering = data.get("rendering", {})
+        self._lo_primary = str(rendering.get("libreoffice_primary", "anchored_frame")).lower()
+        lo = rendering.get("libreoffice_frame", {})
+        word_img = rendering.get("word_inline_picture", {})
+        lo_img = rendering.get("libreoffice_image", {})
         self._char_height_pt = float(lo.get("font_size_pt", 5.0))
         self._font_size_ratio = float(lo.get("font_size_ratio", 0.42))
         self._runtime_char_height = None
@@ -114,8 +144,72 @@ class _MarkMapper(object):
         )
         if isinstance(self._vert_orient_position_hmm, float):
             self._vert_orient_position_hmm = int(round(self._vert_orient_position_hmm * 100))
+        # 縦書き: which side of the column the marks sit on, plus an optional nudge.
+        # Default char_bottom → left of the column (traditional kanbun: kaeriten
+        # on the reader's left; okurigana stays on the right). char_top → right.
+        self._vertical_vert_orient_name = str(
+            lo.get("vertical_vert_orient", "char_bottom")
+        ).lower()
+        self._vertical_orient_position_hmm = lo.get(
+            "vertical_orient_position_hmm", 0
+        )
+        if isinstance(self._vertical_orient_position_hmm, float):
+            self._vertical_orient_position_hmm = int(
+                round(self._vertical_orient_position_hmm * 100)
+            )
+        else:
+            self._vertical_orient_position_hmm = int(self._vertical_orient_position_hmm)
         self._frame_width_hmm = int(lo.get("frame_width_hmm", 180))
         self._line_height_twips = int(lo.get("line_height_twips", 0))  # 0 = auto from font
+        # 縦書き box sizing (em-relative). Width is the column thickness (a touch
+        # over 1 em so the glyph isn't clipped on the right); height is em-tight per
+        # glyph so the box hugs the marks. glyph_kern_hmm < 0 pulls stacked compound
+        # marks (㆒ above ㆑) closer together (applied as CharKerning).
+        self._vertical_box_width_factor = float(lo.get("vertical_box_width_factor", 1.18))
+        self._vertical_box_height_factor = float(lo.get("vertical_box_height_factor", 1.0))
+        self._vertical_box_pad_hmm = int(lo.get("vertical_box_pad_hmm", 0))
+        self._vertical_glyph_kern_hmm = int(lo.get("vertical_glyph_kern_hmm", -40))
+        self._image_glyph_ratio = float(lo_img.get("glyph_ratio", word_img.get("glyph_ratio", 0.42)))
+        self._image_compound_glyph_ratio = float(
+            lo_img.get(
+                "compound_glyph_ratio",
+                word_img.get("compound_glyph_ratio", self._image_glyph_ratio),
+            )
+        )
+        self._image_line_gap_ratio = float(lo_img.get("line_gap_ratio", word_img.get("line_gap_ratio", 0)))
+        self._image_compound_line_gap_ratio = float(
+            lo_img.get(
+                "compound_line_gap_ratio",
+                word_img.get("compound_line_gap_ratio", -0.15),
+            )
+        )
+        self._image_compound_touch = bool(
+            lo_img.get("compound_touch", word_img.get("compound_touch", False))
+        )
+        self._image_compound_touch_overlap_ratio = float(
+            lo_img.get(
+                "compound_touch_overlap_ratio",
+                word_img.get("compound_touch_overlap_ratio", 0.72),
+            )
+        )
+        self._image_glyph_fill = float(lo_img.get("glyph_fill", word_img.get("glyph_fill", 0.94)))
+        self._image_color = str(lo_img.get("color", word_img.get("color", "#000000")))
+        self._image_font_family = str(
+            lo_img.get(
+                "font_family",
+                word_img.get(
+                    "font_family",
+                    '"Hiragino Mincho ProN","YuMincho","Yu Mincho","MS Mincho","Songti SC","SimSun",serif',
+                ),
+            )
+        )
+        self._image_background = lo_img.get("background", word_img.get("background", None))
+        self._image_horizontal_vert_orient_position_hmm = int(
+            lo_img.get("vert_orient_position_hmm", self._vert_orient_position_hmm)
+        )
+        self._image_vertical_orient_position_hmm = int(
+            lo_img.get("vertical_orient_position_hmm", self._vertical_orient_position_hmm)
+        )
         self._by_char = {}
         for entry in data.get("marks", []):
             ch = entry.get("char")
@@ -127,6 +221,12 @@ class _MarkMapper(object):
         if self._runtime_char_height is not None:
             return self._runtime_char_height
         return self._char_height_pt
+
+    @property
+    def vertical_vert_orient(self):
+        return _VERT_ORIENT_BY_NAME.get(
+            self._vertical_vert_orient_name, _VERT_CHAR_BOTTOM
+        )
 
     def char_height_from_host(self, host_pt):
         return max(3.0, min(72.0, float(host_pt) * self._font_size_ratio))
@@ -151,8 +251,37 @@ class _MarkMapper(object):
         )
         return [self._by_char.get(c, {}).get("display_glyph", c) for c in chars]
 
-    def frame_text(self, marks):
-        return "\n".join(self.glyphs_for_marks(marks))
+    def frame_text(self, marks, vertical=False):
+        glyphs = self.glyphs_for_marks(marks)
+        # Horizontal: the frame is a horizontal text box, so stack the compound
+        # glyphs with newlines (一 over レ). Vertical: the frame itself flows
+        # top→bottom, so the glyphs already stack in one column — a newline would
+        # start a *second* column (the unwanted "line break"), so just join them.
+        return "".join(glyphs) if vertical else "\n".join(glyphs)
+
+    def vertical_box_hmm(self, n_glyphs):
+        """Em-tight extent for a 縦書き frame, in 1/100 mm.
+
+        width  = column thickness (~1 em, slightly over so the glyph isn't clipped)
+        height = n ems down the column, minus the compound kerning, so the box
+                 hugs the marks with no empty space below.
+        """
+        em = max(60, int(round(self.effective_char_height_pt * _PT_TO_HMM)))
+        n = max(1, int(n_glyphs))
+        width = int(round(em * self._vertical_box_width_factor)) + self._vertical_box_pad_hmm
+        height = int(round(em * n * self._vertical_box_height_factor))
+        height += self._vertical_glyph_kern_hmm * (n - 1) + self._vertical_box_pad_hmm
+        height = max(em // 2, height)
+        return width, height
+
+    @property
+    def vertical_line_twips(self):
+        """Column thickness inside a 縦書き frame; matches the box width."""
+        return int(round(self.effective_char_height_pt * 20 * self._vertical_box_width_factor))
+
+    @property
+    def use_image_renderer(self):
+        return self._lo_primary in ("inline_image", "image", "svg_image", "graphic")
 
 
 def _get_document():
@@ -293,6 +422,49 @@ def _host_char_height_at_anchor(doc, text, anchor):
     return _host_char_height(doc, text, text.createTextCursorByRange(anchor))
 
 
+def _page_style_is_vertical(doc, name):
+    """True when the named page style uses a vertical WritingMode."""
+    if not name:
+        return False
+    try:
+        page = doc.getStyleFamilies().getByName("PageStyles").getByName(name)
+        return page.getPropertyValue("WritingMode") in _VERTICAL_WRITING_MODES
+    except Exception:
+        return False
+
+
+def _is_vertical_writing(doc, cursor):
+    """
+    Detect 縦書き at a paragraph cursor.
+
+    Paragraphs usually inherit direction from the page (WritingMode = CONTEXT/PAGE),
+    so we check the paragraph's own WritingMode first, then fall back to the page
+    style (named on the paragraph, else the current view cursor's page).
+    """
+    try:
+        wm = cursor.getPropertyValue("WritingMode")
+        if wm in _VERTICAL_WRITING_MODES:
+            return True
+        if wm in (0, 1):  # LR_TB / RL_TB → explicitly horizontal
+            return False
+    except Exception:
+        pass
+
+    name = None
+    try:
+        name = cursor.getPropertyValue("PageStyleName")
+    except Exception:
+        name = None
+    if not name:
+        try:
+            name = doc.getCurrentController().getViewCursor().getPropertyValue(
+                "PageStyleName"
+            )
+        except Exception:
+            name = None
+    return _page_style_is_vertical(doc, name)
+
+
 _FRAME_NAME = "marinaMoji_kaeriten"
 
 
@@ -326,8 +498,17 @@ def _frame_min_height_hmm(mapper, n_glyphs):
     return per_line * max(1, n_glyphs) + 80
 
 
-def _apply_frame_dimensions(frame, mapper, n_glyphs):
+def _apply_frame_dimensions(frame, mapper, n_glyphs, vertical=False):
     """Set width/height from host-scaled metrics (not stale LayoutSize alone)."""
+    if vertical:
+        # 縦書き: fix the box to an em-tight extent so it hugs the marks with no
+        # empty space below (the column-advance is the frame Height here).
+        w, h = mapper.vertical_box_hmm(n_glyphs)
+        frame.setPropertyValue("FrameIsAutomaticHeight", False)
+        frame.setPropertyValue("Width", w)
+        frame.setPropertyValue("Height", h)
+        _set_frame_content_align(frame, vertical)
+        return
     cap_w = mapper.effective_frame_width_hmm()
     min_h = _frame_min_height_hmm(mapper, n_glyphs)
     frame.setPropertyValue("FrameIsAutomaticHeight", False)
@@ -341,7 +522,7 @@ def _apply_frame_dimensions(frame, mapper, n_glyphs):
         frame.setPropertyValue("Height", h)
     except Exception:
         pass
-    _set_frame_content_align(frame)
+    _set_frame_content_align(frame, vertical)
 
 
 def _set_frame_insets_zero(frame):
@@ -366,7 +547,7 @@ def _set_frame_insets_zero(frame):
             pass
 
 
-def _style_frame_text(frame_text, mapper):
+def _style_frame_text(frame_text, mapper, vertical=False):
     """Tight stack inside the frame; CJK size uses CharHeightAsian."""
     cursor = frame_text.createTextCursor()
     cursor.gotoStart(False)
@@ -382,7 +563,15 @@ def _style_frame_text(frame_text, mapper):
             cursor.setPropertyValue(prop, 0)
         except Exception:
             pass
-    line_twips = _line_spacing_twips(mapper, h)
+    if vertical:
+        # Pull stacked compound glyphs (㆒ above ㆑) closer along the column.
+        try:
+            cursor.setPropertyValue("CharKerning", mapper._vertical_glyph_kern_hmm)
+        except Exception:
+            pass
+    # 縦書き: the single column's *thickness* (across the column) is the line
+    # height, so pin it to ~one em to match the box width and avoid right clipping.
+    line_twips = mapper.vertical_line_twips if vertical else _line_spacing_twips(mapper, h)
     try:
         ls = uno.createUnoStruct("com.sun.star.style.LineSpacing")
         ls.Mode = _LINE_FIX
@@ -392,21 +581,214 @@ def _style_frame_text(frame_text, mapper):
         pass
 
 
-def _set_frame_content_align(frame):
-    """Stack sits on the bottom of the frame (kaeriten on the line)."""
+def _set_frame_content_align(frame, vertical=False):
+    """Stack sits on the bottom of the frame (kaeriten on the line).
+
+    For 縦書き the frame is em-tight in both axes, so center the glyphs to keep
+    them flush instead of bottom-anchoring (which would shove them to one edge).
+    """
     try:
-        frame.setPropertyValue("TextVerticalAdjust", _TEXT_VERT_BOTTOM)
+        vadj = _TEXT_VERT_CENTER if vertical else _TEXT_VERT_BOTTOM
+        frame.setPropertyValue("TextVerticalAdjust", vadj)
         frame.setPropertyValue("TextHorizontalAdjust", _TEXT_HORIZ_CENTER)
     except Exception:
         pass
 
 
-def _configure_frame(frame, mapper):
+def _pt_to_hmm(pt):
+    return max(1, int(round(float(pt) * _PT_TO_HMM)))
+
+
+def _image_metrics_from_host(mapper, glyph_count):
+    """Word-style painted cluster metrics, in points.
+
+    `compound_touch` changes the glyph-to-glyph advance in the drawing itself,
+    so LibreOffice text kerning/line-breaking cannot force レ into another column.
+    """
+    host_pt = mapper.effective_char_height_pt / mapper._font_size_ratio
+    host_pt = host_pt if host_pt and host_pt > 0 else 12.0
+    n = max(1, int(glyph_count))
+    compound = n > 1
+    ratio = mapper._image_compound_glyph_ratio if compound else mapper._image_glyph_ratio
+    cell_pt = max(1.0, host_pt * ratio)
+    gap_ratio = mapper._image_compound_line_gap_ratio if compound else mapper._image_line_gap_ratio
+    gap_pt = cell_pt * gap_ratio
+    if compound and mapper._image_compound_touch:
+        gap_pt = -cell_pt * mapper._image_compound_touch_overlap_ratio
+    width_pt = cell_pt
+    height_pt = max(cell_pt * 0.5, cell_pt * n + gap_pt * (n - 1))
+    return {
+        "cell_pt": cell_pt,
+        "gap_pt": gap_pt,
+        "width_pt": width_pt,
+        "height_pt": height_pt,
+    }
+
+
+def _svg_for_marks(marks, mapper):
+    glyphs = mapper.glyphs_for_marks(marks)
+    metrics = _image_metrics_from_host(mapper, len(glyphs))
+    width = metrics["width_pt"]
+    height = metrics["height_pt"]
+    cell = metrics["cell_pt"]
+    gap = metrics["gap_pt"]
+    font_size = cell * mapper._image_glyph_fill
+    family = _xml_escape(mapper._image_font_family, {'"': "&quot;"})
+    color = _xml_escape(mapper._image_color)
+    bg = mapper._image_background
+    parts = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<svg xmlns="http://www.w3.org/2000/svg" '
+        'width="%.3fpt" height="%.3fpt" viewBox="0 0 %.3f %.3f">' % (width, height, width, height),
+    ]
+    if bg:
+        parts.append(
+            '<rect x="0" y="0" width="%.3f" height="%.3f" fill="%s"/>' %
+            (width, height, _xml_escape(str(bg)))
+        )
+    parts.append(
+        '<g fill="%s" font-family="%s" font-size="%.3f" '
+        'text-anchor="middle" dominant-baseline="text-after-edge">' %
+        (color, family, font_size)
+    )
+    for i, glyph in enumerate(glyphs):
+        stack_from_bottom = len(glyphs) - 1 - i
+        x = cell / 2.0
+        y = height - (cell + gap) * stack_from_bottom
+        parts.append(
+            '<text x="%.3f" y="%.3f">%s</text>' %
+            (x, y, _xml_escape(str(glyph)))
+        )
+    parts.append("</g></svg>")
+    return "\n".join(parts), metrics
+
+
+def _image_cache_dir():
+    path = os.path.join(tempfile.gettempdir(), "marinamoji_kaeriten")
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    return path
+
+
+def _write_marks_svg(marks, mapper):
+    svg, metrics = _svg_for_marks(marks, mapper)
+    # Keep a short deterministic-ish name for easier debugging; include metrics so
+    # the same marks at different host sizes/touch settings don't share a link.
+    safe = "".join("%04x" % ord(ch) for ch in marks)
+    key = "%s_%03d_%03d_%+04d" % (
+        safe,
+        int(round(metrics["width_pt"] * 100)),
+        int(round(metrics["height_pt"] * 100)),
+        int(round(metrics["gap_pt"] * 100)),
+    )
+    path = os.path.join(_image_cache_dir(), "kaeriten_%s.svg" % key)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(svg)
+    return path, metrics
+
+
+def _prop(name, value):
+    p = uno.createUnoStruct("com.sun.star.beans.PropertyValue")
+    p.Name = name
+    p.Value = value
+    return p
+
+
+def _graphic_from_url(file_url):
+    try:
+        ctx = uno.getComponentContext()
+        provider = ctx.ServiceManager.createInstanceWithContext(
+            "com.sun.star.graphic.GraphicProvider", ctx
+        )
+        return provider.queryGraphic((_prop("URL", file_url),))
+    except Exception:
+        return None
+
+
+def _set_text_content_desc(obj, marks):
+    desc = _encode_desc(marks)
+    for name, value in (
+        ("Description", desc),
+        ("Title", _GRAPHIC_NAME),
+        ("Name", _GRAPHIC_NAME),
+    ):
+        try:
+            obj.setPropertyValue(name, value)
+        except Exception:
+            pass
+
+
+def _marks_from_text_content(obj):
+    for name in ("Description", "AlternativeText"):
+        try:
+            marks = _decode_desc(obj.getPropertyValue(name))
+            if marks is not None:
+                return marks
+        except Exception:
+            pass
+    return None
+
+
+def _set_graphic_margins_zero(graphic):
+    """Clear spacing around image views; the SVG itself controls visual spacing."""
+    for name in ("LeftMargin", "RightMargin", "TopMargin", "BottomMargin"):
+        try:
+            graphic.setPropertyValue(name, 0)
+        except Exception:
+            pass
+
+
+def _configure_graphic(graphic, mapper, metrics, vertical=False):
+    graphic.setPropertyValue("AnchorType", AS_CHARACTER)
+    _set_graphic_margins_zero(graphic)
+    graphic.setPropertyValue("Width", _pt_to_hmm(metrics["width_pt"]))
+    graphic.setPropertyValue("Height", _pt_to_hmm(metrics["height_pt"]))
+    try:
+        graphic.setPropertyValue("Surround", _WRAP_NONE)
+        graphic.setPropertyValue("TextWrap", _WRAP_NONE)
+    except Exception:
+        pass
+    try:
+        if vertical:
+            graphic.setPropertyValue("VertOrient", mapper.vertical_vert_orient)
+            graphic.setPropertyValue(
+                "VertOrientPosition", mapper._image_vertical_orient_position_hmm
+            )
+        else:
+            graphic.setPropertyValue("VertOrient", _VERT_CHAR_BOTTOM)
+            graphic.setPropertyValue(
+                "VertOrientPosition", mapper._image_horizontal_vert_orient_position_hmm
+            )
+    except Exception:
+        pass
+
+
+def _insert_graphic(text, cursor, marks, mapper, doc, vertical=False):
+    path, metrics = _write_marks_svg(marks, mapper)
+    url = uno.systemPathToFileUrl(path)
+    graphic = doc.createInstance("com.sun.star.text.TextGraphicObject")
+    _configure_graphic(graphic, mapper, metrics, vertical)
+    _set_text_content_desc(graphic, marks)
+    loaded = _graphic_from_url(url)
+    if loaded is not None:
+        try:
+            graphic.setPropertyValue("Graphic", loaded)
+        except Exception:
+            graphic.setPropertyValue("GraphicURL", url)
+    else:
+        graphic.setPropertyValue("GraphicURL", url)
+    text.insertTextContent(cursor, graphic, False)
+    # Some LO versions reapply defaults after insertion; reassert metadata/layout.
+    _set_text_content_desc(graphic, marks)
+    _configure_graphic(graphic, mapper, metrics, vertical)
+
+
+def _configure_frame(frame, mapper, vertical=False):
     frame.setPropertyValue("AnchorType", AS_CHARACTER)
     frame.setPropertyValue("FrameIsAutomaticHeight", True)
     _set_borderless(frame)
     _set_frame_insets_zero(frame)
-    _set_frame_content_align(frame)
+    _set_frame_content_align(frame, vertical)
     frame.setPropertyValue("Width", mapper.effective_frame_width_hmm())
     try:
         frame.setPropertyValue("Surround", _WRAP_NONE)
@@ -414,16 +796,34 @@ def _configure_frame(frame, mapper):
     except Exception:
         pass
     try:
-        # BOTTOM (3) anchors to page/line box and sits too low; CHAR_BOTTOM (6) uses the glyph.
-        frame.setPropertyValue("VertOrient", _VERT_CHAR_BOTTOM)
-        frame.setPropertyValue("VertOrientPosition", mapper._vert_orient_position_hmm)
+        # Force the frame's own text to flow top→bottom in 縦書き so compound
+        # glyphs stack in one column (no second-column "line break").
+        frame.setPropertyValue(
+            "WritingMode", _FRAME_WRITING_TB_RL if vertical else 0
+        )
+    except Exception:
+        pass
+    try:
+        if vertical:
+            # 縦書き: the perpendicular (VertOrient) axis is horizontal, so this
+            # chooses the column side. char_bottom → left (traditional kaeriten).
+            frame.setPropertyValue("VertOrient", mapper.vertical_vert_orient)
+            frame.setPropertyValue(
+                "VertOrientPosition", mapper._vertical_orient_position_hmm
+            )
+        else:
+            # BOTTOM (3) anchors to page/line box and sits too low; CHAR_BOTTOM (6) uses the glyph.
+            frame.setPropertyValue("VertOrient", _VERT_CHAR_BOTTOM)
+            frame.setPropertyValue(
+                "VertOrientPosition", mapper._vert_orient_position_hmm
+            )
     except Exception:
         pass
 
 
-def _insert_frame(text, cursor, marks, mapper, doc):
+def _insert_frame(text, cursor, marks, mapper, doc, vertical=False):
     frame = doc.createInstance("com.sun.star.text.TextFrame")
-    _configure_frame(frame, mapper)
+    _configure_frame(frame, mapper, vertical)
     frame.setPropertyValue("Description", _encode_desc(marks))
     try:
         frame.setPropertyValue("Name", _FRAME_NAME)
@@ -432,13 +832,20 @@ def _insert_frame(text, cursor, marks, mapper, doc):
     text.insertTextContent(cursor, frame, False)
     ft = frame.getText()
     fc = ft.createTextCursor()
-    ft.insertString(fc, mapper.frame_text(marks), False)
-    _style_frame_text(ft, mapper)
+    ft.insertString(fc, mapper.frame_text(marks, vertical), False)
+    _style_frame_text(ft, mapper, vertical)
     # LO may reapply frame style defaults on insert — clear insets, align, size.
     _set_frame_insets_zero(frame)
-    _configure_frame(frame, mapper)
+    _configure_frame(frame, mapper, vertical)
     n_glyphs = len(mapper.glyphs_for_marks(marks))
-    _apply_frame_dimensions(frame, mapper, n_glyphs)
+    _apply_frame_dimensions(frame, mapper, n_glyphs, vertical)
+
+
+def _insert_view(text, cursor, marks, mapper, doc, vertical=False):
+    if mapper.use_image_renderer:
+        _insert_graphic(text, cursor, marks, mapper, doc, vertical)
+    else:
+        _insert_frame(text, cursor, marks, mapper, doc, vertical)
 
 
 def _cursor_at(text, work_range, offset):
@@ -456,26 +863,80 @@ def _range_between(text, work_range, start_off, end_off):
     return r
 
 
+def _collect_mark_runs(text, work_range):
+    """Live cursors at each kaeriten run in the *body* text within work_range.
+
+    We enumerate paragraphs → text portions instead of doing offset arithmetic on
+    work_range.getString(). An as-character frame is its own ("Frame") portion and
+    contributes no characters to getString(), yet cursor.goRight() counts it as one
+    position — so once a kaeriten is rendered, string offsets desync from cursor
+    motion and later marks land in the wrong place (or get skipped). Walking text
+    portions keeps each goRight inside a single, frame-free run, so positions stay
+    correct no matter how many frames already exist.
+    """
+    runs = []
+    try:
+        para_enum = text.createEnumeration()
+    except Exception:
+        return runs
+    while para_enum.hasMoreElements():
+        para = para_enum.nextElement()
+        try:
+            if not para.supportsService("com.sun.star.text.Paragraph"):
+                continue
+            portion_enum = para.createEnumeration()
+        except Exception:
+            continue
+        while portion_enum.hasMoreElements():
+            try:
+                portion = portion_enum.nextElement()
+                if portion.TextPortionType != "Text":
+                    continue
+                s = portion.getString()
+            except Exception:
+                continue
+            for m in _MARKS_RE.finditer(s):
+                try:
+                    start = text.createTextCursorByRange(portion.getStart())
+                    if m.start() > 0:
+                        start.goRight(m.start(), False)
+                except Exception:
+                    continue
+                if not _range_contains(work_range, start):
+                    continue
+                runs.append((start, m.group(0)))
+    return runs
+
+
 def _format_clusters(text, work_range, mapper, doc):
-    content = work_range.getString()
     count = 0
-    for cluster in _sort_clusters(_find_clusters(content)):
-        ms = _marks_start(cluster)
-        mark_cursor = _cursor_at(text, work_range, ms)
-        host_pt = _host_char_height(doc, text, mark_cursor)
+    # Process last→first so removing/inserting earlier in the doc doesn't shift the
+    # live cursors we still need to handle.
+    for start, marks in reversed(_collect_mark_runs(text, work_range)):
+        base = text.createTextCursorByRange(start)
+        if not base.goLeft(1, True):
+            continue
+        base_char = base.getString()
+        if not base_char or _MARKS_RE.match(base_char) or base_char.isspace():
+            continue  # orphan marks with no kanji to attach to
+        host_pt = _host_char_height(doc, text, start)
         mapper.apply_host_size(host_pt)
-        _range_between(text, work_range, ms, cluster.end).setString("")
-        _insert_frame(text, mark_cursor, cluster.marks, mapper, doc)
+        vertical = _is_vertical_writing(doc, start)
+        run = text.createTextCursorByRange(start)
+        run.goRight(len(marks), True)
+        insert_at = text.createTextCursorByRange(start)
+        run.setString("")
+        _insert_view(text, insert_at, marks, mapper, doc, vertical)
         mapper.clear_runtime_size()
         count += 1
     return count
 
 
 def _refresh_frames_in_place(doc, work_range, mapper):
-    """Update existing frames from host kanji size (no show_source)."""
+    """Update existing frames, or convert them to images when image rendering is primary."""
     text = doc.Text
     count = 0
-    for frame, _marks in _iter_frames(doc):
+    for frame, _marks in list(_iter_frames(doc)):
         try:
             anchor = frame.getAnchor()
         except Exception:
@@ -484,11 +945,65 @@ def _refresh_frames_in_place(doc, work_range, mapper):
             continue
         host_pt = _host_char_height_at_anchor(doc, text, anchor)
         mapper.apply_host_size(host_pt)
+        vertical = _is_vertical_writing(
+            doc, text.createTextCursorByRange(anchor)
+        )
+        if mapper.use_image_renderer:
+            try:
+                cursor = text.createTextCursorByRange(anchor)
+                _insert_graphic(text, cursor, _marks, mapper, doc, vertical)
+                text.removeTextContent(frame)
+                count += 1
+            except Exception:
+                pass
+            mapper.clear_runtime_size()
+            continue
         n_glyphs = len(mapper.glyphs_for_marks(_marks)) if _marks else 1
-        _style_frame_text(frame.getText(), mapper)
+        ft = frame.getText()
+        if _marks:
+            # Rewrite content so direction changes (and the no-linebreak rule for
+            # vertical compounds) apply to frames rendered before this fix.
+            try:
+                ft.setString(mapper.frame_text(_marks, vertical))
+            except Exception:
+                pass
+        _style_frame_text(ft, mapper, vertical)
         _set_frame_insets_zero(frame)
-        _configure_frame(frame, mapper)
-        _apply_frame_dimensions(frame, mapper, n_glyphs)
+        _configure_frame(frame, mapper, vertical)
+        _apply_frame_dimensions(frame, mapper, n_glyphs, vertical)
+        mapper.clear_runtime_size()
+        count += 1
+    return count
+
+
+def _refresh_graphics_in_place(doc, work_range, mapper):
+    """Redraw existing image views from source marks and current host size."""
+    text = doc.Text
+    count = 0
+    for graphic, marks in _iter_graphics(doc):
+        try:
+            anchor = graphic.getAnchor()
+        except Exception:
+            continue
+        if not _range_contains(work_range, anchor):
+            continue
+        host_pt = _host_char_height_at_anchor(doc, text, anchor)
+        mapper.apply_host_size(host_pt)
+        vertical = _is_vertical_writing(
+            doc, text.createTextCursorByRange(anchor)
+        )
+        path, metrics = _write_marks_svg(marks, mapper)
+        url = uno.systemPathToFileUrl(path)
+        loaded = _graphic_from_url(url)
+        if loaded is not None:
+            try:
+                graphic.setPropertyValue("Graphic", loaded)
+            except Exception:
+                graphic.setPropertyValue("GraphicURL", url)
+        else:
+            graphic.setPropertyValue("GraphicURL", url)
+        _set_text_content_desc(graphic, marks)
+        _configure_graphic(graphic, mapper, metrics, vertical)
         mapper.clear_runtime_size()
         count += 1
     return count
@@ -512,6 +1027,30 @@ def _iter_frames(doc):
             yield frame, marks
 
 
+def _iter_graphics(doc):
+    try:
+        graphics = doc.getGraphicObjects()
+    except Exception:
+        return
+    if graphics is None:
+        return
+    for i in range(graphics.getCount()):
+        try:
+            graphic = graphics.getByIndex(i)
+        except Exception:
+            continue
+        marks = _marks_from_text_content(graphic)
+        if marks is not None:
+            yield graphic, marks
+
+
+def _iter_views(doc):
+    for frame, marks in _iter_frames(doc):
+        yield frame, marks
+    for graphic, marks in _iter_graphics(doc):
+        yield graphic, marks
+
+
 def _range_contains(work_range, point_range):
     try:
         ws, ps = work_range.getStart(), point_range.getStart()
@@ -528,18 +1067,18 @@ def _range_contains(work_range, point_range):
 def _show_source(doc, work_range):
     text = doc.Text
     to_restore = []
-    for frame, marks in _iter_frames(doc):
+    for view, marks in _iter_views(doc):
         try:
-            anchor = frame.getAnchor()
+            anchor = view.getAnchor()
         except Exception:
             continue
         if _range_contains(work_range, anchor):
-            to_restore.append((frame, marks))
+            to_restore.append((view, marks))
     count = 0
-    for frame, marks in to_restore:
-        cursor = text.createTextCursorByRange(frame.getAnchor())
+    for view, marks in to_restore:
+        cursor = text.createTextCursorByRange(view.getAnchor())
         text.insertString(cursor, marks, False)
-        text.removeTextContent(frame)
+        text.removeTextContent(view)
         count += 1
     return count
 
@@ -580,6 +1119,16 @@ def _canonical_text_in_range(doc, work_range):
                     parts.append(marks)
                 else:
                     parts.append(portion.getString())
+            elif ptype in ("Graphic", "TextContent"):
+                content = None
+                for attr in ("TextContent", "TextGraphicObject"):
+                    try:
+                        content = getattr(portion, attr)
+                        break
+                    except Exception:
+                        pass
+                marks = _marks_from_text_content(content) if content is not None else None
+                parts.append(marks if marks else portion.getString())
             else:
                 parts.append(portion.getString())
         return "".join(parts)
@@ -588,9 +1137,9 @@ def _canonical_text_in_range(doc, work_range):
 
     plain = work_range.getString()
     inserts = []
-    for frame, marks in _iter_frames(doc):
+    for view, marks in _iter_views(doc):
         try:
-            anchor = frame.getAnchor()
+            anchor = view.getAnchor()
         except Exception:
             continue
         if not _range_contains(work_range, anchor):
@@ -716,6 +1265,7 @@ def _export_is_full_document(doc):
 def _render_in_scope(doc, work_range, mapper):
     n_new = _format_clusters(doc.Text, work_range, mapper, doc)
     n_updated = _refresh_frames_in_place(doc, work_range, mapper)
+    n_updated += _refresh_graphics_in_place(doc, work_range, mapper)
     return n_new, n_updated
 
 
