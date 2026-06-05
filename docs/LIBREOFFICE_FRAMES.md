@@ -95,7 +95,7 @@ Tiny **SVG graphic** anchored **as character**, containing painted glyphs rather
 - **Optional** editor-local tags (e.g. frame name `marinaMoji:kaeriten:<id>`) for finding objects on refresh — **not** for TEI/export semantics. See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
 - Do **not** auto-format on every keystroke in v1.
 - **Toolbar** (v0.2.3+): `OfficeToolBar` in `Addons.xcu`; enable via **View → Toolbars → marinaMoji**.
-- **Toolbar only** (v0.3.5+): no menu bar; copy buttons put plain / TEI / LaTeX on the clipboard (snippet vs full doc by selection). Optional `install.sh` for Tools → Macros / APSO.
+- **Toolbar only** (v0.3.5+): no menu bar; **Copy plain text** on the clipboard. Optional `install.sh` for Tools → Macros / APSO.
 
 ## Related
 

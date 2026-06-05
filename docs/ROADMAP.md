@@ -20,9 +20,10 @@
 - [x] Menu: **Format kaeriten** (selection / paragraph / document)
 - [x] Remove source marks on format; restore via **Show source** (`Description` stores marks)
 - [x] **Refresh rendering** (show source + format)
-- [ ] Manual QA: simple レ, compound 一二レ, vertical text, font-size refresh
+- [x] Inline **SVG image** renderer; vertical text; compound touching; page-direction toggle
+- [ ] **Pre-publish QA:** simple レ, compound ㆒㆑, vertical text, font-size refresh, copy plain
 
-**Success criteria:** User types `說㆒㆑者` with marinaMoji, runs **Format kaeriten** on paragraph, sees convincing 一/レ at 說 with `者` following, in 縦書き. User does **not** edit inside the frame.
+**Success criteria:** User types `說㆒㆑者` with marinaMoji, runs **Render kaeriten**, sees convincing kaeriten at 說 with `者` following, in 縦書き. User does **not** edit inside rendered views.
 
 ## Phase 1.5 — Sync and source mode
 
@@ -34,21 +35,19 @@
 
 ## Phase 2 — Export and fallback
 
-- [x] **Copy TEI** / **Copy LaTeX** to clipboard from canonical text + `mapping.json` (snippet vs full doc by scope)
-- [ ] Optional: save TEI/LaTeX to file (deferred; clipboard-first)
+- [x] **Copy plain text** to clipboard (canonical Unicode)
+- [x] ~~Copy TEI / Copy LaTeX~~ — **removed from v1** (no single kanbun standard in TEI or LaTeX; see [STATUS.md](STATUS.md))
 - [ ] Subscript-only fallback macro for simple レ (no extension)
 
 ## Phase 3 — Word renderer
 
-- [x] Office.js add-in skeleton — [word/](../word/)
-- [x] Same canonical source; **content control** renderer v0.1 (see [WORD_FINDINGS.md](WORD_FINDINGS.md))
-- [ ] **Word Renderer C spike:** `insertTextBox` + `shape.textWrap.type = inline` (horizontal `說㆒㆑`); Mac + Windows — [WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md)
-- [x] **Render** + **Refresh** + **Unrender** + clipboard export (parity with LO toolbar)
-- [x] Content-control `tag` stores source marks (`MARINAMOJI:source=…`) for refresh
-- [x] No import of LO frames — format from source in Word
+- [x] Office.js add-in — [word/](../word/)
+- [x] **Inline picture** renderer (Mac default; `word_primary: inline_picture`)
+- [x] **Render** + **Refresh** + **Unrender** + **Copy plain** (parity with LO toolbar)
+- [x] Alt-text metadata (`MARINAMOJI:kaeriten:id=…;source=…`) for round-trip
 - [x] Mac dev tooling: HTTPS server, mkcert, `doctor`, task pane + Accueil ribbon ([WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md))
-- [ ] **Mac end-to-end:** Office.js connects from **Accueil → Kaeriten pane** (not Compléments preview only)
-- [ ] Manual QA on Word for macOS (縦書き, font-size refresh, compound clusters)
+- [ ] **Pre-publish QA:** Accueil pane connects; render/unrender/refresh; 縦書き; compound; copy plain
+- [ ] Self-hosted `dist/` + production manifest ([SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md))
 
 ## Phase 4 — Optional
 
@@ -60,10 +59,9 @@
 
 ## OnlyOffice plugin
 
-- [x] Plugin skeleton — [onlyoffice/](../onlyoffice/) (sidebar, export, inline content controls)
-- [ ] Install + QA on ONLYOFFICE Desktop or Document Server
-- [ ] Document: Unicode source; no frame parity with LO on paste
-- [ ] Do not plan shared hidden metadata across LO / Word / OnlyOffice
+- [x] Plugin skeleton — [onlyoffice/](../onlyoffice/) (sidebar, copy plain, inline content controls)
+- [ ] **Pre-publish QA** on ONLYOFFICE Desktop
+- [x] Document: Unicode source; no frame parity with LO on paste
 
 ## Deferred / rejected
 
@@ -72,6 +70,7 @@
 | Asian ruby as primary kaeriten | **Rejected** |
 | Frames/textboxes as source of truth | **Rejected** |
 | Hidden metadata as canonical semantics | **Rejected** for v1 |
+| TEI / LaTeX export in product UI | **Rejected** for v1 — no single standard |
 | Cross-suite hidden schema (LO + Word + OnlyOffice) | **Rejected** for v1 |
 | OnlyOffice frame compatibility | **Out of scope** v1 |
 | Auto-format on every keystroke / IME commit | **Deferred** |

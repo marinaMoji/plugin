@@ -19,8 +19,6 @@ _COMMANDS = frozenset(
         "render_kaeriten",
         "unrender_kaeriten",
         "copy_plain_text",
-        "export_tei",
-        "export_latex",
         "toggle_page_writing_mode",
     )
 )
@@ -83,10 +81,6 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.unrender_kaeriten()
         elif path == "copy_plain_text":
             macros.copy_plain_text()
-        elif path == "export_tei":
-            macros.export_tei()
-        elif path == "export_latex":
-            macros.export_latex()
         elif path == "toggle_page_writing_mode":
             macros.toggle_page_writing_mode()
 

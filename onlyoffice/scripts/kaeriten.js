@@ -530,28 +530,6 @@
       .catch((err) => setStatus(String(err.message || err), true));
   }
 
-  function runCopyTei() {
-    setStatus("Copying TEI…");
-    getTextForExport()
-      .then(({ text }) =>
-        copyToClipboard(MarinaMojiExport.exportTeiForClipboard(text, false))
-      )
-      .then(() => setStatus("Copied TEI fragment.", false))
-      .catch((err) => setStatus(String(err.message || err), true));
-  }
-
-  function runCopyLatex() {
-    setStatus("Copying LaTeX…");
-    getTextForExport()
-      .then(({ text }) =>
-        copyToClipboard(
-          MarinaMojiExport.exportLatexForClipboard(text, mappingData, false)
-        )
-      )
-      .then(() => setStatus("Copied LaTeX fragment.", false))
-      .catch((err) => setStatus(String(err.message || err), true));
-  }
-
   function wire(id, fn) {
     const btn = document.getElementById(id);
     if (!btn) return;
@@ -571,8 +549,6 @@
         wire("btn-unrender", runUnrender);
         wire("btn-refresh", runRefresh);
         wire("btn-plain", runCopyPlain);
-        wire("btn-tei", runCopyTei);
-        wire("btn-latex", runCopyLatex);
       })
       .catch((err) => setStatus(String(err.message || err), true));
   };

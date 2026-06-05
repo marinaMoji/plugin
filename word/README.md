@@ -3,12 +3,12 @@
 Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice extension:
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
-- **View:** locked content controls with stacked display glyphs (一 / レ) — on Mac the box often does not stay visible; see [../docs/WORD_ADDIN_ATTEMPTS.md](../docs/WORD_ADDIN_ATTEMPTS.md)
-- **Commands:** Render, Unrender, Refresh, Copy plain / TEI / LaTeX
+- **View:** inline PNG pictures (canvas-drawn glyphs; default `word_primary: inline_picture`)
+- **Commands:** Render, Unrender, Refresh, Copy plain text
 
-**Development status (May 2026):** Code is in place; **Mac sideload + HTTPS + Office.js** still need a successful end-to-end test on your machine. See [../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md) for the **resume checklist** and troubleshooting.
+**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and HTTPS hosting required before distribution. Dev setup: [../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md). Project status: [../docs/STATUS.md](../docs/STATUS.md).
 
-**End-user distribution (no Terminal):** Host `dist/` on your website; ship the Mac installer from [../packaging/](../packaging/). See [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
+**End-user distribution (no Terminal):** Host `dist/` on your website; ship the Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
 
 See also [../docs/WORD_FINDINGS.md](../docs/WORD_FINDINGS.md), [../docs/WORD_ADDIN_ATTEMPTS.md](../docs/WORD_ADDIN_ATTEMPTS.md), and [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
@@ -127,7 +127,7 @@ To stop debugging: `npm stop`.
 3. Click **Render** — marks become small stacked views after the base character.
 4. Edit the **Unicode source** (run **Unrender** first, or edit before rendering).
 5. After changing paragraph font size, click **Refresh**.
-6. **Copy plain** / **Copy TEI** / **Copy LaTeX** put canonical or export text on the clipboard.
+6. **Copy plain** puts canonical Unicode on the clipboard.
 
 Operations are silent (no dialog boxes). Check the result in the document or by pasting elsewhere.
 
@@ -135,7 +135,7 @@ Operations are silent (no dialog boxes). Check the result in the document or by 
 
 | Path | Role |
 |------|------|
-| `src/exportCore.js` | Parser + TEI/LaTeX (port of LO `export_core.py`) |
+| `src/exportCore.js` | Parser + plain export (port of LO `export_core.py`) |
 | `src/render.js` | Render / unrender / refresh in Word |
 | `src/officeReady.js` | Wait for Office.js / Word host |
 | `src/taskpane/` | Task pane HTML + UI |

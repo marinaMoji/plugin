@@ -78,36 +78,6 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t4" oor:op="replace">
-          <prop oor:name="URL" oor:type="xs:string">
-            <value>org.marinaMoji.kaeriten:export_tei</value>
-          </prop>
-          <prop oor:name="Title" oor:type="xs:string">
-            <value>Copy TEI</value>
-            <value xml:lang="en-US">Copy TEI</value>
-          </prop>
-          <prop oor:name="Target" oor:type="xs:string">
-            <value>_self</value>
-          </prop>
-          <prop oor:name="Context" oor:type="xs:string">
-            <value>com.sun.star.text.TextDocument</value>
-          </prop>
-        </node>
-        <node oor:name="t5" oor:op="replace">
-          <prop oor:name="URL" oor:type="xs:string">
-            <value>org.marinaMoji.kaeriten:export_latex</value>
-          </prop>
-          <prop oor:name="Title" oor:type="xs:string">
-            <value>Copy LaTeX</value>
-            <value xml:lang="en-US">Copy LaTeX</value>
-          </prop>
-          <prop oor:name="Target" oor:type="xs:string">
-            <value>_self</value>
-          </prop>
-          <prop oor:name="Context" oor:type="xs:string">
-            <value>com.sun.star.text.TextDocument</value>
-          </prop>
-        </node>
       </node>
     </node>
     <node oor:name="Images">
@@ -147,32 +117,6 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/copy_plain_text_big.png</value>
-          </prop>
-        </node>
-      </node>
-      <node oor:name="org.marinaMoji.kaeriten.export_tei" oor:op="replace">
-        <prop oor:name="URL" oor:type="xs:string">
-          <value>org.marinaMoji.kaeriten:export_tei</value>
-        </prop>
-        <node oor:name="UserDefinedImages">
-          <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/export_tei.png</value>
-          </prop>
-          <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/export_tei_big.png</value>
-          </prop>
-        </node>
-      </node>
-      <node oor:name="org.marinaMoji.kaeriten.export_latex" oor:op="replace">
-        <prop oor:name="URL" oor:type="xs:string">
-          <value>org.marinaMoji.kaeriten:export_latex</value>
-        </prop>
-        <node oor:name="UserDefinedImages">
-          <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/export_latex.png</value>
-          </prop>
-          <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/export_latex_big.png</value>
           </prop>
         </node>
       </node>

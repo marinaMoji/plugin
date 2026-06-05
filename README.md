@@ -14,7 +14,7 @@ Font choice alone does not fix placement; the same U+3191 can look different siz
 
 | Layer | Content | Purpose |
 |-------|---------|---------|
-| **Canonical source** | `說㆒㆑者` (ordinary Unicode text) | marinaMoji input; search; git; TEI/LaTeX export; copy to other apps |
+| **Canonical source** | `說㆒㆑者` (ordinary Unicode text) | marinaMoji input; search; git; copy plain to other apps |
 | **Rendered view** | LO **frame** (as character); Word **content control** (v0.1) or **inline text box** (target) | Scholarly print layout; PDF; **not** the archival format |
 
 Frames and textboxes are a **view**, not the source of truth. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -37,7 +37,7 @@ Frames and textboxes are a **view**, not the source of truth. See [docs/ARCHITEC
 
 - **Meaning** lives in visible Unicode (`㆒㆑`), not in hidden Word/LO/OnlyOffice XML for v1.
 - **Optional** editor-local IDs may link a frame/textbox to a position for refresh only.
-- **TEI / LaTeX** export reads canonical text + [mapping.json](mapping.json).
+- **Copy plain text** reads canonical Unicode from the document (including marks recovered from rendered views). TEI/LaTeX export is **not** shipped in v1 — no single standard for kanbun markup in those formats.
 
 Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 
@@ -49,7 +49,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | Word add-in: content controls (dev; Mac QA pending) | Word textbox renderer (closer to manual experiments) |
 | **Format kaeriten** + **Refresh** commands | 再読, okurigana |
 | Canonical Unicode in document | |
-| Show source / Copy plain / TEI / LaTeX (LO + Word) | |
+| Render / Unrender / Refresh / Copy plain (all hosts) | |
 
 | Out of scope (v1) | |
 |-------------------|---|
@@ -74,12 +74,14 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/WORD_PLUGIN_RESEARCH.md](docs/WORD_PLUGIN_RESEARCH.md) | Word planning: Mac reality, certs, macros, parity |
 | [docs/ONLYOFFICE.md](docs/ONLYOFFICE.md) | ONLYOFFICE role, limits, workflow |
 | [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | GitHub/website releases, GUI installers, no App Store |
+| [docs/SELF_HOSTED_PUBLISHING_PLAN.md](docs/SELF_HOSTED_PUBLISHING_PLAN.md) | Step-by-step publish plan (LO, Word, ONLYOFFICE) |
 | [docs/INSTALL-MAC-GATEKEEPER.md](docs/INSTALL-MAC-GATEKEEPER.md) | macOS Right-click → Open (unsigned downloads) |
 | [onlyoffice/README.md](onlyoffice/README.md) | ONLYOFFICE plugin install and use |
 | [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md) | LO experiments and frame parameters |
 | [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md) | Word experiments (May–June 2026) |
 | [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word textboxes |
 | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Typing order; compound clusters; user workflow |
+| [docs/STATUS.md](docs/STATUS.md) | Current state — pre-publish QA gate |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased build plan |
 | [docs/BACKGROUND.md](docs/BACKGROUND.md) | Prior art survey |
 | [docs/SOURCES.md](docs/SOURCES.md) | Bibliography |
@@ -103,11 +105,11 @@ cd libreoffice
 ./install.sh    # optional: copy Python macros (same as Mac installer)
 ```
 
-## Microsoft Word add-in (parked)
+## Microsoft Word add-in (pre-release)
 
-The Word add-in is **excluded from git** until the Mac renderer is stable. See [docs/WORD_ADDIN_DEV.md](docs/WORD_ADDIN_DEV.md) to resume development.
+Inline-picture renderer; render / unrender / refresh / copy plain. **Pre-publish QA** and HTTPS hosting required before distribution. Dev: [word/README.md](word/README.md). Status: [docs/STATUS.md](docs/STATUS.md).
 
-## ONLYOFFICE plugin (v0.1.0 — alpha, experimental)
+## ONLYOFFICE plugin (pre-release)
 
 **End users (macOS):** download `marinamoji-kaeriten-onlyoffice-mac.dmg` from GitHub Releases.
 
@@ -121,8 +123,14 @@ Plugins → **marinaMoji Kaeriten** sidebar.
 
 ## Status
 
-**LibreOffice extension (alpha)** — render / unrender / refresh / clipboard export. **Use this for real work today.**
+See **[docs/STATUS.md](docs/STATUS.md)** for the full picture.
 
-**ONLYOFFICE plugin (alpha, experimental)** — same commands via sidebar; inline content controls. Compound mark layout is imperfect.
+**All three plugins** — implementation complete for v1 (render, unrender, refresh, copy plain). **Pre-publish QA** on each host before GitHub/website release.
 
-**Word add-in (parked)** — development paused; not shipped in releases.
+**LibreOffice** — recommended daily driver after QA (inline SVG images, vertical text, compound touching).
+
+**Word** — inline pictures; developers use localhost + mkcert; end users need hosted `dist/`.
+
+**ONLYOFFICE** — sidebar plugin; experimental parity with LO/Word.
+
+**Export:** **Copy plain Unicode only.** TEI and LaTeX buttons removed — no consensus standard for kanbun in those formats.

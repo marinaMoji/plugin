@@ -5,8 +5,6 @@ import {
   runUnrenderKaeriten,
   runRefreshKaeriten,
   runCopyPlainText,
-  runCopyTei,
-  runCopyLatex,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
 import {
@@ -109,8 +107,6 @@ function initUi() {
   );
   wire("btn-refresh", runRefreshKaeriten, "Refreshed views.");
   wire("btn-plain", runCopyPlainText, "Copied plain text.");
-  wire("btn-tei", runCopyTei, "Copied TEI.");
-  wire("btn-latex", runCopyLatex, "Copied LaTeX.");
   setStatus("Connecting to Word…");
   whenOfficeReady(45000, {
     onSlow: (hint) => setStatus(hint, "err"),

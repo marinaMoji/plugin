@@ -59,7 +59,7 @@ From interoperability tests in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 | Piece | Description |
 |-------|-------------|
-| **Sidebar UI** | Render, Unrender, Refresh, Copy plain / TEI / LaTeX |
+| **Sidebar UI** | Render, Unrender, Refresh, Copy plain text |
 | **Renderer** | Inline content controls (`Api.CreateInlineLvlSdt`) with tag `MARINAMOJI:source=…` |
 | **Export** | Same logic as Word / LO (`exportCore.js` port) |
 
@@ -69,8 +69,8 @@ Install and daily use: **[onlyoffice/README.md](../onlyoffice/README.md)**.
 
 | | |
 |---|---|
-| **Code** | Scaffold complete (May 2026) |
-| **QA on real ONLYOFFICE** | **Not done yet** on your machine |
+| **Code** | Feature-complete for v1 (June 2026) |
+| **Pre-publish QA** | Required before release |
 | **Recommended for daily work** | **LibreOffice** until QA passes |
 
 ---
@@ -121,7 +121,7 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 
 - **Compound stacks:** default `"stack"` uses `SetPosition` + tight spacing inside the inline control (no `AddLineBreak` — that escapes and breaks the line before the block). Tune with `"stack_step_hps"` (half-points; `0` = auto). Fallbacks: `"soft_break"` or `"horizontal"`.
 - **Unrender:** replaces the control in place (no `Delete()`) so display glyphs are not spilled to line start.
-- **Export (TEI/LaTeX):** reads canonical Unicode from control tags while views are shown (no Unrender required).
+- **Copy plain:** reads canonical Unicode from control tags while views are shown (no Unrender required).
 - **API names** may differ slightly between ONLYOFFICE versions (`GetParentParagraph`, etc.).
 - **No import** of Word content controls or LO frames from other apps.
 
@@ -134,10 +134,10 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 | **Render primitive** | Anchored **frame** | **Content control** (v0.1) | Inline **content control** |
 | **Visual match to print** | Best in your tests | Good | TBD (QA) |
 | **Install difficulty** | Extension Manager `.oxt` | High (HTTPS + serve) | Medium (copy folder) |
-| **Mac daily use** | ✅ Working | 🔧 In progress | ⏳ Not QA’d |
+| **Mac daily use** | ✅ Ready after QA | ✅ Ready after QA | ⏳ Pre-publish QA |
 | **Paste from LO** | — | Views lost | Views lost |
 | **Canonical Unicode** | ✅ | ✅ | ✅ |
-| **TEI / LaTeX export** | ✅ | ✅ (code) | ✅ (code) |
+| **Copy plain export** | ✅ | ✅ | ✅ |
 
 ---
 
@@ -164,7 +164,7 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 1. **Author in LibreOffice** with marinaMoji + Kaeriten extension.
 2. **Archive / git** plain Unicode or `.odt` with source marks visible.
 3. **Optional:** open copy in ONLYOFFICE or Word → **Render** there for a specific deliverable (PDF, collaborator).
-4. **Export TEI/LaTeX** from whichever host has the tools working that day (LO is safest today).
+4. **Copy plain text** from any host for safe handoff between apps.
 
 ### Document with collaborators
 
@@ -183,7 +183,7 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 ONLYOFFICE and Word share:
 
 - `mapping.json`
-- Export rules (TEI, LaTeX)
+- Copy-plain export rules
 - Tag convention `MARINAMOJI:source=…`
 - “Edit source, not the view” UX
 

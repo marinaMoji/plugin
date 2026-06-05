@@ -1,11 +1,7 @@
 /* global Word */
 
 import { wordEnumsReady } from "./wordEnums.js";
-import {
-  exportPlainText,
-  exportTeiForClipboard,
-  exportLatexForClipboard,
-} from "./exportCore.js";
+import { exportPlainText } from "./exportCore.js";
 import {
   loadMapping,
   renderKaeritenDocument,
@@ -70,16 +66,4 @@ async function copyPayload(buildPayload) {
 
 export function runCopyPlainText() {
   return copyPayload((result) => exportPlainText(result.text));
-}
-
-export function runCopyTei() {
-  return copyPayload((result) =>
-    exportTeiForClipboard(result.text, false)
-  );
-}
-
-export function runCopyLatex() {
-  return copyPayload((result, mapping) =>
-    exportLatexForClipboard(result.text, mapping, false)
-  );
 }

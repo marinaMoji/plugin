@@ -17,11 +17,9 @@ from xml.sax.saxutils import escape as _xml_escape
 import uno
 
 try:
-    from export_core import export_latex_for_clipboard as _latex_clipboard
     from export_core import export_plain_text as _plain_text_export
-    from export_core import export_tei_for_clipboard as _tei_clipboard
 except ImportError:
-    _plain_text_export = _tei_clipboard = _latex_clipboard = None
+    _plain_text_export = None
 
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
@@ -1359,43 +1357,6 @@ def copy_plain_text(*_args):
     _clipboard_set_text(_plain_text_export(text))
 
 
-def export_tei(*_args):
-    if _tei_clipboard is None:
-        return
-    try:
-        doc = _get_document()
-    except RuntimeError:
-        return
-    text = _canonical_text_for_export(doc)
-    if text is None:
-        return
-    try:
-        payload = _tei_clipboard(text, full_document=False)
-        _clipboard_set_text(payload)
-    except Exception:
-        pass
-
-
-def export_latex(*_args):
-    if _latex_clipboard is None:
-        return
-    try:
-        doc = _get_document()
-    except RuntimeError:
-        return
-    text = _canonical_text_for_export(doc)
-    if text is None:
-        return
-    try:
-        mapping = _load_mapping()
-        payload = _latex_clipboard(
-            text, mapping_data=mapping, full_document=False
-        )
-        _clipboard_set_text(payload)
-    except Exception:
-        pass
-
-
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1408,8 +1369,6 @@ g_exportedScripts = (
     render_kaeriten,
     unrender_kaeriten,
     copy_plain_text,
-    export_tei,
-    export_latex,
     format_selection,
     format_paragraph,
     format_document,

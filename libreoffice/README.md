@@ -41,8 +41,6 @@ If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remo
 | Button | Clipboard contents |
 |--------|-------------------|
 | Copy plain text | Canonical Unicode `說㆒㆑者` |
-| Copy TEI | TEI XML (snippet if selection; full document if none) |
-| Copy LaTeX | LaTeX (snippet if selection; full `.tex` scaffold if none) |
 
 Render / Unrender are unchanged (they edit the document, not the clipboard).
 The **Toggle vertical page** button switches the current page style between horizontal left-to-right (`LR_TB`) and vertical right-to-left (`TB_RL`), then refreshes existing rendered kaeriten.
@@ -52,7 +50,7 @@ The **Toggle vertical page** button switches the current page style between hori
 | Piece | Role |
 |-------|------|
 | `Scripts/python/marinamoji_kaeriten.py` | Render / unrender / copy |
-| `Scripts/python/export_core.py` | TEI / LaTeX conversion (no LO dependency) |
+| `Scripts/python/export_core.py` | Plain-text export helpers (TEI/LaTeX kept for dev only) |
 | `marinamoji_kaeriten_dispatch.py` | ProtocolHandler for toolbar |
 
 Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO only.
@@ -69,9 +67,11 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 2. Toolbar **Render kaeriten**
 3. Optional: **Toggle vertical page** to switch the current page style between 横書き and 縦書き
 4. Edit source with **Unrender**; do not edit inside rendered images/frames
-5. **Copy plain text** / **Copy TEI** / **Copy LaTeX** — paste elsewhere
+5. **Copy plain text** — paste elsewhere (canonical Unicode)
 
 Export reads **Unicode source** (including marks from rendered images/frames). See [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
+
+**Publishing:** maintainer steps for GitHub Releases and website → [docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 1).
 
 ## Development
 

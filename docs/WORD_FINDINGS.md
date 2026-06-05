@@ -120,7 +120,7 @@ After mark or style changes → **Refresh rendering** (rebuild boxes from source
 
 Custom XML, RDF, or hidden document properties are **not required** for v1 semantics. The string `說㆒㆑者` already encodes meaning.
 
-Optional **editor-local** tags (bookmark names, textbox IDs) may help the Word add-in **find and refresh** its own boxes. Export (TEI, LaTeX) should read **visible canonical text** + [mapping.json](../mapping.json), not Word-only hidden fields.
+Optional **editor-local** tags (bookmark names, textbox IDs, picture alt text) may help the Word add-in **find and refresh** its own views. **Copy plain** reads **canonical Unicode** + [mapping.json](../mapping.json), not Word-only hidden fields.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md#metadata-and-export).
 
@@ -147,7 +147,7 @@ These fit **semantic text + generated view**:
 - Vertical writing helpers
 - Variant characters, hentaigana, kuzushiji
 - Scholarly transcription symbols
-- TEI/XML export from source
+- Copy plain export from source (TEI/LaTeX not shipped in v1)
 
 ## Office.js add-in (development, May 2026)
 

@@ -40,7 +40,7 @@ It is weak for:
 ## Where marinaMoji + this plugin fits
 
 - **marinaMoji:** keyboard-first Unicode (`說㆒㆑者`).
-- **Plugin:** **Format kaeriten** (manual) builds frames/textboxes for print; **Refresh** rebuilds views; export TEI/LaTeX from visible source + `mapping.json`, not from hidden metadata or object pixels.
+- **Plugin:** **Render kaeriten** (manual) builds inline images/frames for print; **Refresh** rebuilds views; **Copy plain** reads canonical Unicode from source + `mapping.json`, not from hidden metadata or object pixels.
 - **TeX:** still the path for camera-ready books; export from source layer.
 
 We do not replace TeX in v1; we make Word Processor drafts and teaching materials feasible with compound kaeriten.

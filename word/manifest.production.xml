@@ -122,36 +122,6 @@
                     <FunctionName>copyPlainText</FunctionName>
                   </Action>
                 </Control>
-                <Control xsi:type="Button" id="CopyTeiButton">
-                  <Label resid="CopyTei.Label"/>
-                  <Supertip>
-                    <Title resid="CopyTei.Label"/>
-                    <Description resid="CopyTei.Tip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.16"/>
-                    <bt:Image size="32" resid="Icon.32"/>
-                    <bt:Image size="80" resid="Icon.80"/>
-                  </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>copyTei</FunctionName>
-                  </Action>
-                </Control>
-                <Control xsi:type="Button" id="CopyLatexButton">
-                  <Label resid="CopyLatex.Label"/>
-                  <Supertip>
-                    <Title resid="CopyLatex.Label"/>
-                    <Description resid="CopyLatex.Tip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.16"/>
-                    <bt:Image size="32" resid="Icon.32"/>
-                    <bt:Image size="80" resid="Icon.80"/>
-                  </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>copyLatex</FunctionName>
-                  </Action>
-                </Control>
               </Group>
             </OfficeTab>
           </ExtensionPoint>
@@ -170,8 +140,6 @@
         <bt:String id="Unrender.Label" DefaultValue="Unrender"/>
         <bt:String id="Refresh.Label" DefaultValue="Refresh"/>
         <bt:String id="CopyPlain.Label" DefaultValue="Copy plain"/>
-        <bt:String id="CopyTei.Label" DefaultValue="Copy TEI"/>
-        <bt:String id="CopyLatex.Label" DefaultValue="Copy LaTeX"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="ShowPane.Tip" DefaultValue="Open the marinaMoji Kaeriten task pane."/>
@@ -179,8 +147,6 @@
         <bt:String id="Unrender.Tip" DefaultValue="Restore Unicode marks and remove kaeriten views."/>
         <bt:String id="Refresh.Tip" DefaultValue="Update kaeriten views after font or mark changes."/>
         <bt:String id="CopyPlain.Tip" DefaultValue="Copy canonical Unicode to the clipboard."/>
-        <bt:String id="CopyTei.Tip" DefaultValue="Copy TEI XML to the clipboard."/>
-        <bt:String id="CopyLatex.Tip" DefaultValue="Copy LaTeX to the clipboard."/>
       </bt:LongStrings>
       <bt:Images>
         <bt:Image id="Icon.16" DefaultValue="MARINAMOJI_PLUGIN_BASE/assets/icon-16.png"/>

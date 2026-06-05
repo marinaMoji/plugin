@@ -2,7 +2,7 @@
 
 Build double-click installers for **end users**. No Terminal required on their side.
 
-See [../../docs/DISTRIBUTION.md](../../docs/DISTRIBUTION.md) for the full distribution strategy.
+See [../../docs/DISTRIBUTION.md](../../docs/DISTRIBUTION.md) for the overview and [../../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../../docs/SELF_HOSTED_PUBLISHING_PLAN.md) for the step-by-step publish plan.
 
 ## One-shot release build (macOS)
 

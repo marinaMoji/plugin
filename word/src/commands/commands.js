@@ -5,8 +5,6 @@ import {
   runUnrenderKaeriten,
   runRefreshKaeriten,
   runCopyPlainText,
-  runCopyTei,
-  runCopyLatex,
 } from "../actions.js";
 
 Office.onReady(() => {});
@@ -38,16 +36,8 @@ export async function refreshKaeriten(event) {
 export async function copyPlainText(event) {
   await ribbonCall(event, runCopyPlainText);
 }
-export async function copyTei(event) {
-  await ribbonCall(event, runCopyTei);
-}
-export async function copyLatex(event) {
-  await ribbonCall(event, runCopyLatex);
-}
 
 globalThis.renderKaeriten = renderKaeriten;
 globalThis.unrenderKaeriten = unrenderKaeriten;
 globalThis.refreshKaeriten = refreshKaeriten;
 globalThis.copyPlainText = copyPlainText;
-globalThis.copyTei = copyTei;
-globalThis.copyLatex = copyLatex;

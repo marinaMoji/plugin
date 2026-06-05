@@ -4,9 +4,9 @@ JavaScript plugin for **ONLYOFFICE Document Editor** (Writer). Same model as the
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
 - **View:** inline content controls with stacked display glyphs (一 / レ)
-- **Commands:** Render, Unrender, Refresh, Copy plain / TEI / LaTeX
+- **Commands:** Render, Unrender, Refresh, Copy plain text
 
-**Status (May 2026):** **alpha** — QA’d on ONLYOFFICE Desktop (macOS). Compound marks may stack imperfectly; LibreOffice remains the recommended editor for daily work.
+**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** on ONLYOFFICE Desktop before release. LibreOffice remains the recommended daily driver after QA.
 
 See [../docs/WORD_FINDINGS.md](../docs/WORD_FINDINGS.md) (interoperability) and [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
@@ -79,7 +79,7 @@ Then enable plugins in editor config (`plugins: true`).
 3. Click **Render** — paragraphs with mark clusters get inline views.
 4. Edit source with **Unrender**; do not edit inside the controls.
 5. **Refresh** after font changes.
-6. **Copy plain** / **TEI** / **LaTeX** for export elsewhere.
+6. **Copy plain** for canonical Unicode elsewhere.
 
 **Note:** v0.1 **Render** walks **all paragraphs** in the document that contain marks (not only the current selection). Export uses selection when present, otherwise the full document.
 
@@ -89,7 +89,7 @@ Then enable plugins in editor config (`plugins: true`).
 |------|------|
 | `config.json` | Plugin registration |
 | `index.html` | Sidebar UI |
-| `scripts/exportCore.js` | Parser + TEI/LaTeX |
+| `scripts/exportCore.js` | Parser + plain export |
 | `scripts/kaeriten.js` | `callCommand` render / unrender |
 | `mapping.json` | Shared mark definitions (from `../mapping.json`) |
 
@@ -103,5 +103,5 @@ Then enable plugins in editor config (`plugins: true`).
 
 - No import of LibreOffice frames or Word content controls from other apps
 - Render applies per **paragraph** (document-wide scan)
-- TEI/LaTeX export briefly unrenders the document to read canonical text, then re-renders
+- Copy plain reads canonical text from control tags while views are shown
 - API names (`GetParentParagraph`, `RemoveElement`, …) may differ slightly across ONLYOFFICE versions — report issues if a command fails

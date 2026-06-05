@@ -23,7 +23,7 @@ If font changes, an object is deleted, or the document is re-imported, the plugi
 ┌─────────────────────────────────────────────────────────┐
 │  Canonical source (ordinary text)                        │
 │  說㆒㆑者  — marinaMoji ;1 ;r after 說                  │
-│  • grep / git / TEI export / Copy as plain text         │
+│  • grep / git / Copy plain text                         │
 └─────────────────────────────────────────────────────────┘
                           │
                           │  Format kaeriten (manual; v1)
@@ -76,9 +76,7 @@ Annotation objects should be **read-only** from the user’s perspective. Never 
 |------------------------|-------------|---------|
 | **Render kaeriten** | Format + refresh | Selection if highlighted, else document: source → frames; rescale existing frames |
 | **Unrender kaeriten** | Show source | Same scope: frames → Unicode marks for editing |
-| **Copy as plain text** | — | Clipboard = `說㆒㆑者` (no frames) |
-| **Copy TEI** | Export TEI | Clipboard: TEI snippet (selection) or full document |
-| **Copy LaTeX** | Export LaTeX | Clipboard: LaTeX snippet or full `.tex` scaffold |
+| **Copy plain text** | Copy as plain text | Clipboard = `說㆒㆑者` (marks from rendered views spliced in) |
 
 **Not in v1:**
 
@@ -95,7 +93,7 @@ Annotation objects should be **read-only** from the user’s perspective. Never 
 | [mapping.json](../mapping.json) | How marks map to stacked glyphs (一, レ, …) |
 | [CONVENTIONS.md](CONVENTIONS.md) | Parser rules (clusters after base kanji) |
 
-This is sufficient for v1 **and** for TEI/LaTeX export. Custom document XML, RDF, or proprietary hidden fields are **not** required to encode kaeriten meaning initially.
+This is sufficient for v1. Custom document XML, RDF, or proprietary hidden fields are **not** required to encode kaeriten meaning.
 
 ### Optional editor-local metadata (per host only)
 
@@ -107,7 +105,7 @@ If the extension **hides** marks after formatting, or needs to find existing obj
 | Use optional metadata for | Do **not** use it for |
 |---------------------------|------------------------|
 | Linking a frame/textbox to a text offset for **Refresh** | Primary meaning if Unicode is missing |
-| Finding objects to delete before rebuild | TEI/LaTeX export (read source text instead) |
+| Finding objects to delete before rebuild | Cross-app semantics (read Unicode source instead) |
 | Idempotent refresh | Cross-app interchange (Word ↔ LO ↔ OnlyOffice) |
 
 **Do not** replicate one hidden schema across Word, LibreOffice, and OnlyOffice for v1 — each suite has different extension APIs, and paste between apps already drops visual objects.
@@ -115,10 +113,12 @@ If the extension **hides** marks after formatting, or needs to find existing obj
 ### Export
 
 ```text
-說㆒㆑者  +  mapping.json  →  TEI / LaTeX / plain text
+說㆒㆑者  →  Copy plain text (clipboard)
 ```
 
-Export pipelines **never** depend on reading frame/textbox pixels as the semantic layer.
+**v1 ships plain Unicode only.** TEI XML and LaTeX were prototyped (`export_core.py`, `exportCore.js`) but are **not** exposed in the UI: there is no one agreed way to encode kanbun kaeriten in TEI or LaTeX across DH projects (contrast furigana ruby, where conventions exist). Users who need structured export should keep canonical marks in the document and transform downstream with their own project rules.
+
+Export pipelines **never** depend on reading frame/image pixels as the semantic layer.
 
 ## What we rejected as primary
 

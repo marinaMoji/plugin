@@ -142,10 +142,10 @@ Legend: ✅ done / reliable · 🟡 partial · ❌ no · 🔧 dev only · ⏳ no
 | Feature | LibreOffice extension | Word add-in v0.1.2 | ONLYOFFICE plugin v0.1 |
 |---------|----------------------|--------------------|-------------------------|
 | **Canonical source `說㆒㆑者`** | ✅ | ✅ (design) | ✅ (design) |
-| **Render** | ✅ frames | 🔧 content controls | ⏳ inline CC |
-| **Unrender** | ✅ | 🔧 | ⏳ |
-| **Refresh** | ✅ | 🔧 | ⏳ |
-| **Copy plain / TEI / LaTeX** | ✅ | 🔧 (export logic tested) | ⏳ |
+| **Render** | ✅ inline SVG images | ✅ inline pictures | ✅ inline CC |
+| **Unrender** | ✅ | ✅ | ✅ |
+| **Refresh** | ✅ | ✅ | ✅ |
+| **Copy plain** | ✅ | ✅ | ✅ |
 | **Scope: selection** | ✅ | ✅ | ❌ (OO: whole doc scan) |
 | **Scope: whole document** | ✅ | ✅ | ✅ |
 | **Silent UI (no dialogs)** | ✅ | ✅ | ✅ |
@@ -154,13 +154,11 @@ Legend: ✅ done / reliable · 🟡 partial · ❌ no · 🔧 dev only · ⏳ no
 | **Paste LO → host visuals** | — | ❌ | ❌ |
 | **縦書き** | 🟡 manual QA pending | ⏳ | ⏳ |
 | **Compound ㆒㆑** | ✅ | 🔧 (logic shared) | ⏳ |
-| **Daily use ready** | **Yes** | **Not yet** | **Not yet** |
+| **Daily use ready** | **After QA** | **After QA** | **After QA** |
 
-**Word MVP (definition of “done”):**
+**Pre-publish gate (June 2026):** implementation complete on all three hosts; see [STATUS.md](STATUS.md). QA checklists in [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) and [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md).
 
-1. Accueil pane → **Ready**
-2. Render / Unrender / Refresh on `說㆒㆑者`
-3. Copy plain at minimum; TEI/LaTeX if export path stable
+**Export:** **Copy plain Unicode only** — TEI/LaTeX removed from UI (no single kanbun standard).
 
 ---
 
@@ -193,7 +191,7 @@ Sources: [Office Add-ins overview (vs VBA)](https://learn.microsoft.com/en-us/of
 |----------|---------|
 | **Personal Windows machine**, no Node, no HTTPS | Small VBA “format selection” macro **possible** |
 | **Classroom / collaborators on Mac** | **Poor** — use LO or Word add-in |
-| **TEI/LaTeX export only** | Python/`export_core.py` or LO buttons — **no Word needed** |
+| **Structured export (TEI/LaTeX)** | **Out of scope v1** — use plain Unicode + your own downstream rules |
 | **Subscript fallback** (レ only) | Simple VBA or character style — **not** compound stacks |
 
 ### Strategic options (ranked for a solo DH scholar)
@@ -280,7 +278,7 @@ Sources:
 
 ### Distribution without Marketplace
 
-We ship via **GitHub Releases** and our **website**, not AppSource. End users get **double-click installers**; add-in files are hosted on our domain with normal HTTPS (no mkcert). See **[DISTRIBUTION.md](DISTRIBUTION.md)** and **[INSTALL-MAC-GATEKEEPER.md](INSTALL-MAC-GATEKEEPER.md)**.
+We ship via **GitHub Releases** and our **website**, not AppSource. End users get **double-click installers**; add-in files are hosted on our domain with normal HTTPS (no mkcert). See **[DISTRIBUTION.md](DISTRIBUTION.md)**, **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**, and **[INSTALL-MAC-GATEKEEPER.md](INSTALL-MAC-GATEKEEPER.md)**.
 
 | Audience | Approach |
 |----------|----------|

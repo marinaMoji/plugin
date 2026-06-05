@@ -81,7 +81,7 @@ Same canonical source; **disposable view** beside the base kanji (May–June 202
 - **Plugin (v0.1):** inline content controls via `Api.CreateInlineLvlSdt()` — see [onlyoffice/README.md](../onlyoffice/README.md).
 - Paste from LO **loses frame objects** — re-render from Unicode source in ONLYOFFICE.
 - Rely on **visible Unicode source** in the document for interchange.
-- **Copy as plain text** / TEI / LaTeX from the plugin sidebar.
+- **Copy plain text** from the plugin sidebar.
 - Do not depend on hidden metadata shared with LO or Word.
 
 ## Okurigana (both platforms, later)

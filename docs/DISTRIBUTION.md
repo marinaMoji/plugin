@@ -4,6 +4,10 @@ How we ship marinaMoji **office plugins** without Microsoft Marketplace, Apple D
 
 **Audience:** researchers and students (newbies). **Channels:** GitHub Releases + your website. **Mac:** unsigned installers with clear **Gatekeeper** instructions.
 
+**Current state:** implementation complete; **pre-publish QA** blocks release. See **[STATUS.md](STATUS.md)**.
+
+**Maintainers:** step-by-step publishing plan for all three plugins (LO, Word, ONLYOFFICE) → **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**.
+
 ---
 
 ## What we are *not* doing (for now)
@@ -23,7 +27,7 @@ We **do** use normal **HTTPS** on our own domain (e.g. Let’s Encrypt via GitHu
 | Product | End-user install (goal) | Gatekeeper |
 |---------|-------------------------|------------|
 | **LibreOffice** | Download Mac `.dmg` → run installer (or `.oxt` on Linux/Windows) | May warn on unsigned `.app` / `.dmg` |
-| **Word** | *(parked — not in current releases)* | — |
+| **Word** | Download Mac `.dmg` (manifest) or upload `manifest.xml` (Windows) | May warn on unsigned `.dmg` |
 | **ONLYOFFICE** | Download Mac `.dmg` → run installer (or manual zip) | May warn on unsigned `.app` / `.dmg` |
 
 **Recommended order for new users:** LibreOffice first (simplest), then Word or ONLYOFFICE if they need that host.
@@ -64,7 +68,7 @@ Each release tag (e.g. `plugins-v0.3.7`) attaches:
 | `INSTALL.txt` | Plain-language install summary |
 | `SHA256SUMS.txt` | Checksums |
 
-Word assets (`word-dist.zip`, Word `.dmg`) are omitted while the Word add-in is parked in git.
+Word assets (`word-dist.zip`, Word `.dmg`) are omitted from default release builds unless `MARINAMOJI_INCLUDE_WORD=1` — enable after pre-publish QA passes.
 
 Build locally: `plugin/packaging/build-release.sh` (maintainers only).
 
@@ -222,9 +226,12 @@ Website should say: **Install marinaMoji first**, then install the Writer/Word e
 
 ## Checklist before publishing a release
 
+See the full phased checklist in **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**. Minimum:
+
 - [ ] `MarinaMojiKaeriten.oxt` opens in LO Extension Manager
 - [ ] Mac LO installer tested (toolbar buttons work after restart)
 - [ ] Mac ONLYOFFICE installer lands in `sdkjs-plugins/{GUID}/`
+- [ ] Word: `dist/` uploaded to `https://<domain>/word/` and manifest URLs verified (when shipping Word)
 - [ ] GitHub Release assets + `SHA256SUMS.txt` + `INSTALL.txt`
 - [ ] Website install pages linked from README
 
@@ -232,6 +239,7 @@ Website should say: **Install marinaMoji first**, then install the Writer/Word e
 
 ## Related docs
 
+- **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)** — implementation plan (all three plugins)
 - [WORD_PLUGIN_RESEARCH.md](WORD_PLUGIN_RESEARCH.md) — why we skip AppSource for now
 - [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) — **developers** still use localhost + mkcert
 - [ONLYOFFICE.md](ONLYOFFICE.md)
