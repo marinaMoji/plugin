@@ -47,9 +47,11 @@ except ImportError:
 
 # Vertical (縦書き) paragraph/page WritingMode2 values: TB_RL=2, TB_LR=3.
 _VERTICAL_WRITING_MODES = (2, 3)
+_WRITING_LR_TB = 0
+_WRITING_TB_RL = 2
 # Frame WritingMode for 縦書き frames so their own text stacks top→bottom
 # (one column, no line breaks between compound glyphs). TB_RL = 2.
-_FRAME_WRITING_TB_RL = 2
+_FRAME_WRITING_TB_RL = _WRITING_TB_RL
 # 1 pt = 0.3527…mm → 1/100 mm conversion for flush (em-tight) vertical sizing.
 _PT_TO_HMM = 35.2778
 
@@ -431,6 +433,60 @@ def _page_style_is_vertical(doc, name):
         return page.getPropertyValue("WritingMode") in _VERTICAL_WRITING_MODES
     except Exception:
         return False
+
+
+def _current_page_style(doc):
+    """Return the active page style object for the current cursor/page."""
+    name = None
+    try:
+        name = doc.getCurrentController().getViewCursor().getPropertyValue(
+            "PageStyleName"
+        )
+    except Exception:
+        name = None
+    if not name:
+        try:
+            work = _work_range(doc)
+            cursor = doc.Text.createTextCursorByRange(work.getStart())
+            name = cursor.getPropertyValue("PageStyleName")
+        except Exception:
+            name = None
+    if not name:
+        return None, None
+    try:
+        page = doc.getStyleFamilies().getByName("PageStyles").getByName(name)
+        return name, page
+    except Exception:
+        return name, None
+
+
+def _refresh_rendered_views(doc):
+    """Refresh only existing rendered views; do not render new source marks."""
+    work = _get_document_range(doc)
+    mapper = _MarkMapper()
+    _refresh_frames_in_place(doc, work, mapper)
+    _refresh_graphics_in_place(doc, work, mapper)
+
+
+def toggle_page_writing_mode(*_args):
+    """Toggle current page style between horizontal LR_TB and vertical TB_RL."""
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return
+    _name, page = _current_page_style(doc)
+    if page is None:
+        return
+    try:
+        current = page.getPropertyValue("WritingMode")
+    except Exception:
+        current = _WRITING_LR_TB
+    next_mode = _WRITING_LR_TB if current in _VERTICAL_WRITING_MODES else _WRITING_TB_RL
+    try:
+        page.setPropertyValue("WritingMode", next_mode)
+    except Exception:
+        return
+    _refresh_rendered_views(doc)
 
 
 def _is_vertical_writing(doc, cursor):

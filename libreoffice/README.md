@@ -45,6 +45,7 @@ If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remo
 | Copy LaTeX | LaTeX (snippet if selection; full `.tex` scaffold if none) |
 
 Render / Unrender are unchanged (they edit the document, not the clipboard).
+The **Toggle vertical page** button switches the current page style between horizontal left-to-right (`LR_TB`) and vertical right-to-left (`TB_RL`), then refreshes existing rendered kaeriten.
 
 ### How the bundle works
 
@@ -66,8 +67,9 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 
 1. Type `說㆒㆑者` with marinaMoji
 2. Toolbar **Render kaeriten**
-3. Edit source with **Unrender**; do not edit inside rendered images/frames
-4. **Copy plain text** / **Copy TEI** / **Copy LaTeX** — paste elsewhere
+3. Optional: **Toggle vertical page** to switch the current page style between 横書き and 縦書き
+4. Edit source with **Unrender**; do not edit inside rendered images/frames
+5. **Copy plain text** / **Copy TEI** / **Copy LaTeX** — paste elsewhere
 
 Export reads **Unicode source** (including marks from rendered images/frames). See [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 

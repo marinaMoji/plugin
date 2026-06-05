@@ -39,6 +39,10 @@
                        manifest:full-path="icons/export_latex.png"/>
   <manifest:file-entry manifest:media-type="image/png"
                        manifest:full-path="icons/export_latex_big.png"/>
+  <manifest:file-entry manifest:media-type="image/png"
+                       manifest:full-path="icons/toggle_page_writing_mode.png"/>
+  <manifest:file-entry manifest:media-type="image/png"
+                       manifest:full-path="icons/toggle_page_writing_mode_big.png"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/render_kaeriten.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
@@ -49,4 +53,6 @@
                        manifest:full-path="icons/export_xml.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/export_tex.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/toggle_page_writing_mode.svg"/>
 </manifest:manifest>

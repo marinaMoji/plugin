@@ -43,6 +43,21 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
+        <node oor:name="t_dir" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:toggle_page_writing_mode</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Toggle vertical page</value>
+            <value xml:lang="en-US">Toggle vertical page</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
         <node oor:name="t_sep" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
@@ -158,6 +173,19 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/export_latex_big.png</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.toggle_page_writing_mode" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:toggle_page_writing_mode</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/toggle_page_writing_mode.png</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/toggle_page_writing_mode_big.png</value>
           </prop>
         </node>
       </node>

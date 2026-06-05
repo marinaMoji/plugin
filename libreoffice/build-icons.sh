@@ -37,5 +37,6 @@ render_lo_icon unrender_kaeriten.svg unrender_kaeriten.png
 render_lo_icon export_txt.svg copy_plain_text.png
 render_lo_icon export_xml.svg export_tei.png
 render_lo_icon export_tex.svg export_latex.png
+render_lo_icon toggle_page_writing_mode.svg toggle_page_writing_mode.png
 
 echo "LibreOffice toolbar icons → ${ICON_DST} (32px + 26px PNG, SVG sources copied)"
