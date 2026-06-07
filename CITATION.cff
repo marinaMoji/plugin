@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use marinaMoji Kaeriten office plugins, please cite them as below."
+type: software
+title: marinaMoji Kaeriten
+abstract: >-
+  Office-suite extensions that render marinaMoji Unicode kaeriten marks into
+  scholarly layout in LibreOffice, Microsoft Word, and ONLYOFFICE. Companion
+  to the marinaMoji IME; canonical text remains ordinary Unicode (e.g. 說㆒㆑者).
+authors:
+  - family-names: Morgan
+    given-names: Daniel Patrick
+    affiliation: >-
+      Centre de recherche sur les civilisations de l'Asie orientale (CRCAO),
+      CNRS
+    orcid: https://orcid.org/0000-0001-9115-3931
+  - family-names: Pandolfino
+    given-names: Marina
+    affiliation: >-
+      Centre de recherche sur les civilisations de l'Asie orientale (CRCAO),
+      École pratique des hautes études (EPHE)
+version: 0.3.9
+repository-code: https://github.com/marinaMoji/plugin
+url: https://norbert.huma-num.fr/marinamoji
+license: GPL-3.0-only
+keywords:
+  - kaeriten
+  - kanbun
+  - LibreOffice
+  - Microsoft Word
+  - ONLYOFFICE
+  - digital humanities
+  - Japanese studies

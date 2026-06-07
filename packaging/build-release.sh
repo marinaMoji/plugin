@@ -44,21 +44,32 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   "${PACKAGING}/mac/build-libreoffice-dmg.sh"
   "${PACKAGING}/mac/build-onlyoffice-dmg.sh"
 
-  if [[ -d "${PLUGIN}/word" ]] && [[ -f "${RELEASE}/marinamoji-kaeriten-word.xml" ]] && \
+  if [[ "${MARINAMOJI_INCLUDE_WORD:-0}" == "1" ]] && \
+     [[ -f "${RELEASE}/marinamoji-kaeriten-word.xml" ]] && \
      [[ -f "${PACKAGING}/mac/build-word-installer-app.sh" ]]; then
-    "${PACKAGING}/mac/build-word-installer-app.sh" || true
-    "${PACKAGING}/mac/build-word-dmg.sh" || true
+    "${PACKAGING}/mac/build-word-installer-app.sh"
+    "${PACKAGING}/mac/build-word-dmg.sh"
   fi
 fi
 
+WORD_BUILT=0
+if [[ -f "${RELEASE}/marinamoji-kaeriten-word.xml" ]]; then
+  WORD_BUILT=1
+fi
+
 echo "${VERSION}" > "${RELEASE}/VERSION.txt"
+
+WORD_STATUS="not included (run ./build-word-release.sh or set MARINAMOJI_INCLUDE_WORD=1)"
+if [[ "${WORD_BUILT}" == "1" ]]; then
+  WORD_STATUS="included (pre-release — upload word-dist.zip to ${MARINAMOJI_PLUGIN_BASE:-your hosted URL} first)"
+fi
 
 cat > "${RELEASE}/INSTALL.txt" <<EOF
 marinaMoji Kaeriten office plugins — release ${VERSION}
 
 Recommended: LibreOffice (alpha, daily driver)
 Experimental: ONLYOFFICE (alpha)
-Word add-in: not included in this release (development paused)
+Word add-in: ${WORD_STATUS}
 
 --- LibreOffice (all platforms) ---
 Download MarinaMojiKaeriten.oxt
@@ -79,6 +90,21 @@ Download marinamoji-kaeriten-onlyoffice-mac.dmg (Mac) or marinamoji-kaeriten-onl
 Mac: run "Install marinaMoji Kaeriten (ONLYOFFICE)", quit ONLYOFFICE, reopen Writer
 Manual: unzip into sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
 
+EOF
+
+if [[ "${WORD_BUILT}" == "1" ]]; then
+  cat >> "${RELEASE}/INSTALL.txt" <<EOF
+--- Word (pre-release) ---
+Download marinamoji-kaeriten-word-mac.dmg (Mac) or marinamoji-kaeriten-word.xml (Windows)
+Mac: Right-click installer → Open if macOS warns → run installer → Cmd+Q Word → reopen
+     Accueil → Kaeriten → Kaeriten pane
+Windows: Insertion → Compléments → Téléverser mon complément → select manifest XML
+Requires internet: Word loads the add-in from ${MARINAMOJI_PLUGIN_BASE}
+
+EOF
+fi
+
+cat >> "${RELEASE}/INSTALL.txt" <<EOF
 Install the marinaMoji IME first (main marinaMoji repo).
 
 Verify: SHA256SUMS.txt

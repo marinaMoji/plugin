@@ -45,15 +45,22 @@ Install path (must match `onlyoffice/install-mac.sh`):
 
 **Wrong:** `…/plugins/marinamoji-kaeriten/` — ONLYOFFICE will not load the plugin there.
 
-## Word add-in installer (parked)
+## Word add-in installer
 
-Word packaging is gitignored until the Mac renderer is stable. When resumed:
+Word is **opt-in** — run the dedicated script (does not rebuild LO/ONLYOFFICE):
 
 ```bash
+cp packaging/word-release.env.example packaging/word-release.env
+# edit MARINAMOJI_PLUGIN_BASE=https://your-site/word
+./packaging/build-word-release.sh
+```
+
+Or include Word in a full release:
+
+```bash
+export MARINAMOJI_INCLUDE_WORD=1
 export MARINAMOJI_PLUGIN_BASE="https://your-domain/word"
 ./build-release.sh
-./mac/build-word-installer-app.sh
-./mac/build-word-dmg.sh
 ```
 
 ## Gatekeeper

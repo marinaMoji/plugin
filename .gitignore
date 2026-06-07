@@ -25,3 +25,4 @@ venv/
 # Local env / secrets
 .env
 .env.*
+packaging/word-release.env

@@ -23,7 +23,7 @@ cat > "${NOTES}" <<EOF
 
 **Recommended:** LibreOffice (alpha) — daily driver  
 **Experimental:** ONLYOFFICE (alpha)  
-**Word:** not included (development paused)
+**Word:** included when built with \`./build-word-release.sh\`
 
 ## Downloads
 
@@ -33,6 +33,9 @@ cat > "${NOTES}" <<EOF
 | \`marinamoji-kaeriten-libreoffice-mac.dmg\` | LibreOffice — Mac GUI installer (no Terminal) |
 | \`marinamoji-kaeriten-onlyoffice.zip\` | ONLYOFFICE — manual install |
 | \`marinamoji-kaeriten-onlyoffice-mac.dmg\` | ONLYOFFICE — Mac GUI installer |
+| \`word-dist.zip\` | Word — upload to your website (when built) |
+| \`marinamoji-kaeriten-word-mac.dmg\` | Word — Mac GUI installer (when built) |
+| \`marinamoji-kaeriten-word.xml\` | Word — Windows manifest upload (when built) |
 | \`INSTALL.txt\` | Plain-language install steps |
 | \`SHA256SUMS.txt\` | Checksums |
 
@@ -41,27 +44,32 @@ Install the [marinaMoji IME](https://github.com/marinaMoji/marinaMoji) first, th
 See \`plugin/docs/DISTRIBUTION.md\` in the source tree for full documentation.
 EOF
 
+ASSETS=(
+  "${RELEASE}/MarinaMojiKaeriten.oxt"
+  "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg"
+  "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg"
+  "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip"
+  "${RELEASE}/INSTALL.txt"
+  "${RELEASE}/SHA256SUMS.txt"
+  "${RELEASE}/VERSION.txt"
+)
+for optional in \
+  "${RELEASE}/word-dist.zip" \
+  "${RELEASE}/marinamoji-kaeriten-word-mac.dmg" \
+  "${RELEASE}/marinamoji-kaeriten-word.xml"; do
+  if [[ -f "${optional}" ]]; then
+    ASSETS+=("${optional}")
+  fi
+done
+
 if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
   echo "Release ${TAG} exists — uploading assets"
-  gh release upload "${TAG}" --repo "${REPO}" --clobber \
-    "${RELEASE}/MarinaMojiKaeriten.oxt" \
-    "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg" \
-    "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg" \
-    "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip" \
-    "${RELEASE}/INSTALL.txt" \
-    "${RELEASE}/SHA256SUMS.txt" \
-    "${RELEASE}/VERSION.txt"
+  gh release upload "${TAG}" --repo "${REPO}" --clobber "${ASSETS[@]}"
 else
   gh release create "${TAG}" --repo "${REPO}" \
     --title "marinaMoji Kaeriten office plugins ${TAG#plugins-v}" \
     --notes-file "${NOTES}" \
-    "${RELEASE}/MarinaMojiKaeriten.oxt" \
-    "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg" \
-    "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg" \
-    "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip" \
-    "${RELEASE}/INSTALL.txt" \
-    "${RELEASE}/SHA256SUMS.txt" \
-    "${RELEASE}/VERSION.txt"
+    "${ASSETS[@]}"
 fi
 
 echo "Published: https://github.com/${REPO}/releases/tag/${TAG}"
