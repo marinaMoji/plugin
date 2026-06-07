@@ -1,6 +1,9 @@
 # LibreOffice extension build output
 libreoffice/dist/
 
+# ONLYOFFICE plugin package
+onlyoffice/dist/
+
 # Release artifacts (built by packaging/build-release.sh)
 packaging/release/
 

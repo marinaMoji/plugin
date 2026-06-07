@@ -49,7 +49,7 @@ ONLYOFFICE requires the folder name to be the plugin **GUID** from `config.json`
 
 ### Manual install (macOS / Windows / Linux)
 
-1. Run `./build.sh`
+1. Run `./build.sh` — produces `dist/marinamoji-kaeriten.plugin` for Plugin Manager (7.4+).
 2. Copy all plugin files into the editor’s `sdkjs-plugins` directory inside a folder named `{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}`:
 
    | Platform | `sdkjs-plugins` path |
@@ -62,9 +62,8 @@ ONLYOFFICE requires the folder name to be the plugin **GUID** from `config.json`
 
 ### Plugin Manager (offline, 7.4+)
 
-1. Zip the contents of `onlyoffice/` (files at archive root, not the folder wrapper).
-2. Rename the zip to `.plugin`.
-3. In Writer: **Plugins** → **Plugin Manager** → **My plugins** → **Install plugin manually**.
+1. Run `./build.sh` (or download `marinamoji-kaeriten.plugin` from GitHub Releases).
+2. In Writer: **Plugins** → **Plugin Manager** → **My plugins** → **Install plugin manually** → select `dist/marinamoji-kaeriten.plugin`.
 
 ### Document Server (Docker / self-hosted)
 
