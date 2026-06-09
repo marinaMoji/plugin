@@ -75,6 +75,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/ONLYOFFICE.md](docs/ONLYOFFICE.md) | ONLYOFFICE role, limits, workflow |
 | [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | GitHub/website releases, GUI installers, no App Store |
 | [docs/SELF_HOSTED_PUBLISHING_PLAN.md](docs/SELF_HOSTED_PUBLISHING_PLAN.md) | Step-by-step publish plan (LO, Word, ONLYOFFICE) |
+| [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) | Host Word add-in on GitHub Pages |
 | [docs/INSTALL-MAC-GATEKEEPER.md](docs/INSTALL-MAC-GATEKEEPER.md) | macOS Right-click → Open (unsigned downloads) |
 | [onlyoffice/README.md](onlyoffice/README.md) | ONLYOFFICE plugin install and use |
 | [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md) | LO experiments and frame parameters |

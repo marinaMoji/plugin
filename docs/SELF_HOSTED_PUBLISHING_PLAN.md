@@ -86,8 +86,8 @@ Every page should say: **Install marinaMoji IME first**, then the office plugin.
 
 Any static host with valid TLS:
 
+- **GitHub Pages** — [docs/GITHUB_PAGES.md](GITHUB_PAGES.md) (`https://marinaMoji.github.io/plugin/word/` for this repo)
 - University web space + Let’s Encrypt
-- GitHub Pages (subpath or subdomain)
 - Cloudflare Pages / Netlify
 - S3 + CloudFront
 

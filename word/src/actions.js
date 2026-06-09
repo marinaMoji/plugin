@@ -22,11 +22,11 @@ async function wordRun(fn) {
 
 export async function runRenderKaeriten() {
   const mapping = await loadMapping();
-  let count = 0;
+  let result = { newCount: 0, viewCount: 0 };
   await wordRun(async (context) => {
-    count = await renderKaeritenDocument(context, mapping);
+    result = await renderKaeritenDocument(context, mapping);
   });
-  return count;
+  return result;
 }
 
 export async function runUnrenderKaeriten() {
@@ -39,10 +39,7 @@ export async function runUnrenderKaeriten() {
 }
 
 export async function runRefreshKaeriten() {
-  const mapping = await loadMapping();
-  await wordRun(async (context) => {
-    await refreshKaeritenDocument(context, mapping);
-  });
+  return runRenderKaeriten();
 }
 
 async function copyPayload(buildPayload) {

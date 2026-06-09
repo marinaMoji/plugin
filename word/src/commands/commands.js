@@ -31,7 +31,7 @@ export async function unrenderKaeriten(event) {
   await ribbonCall(event, runUnrenderKaeriten);
 }
 export async function refreshKaeriten(event) {
-  await ribbonCall(event, runRefreshKaeriten);
+  await ribbonCall(event, runRenderKaeriten);
 }
 export async function copyPlainText(event) {
   await ribbonCall(event, runCopyPlainText);

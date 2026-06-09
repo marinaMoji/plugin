@@ -7,7 +7,7 @@
   xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
   xsi:type="TaskPaneApp">
   <Id>7f3c8b2a-9d4e-4f1a-b6c2-8e5a1d3f9b7c</Id>
-  <Version>0.1.2.0</Version>
+  <Version>0.1.3.0</Version>
   <ProviderName>marinaMoji</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="marinaMoji Kaeriten"/>
@@ -92,21 +92,6 @@
                     <FunctionName>unrenderKaeriten</FunctionName>
                   </Action>
                 </Control>
-                <Control xsi:type="Button" id="RefreshButton">
-                  <Label resid="Refresh.Label"/>
-                  <Supertip>
-                    <Title resid="Refresh.Label"/>
-                    <Description resid="Refresh.Tip"/>
-                  </Supertip>
-                  <Icon>
-                    <bt:Image size="16" resid="Icon.16"/>
-                    <bt:Image size="32" resid="Icon.32"/>
-                    <bt:Image size="80" resid="Icon.80"/>
-                  </Icon>
-                  <Action xsi:type="ExecuteFunction">
-                    <FunctionName>refreshKaeriten</FunctionName>
-                  </Action>
-                </Control>
                 <Control xsi:type="Button" id="CopyPlainButton">
                   <Label resid="CopyPlain.Label"/>
                   <Supertip>
@@ -143,9 +128,8 @@
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="ShowPane.Tip" DefaultValue="Open the marinaMoji Kaeriten task pane."/>
-        <bt:String id="Render.Tip" DefaultValue="Turn 說㆒㆑者 into stacked kaeriten views."/>
+        <bt:String id="Render.Tip" DefaultValue="Format new kaeriten marks and update existing views (font size, orientation)."/>
         <bt:String id="Unrender.Tip" DefaultValue="Restore Unicode marks and remove kaeriten views."/>
-        <bt:String id="Refresh.Tip" DefaultValue="Update kaeriten views after font or mark changes."/>
         <bt:String id="CopyPlain.Tip" DefaultValue="Copy canonical Unicode to the clipboard."/>
       </bt:LongStrings>
       <bt:Images>

@@ -1,6 +1,6 @@
 {
   "name": "marinamoji-kaeriten-word",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "description": "marinaMoji Kaeriten — Microsoft Word add-in",
   "scripts": {

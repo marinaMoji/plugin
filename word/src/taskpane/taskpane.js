@@ -3,7 +3,6 @@
 import {
   runRenderKaeriten,
   runUnrenderKaeriten,
-  runRefreshKaeriten,
   runCopyPlainText,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
@@ -75,8 +74,8 @@ function wireCompoundTouch() {
     setCompoundTouch(box.checked);
     setStatus(
       box.checked
-        ? "Compound marks will touch on next Render / Refresh."
-        : "Normal compound spacing on next Render / Refresh.",
+        ? "Compound marks will touch on next Render."
+        : "Normal compound spacing on next Render.",
       "ok"
     );
   });
@@ -88,10 +87,16 @@ function initUi() {
   wire(
     "btn-render",
     async () => {
-      const n = await runRenderKaeriten();
-      return n === 1
-        ? "Formatted 1 kaeriten group (beside kanji)."
-        : `Formatted ${n} kaeriten groups (beside kanji).`;
+      const { newCount, viewCount } = await runRenderKaeriten();
+      if (newCount > 0) {
+        return newCount === 1
+          ? "Formatted 1 kaeriten group (beside kanji)."
+          : `Formatted ${newCount} kaeriten groups (beside kanji).`;
+      }
+      if (viewCount > 0) {
+        return "Updated kaeriten views in scope.";
+      }
+      return "Done.";
     },
     null
   );
@@ -105,7 +110,6 @@ function initUi() {
     },
     null
   );
-  wire("btn-refresh", runRefreshKaeriten, "Refreshed views.");
   wire("btn-plain", runCopyPlainText, "Copied plain text.");
   setStatus("Connecting to Word…");
   whenOfficeReady(45000, {

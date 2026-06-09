@@ -1109,30 +1109,41 @@ async function renderClustersInRange(context, workRange, mappingData) {
 }
 
 export async function renderKaeritenDocument(context, mappingData) {
-  const workRange = await getWorkRangeForRender(context);
+  const workRange = await getWorkRange(context);
   workRange.load("text");
   await context.sync();
   const beforeText = workRange.text || "";
-  const expectedClusters = findClusters(beforeText).length;
-  const count = await renderClustersInRange(context, workRange, mappingData);
 
-  if (count === 0) {
+  let newCount = 0;
+  if (selectionHasKaeritenMarks(beforeText)) {
+    const expectedClusters = findClusters(beforeText).length;
+    newCount = await renderClustersInRange(context, workRange, mappingData);
+
+    workRange.load("text");
+    await context.sync();
+    const marksLeft = selectionHasKaeritenMarks(workRange.text);
+    if (marksLeft) {
+      if (newCount === 0) {
+        throw new Error(
+          "Render could not format any kaeriten marks. Re-type 漢㆒㆑字 on one line, select it, or clear the selection to scan the whole document."
+        );
+      }
+      throw new Error(
+        `Only ${newCount} of ${expectedClusters} mark group(s) in the render scope were formatted. ` +
+          "Put each compound mark group on one line (no line break between ㆒ and ㆑), then Render again."
+      );
+    }
+  }
+
+  const viewCount = await refreshKaeritenDocument(context, mappingData);
+
+  if (newCount === 0 && viewCount === 0) {
     throw new Error(
-      "Render could not format any kaeriten marks. Re-type 漢㆒㆑字 on one line, select it, or clear the selection to scan the whole document."
+      "No kaeriten source or views found in scope. Type 說㆒㆑者 with marinaMoji, or select formatted kaeriten."
     );
   }
 
-  workRange.load("text");
-  await context.sync();
-  const marksLeft = selectionHasKaeritenMarks(workRange.text);
-  if (marksLeft) {
-    throw new Error(
-      `Only ${count} of ${expectedClusters} mark group(s) in the render scope were formatted. ` +
-        "Put each compound mark group on one line (no line break between ㆒ and ㆑), then Render again."
-    );
-  }
-
-  return count;
+  return { newCount, viewCount };
 }
 
 async function rangesOverlap(context, a, b) {
