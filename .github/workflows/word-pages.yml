@@ -25,7 +25,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      MARINAMOJI_PLUGIN_BASE: https://marinaMoji.github.io/plugin/word
+      MARINAMOJI_PLUGIN_BASE: https://marinamoji.github.io/plugin/word
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,11 +67,14 @@ jobs:
         with:
           name: marinamoji-kaeriten-word-manifest
           path: _site/marinamoji-kaeriten-word.xml
+          retention-days: 90
           if-no-files-found: error
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # Requires Pages enabled once: Settings → Pages → Source → GitHub Actions
+    # (or: gh api -X POST repos/marinaMoji/plugin/pages -f build_type=workflow)
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -79,3 +82,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages

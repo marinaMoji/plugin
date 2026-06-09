@@ -14,10 +14,19 @@ Word loads `taskpane.html`, `commands.html`, and bundled JS from that path every
 
 ## One-time GitHub setup
 
+**Required.** Without this step the deploy job fails with `404 Not Found`.
+
 1. Open **github.com/marinaMoji/plugin** → **Settings** → **Pages**.
 2. Under **Build and deployment**, set **Source** to **GitHub Actions** (not “Deploy from a branch”).
 3. Merge or push the workflow file `.github/workflows/word-pages.yml` to `main`.
-4. **Actions** → **Word add-in — GitHub Pages** → confirm the run is green.
+
+Or from a machine with `gh` CLI access to the repo:
+
+```bash
+gh api -X POST repos/marinaMoji/plugin/pages -f build_type=workflow
+```
+
+4. **Actions** → **Word add-in — GitHub Pages** → **Run workflow** (or push to `main`).
 5. Pages should show: `https://marinaMoji.github.io/plugin/`
 
 Verify in a browser:
@@ -56,14 +65,21 @@ Produces `packaging/release/word-dist.zip`, `marinamoji-kaeriten-word.xml`, and 
 
 ## Sideload for testing (production URL)
 
-**Mac:** build or download the manifest, then:
+**Mac:** install the production manifest (not `./install-mac.sh`, which is dev-only localhost):
 
 ```bash
-# After build-word-release.sh:
-open packaging/release/   # use .dmg or copy manifest via install-mac.sh with production xml
+cd plugin/word
+./install-mac-production.sh
 ```
 
-Or point `install-mac.sh` at the production manifest once you ship a Mac installer built with the GitHub Pages base URL.
+Or download and copy manually:
+
+```bash
+curl -fsSL -o ~/Library/Containers/com.microsoft.Word/Data/Documents/wef/marinamoji-kaeriten.xml \
+  https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml
+```
+
+Then **Cmd+Q Word**, reopen with a document, **Accueil → Kaeriten pane**. No `npm run serve`.
 
 **Windows:** **Insertion** → **Compléments** → **Téléverser mon complément** →  
 `https://marinaMoji.github.io/plugin/marinamoji-kaeriten-word.xml`  
