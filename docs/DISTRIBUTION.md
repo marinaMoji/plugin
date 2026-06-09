@@ -6,7 +6,8 @@ How we ship marinaMoji **office plugins** without Microsoft Marketplace, Apple D
 
 **Current state:** implementation complete; **pre-publish QA** blocks release. See **[STATUS.md](STATUS.md)**.
 
-**Maintainers:** step-by-step publishing plan for all three plugins (LO, Word, ONLYOFFICE) → **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**.
+**Maintainers:** step-by-step publishing plan for all three plugins (LO, Word, ONLYOFFICE) → **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**.  
+**Installers + updates:** **[INSTALLERS_AND_UPDATES.md](INSTALLERS_AND_UPDATES.md)**.
 
 ---
 

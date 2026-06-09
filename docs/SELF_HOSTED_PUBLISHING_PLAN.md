@@ -374,6 +374,7 @@ You can ship LO and OO **now** without waiting for Word.
 ## Related docs
 
 - [DISTRIBUTION.md](DISTRIBUTION.md) — strategy overview
+- [INSTALLERS_AND_UPDATES.md](INSTALLERS_AND_UPDATES.md) — installers, publication, user updates
 - [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) — localhost dev (not for end users)
 - [WORD_PLUGIN_RESEARCH.md](WORD_PLUGIN_RESEARCH.md) — AppSource vs self-host
 - [ONLYOFFICE.md](ONLYOFFICE.md) — Desktop vs Document Server
