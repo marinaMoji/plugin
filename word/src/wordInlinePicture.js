@@ -392,7 +392,8 @@ export async function insertKaeritenInlinePicture(
   pic.altTextDescription = encodeKaeritenSourceTag(
     marks,
     viewId,
-    opts.vertical ? "v" : "h"
+    opts.vertical ? "v" : "h",
+    opts.renderFingerprint
   );
   applyPictureGeometry(pic, drawn.widthPt, drawn.heightPt);
   await context.sync();
@@ -431,7 +432,7 @@ export async function listMarinaMojiInlinePictures(context, workRange) {
       parseKaeritenSourceTag(pic.altTextTitle);
     if (!parsed?.marks) continue;
     if (!(await pictureOverlapsWorkRange(context, workRange, pic))) continue;
-    matched.push({ pic, marks: parsed.marks, viewId: parsed.viewId });
+    matched.push({ pic, marks: parsed.marks, viewId: parsed.viewId, fp: parsed.fp });
   }
   return matched;
 }
@@ -469,7 +470,8 @@ export async function refreshInlinePicture(
   fresh.altTextDescription = encodeKaeritenSourceTag(
     marks,
     viewId,
-    opts.vertical ? "v" : "h"
+    opts.vertical ? "v" : "h",
+    opts.renderFingerprint
   );
   applyPictureGeometry(fresh, drawn.widthPt, drawn.heightPt);
   await context.sync();

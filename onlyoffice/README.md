@@ -3,7 +3,7 @@
 JavaScript plugin for **ONLYOFFICE Document Editor** (Writer). Same model as the LibreOffice and Word tools:
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
-- **View:** inline content controls with stacked display glyphs (一 / レ)
+- **View:** inline PNG images with stacked display glyphs (一 / レ); inline content controls remain as a fallback
 - **Commands:** Render, Unrender, Refresh, Copy plain text
 
 **Status (June 2026):** Implementation complete for v1. **Pre-publish QA** on ONLYOFFICE Desktop before release. LibreOffice remains the recommended daily driver after QA.
@@ -75,12 +75,12 @@ Then enable plugins in editor config (`plugins: true`).
 
 1. Type `說㆒㆑者` with marinaMoji.
 2. Open the **marinaMoji** sidebar.
-3. Click **Render** — paragraphs with mark clusters get inline views.
-4. Edit source with **Unrender**; do not edit inside the controls.
-5. **Refresh** after font changes.
+3. Click **Render** — paragraphs with mark clusters get inline views, and existing views are rebuilt from their Unicode source.
+4. Edit source with **Unrender**; do not edit inside the rendered images/controls.
+5. Click **Render** again after font changes; it rebuilds existing views too.
 6. **Copy plain** for canonical Unicode elsewhere.
 
-**Note:** v0.1 **Render** walks **all paragraphs** in the document that contain marks (not only the current selection). Export uses selection when present, otherwise the full document.
+**Note:** v0.1 **Render** walks **all paragraphs** in the document that contain marks or rendered views (not only the current selection). Export uses selection when present, otherwise the full document.
 
 ## Project layout
 
@@ -95,12 +95,14 @@ Then enable plugins in editor config (`plugins: true`).
 ## Development
 
 - Official plugin API: [ONLYOFFICE Plugins](https://api.onlyoffice.com/docs/plugin-and-macros/get-started/overview/)
-- Inline controls: `Api.CreateInlineLvlSdt()` with tag `MARINAMOJI:source=…` (same idea as Word content controls)
+- Inline images: `Api.CreateImage()` + `SetWrappingStyle("inline")`; source metadata lives in drawing names (`MARINAMOJI:source=…`)
+- Image size is computed from the paragraph/run font size; the PNG can include a small transparent top pad to tune alignment because ONLYOFFICE inline drawings cannot be raised/lowered like text runs.
+- Inline controls: `Api.CreateInlineLvlSdt()` remain as the fallback renderer
 - Reuses export logic from `word/src/exportCore.js` / LO `export_core.py`
 
 ## Limitations (v0.1)
 
 - No import of LibreOffice frames or Word content controls from other apps
 - Render applies per **paragraph** (document-wide scan)
-- Copy plain reads canonical text from control tags while views are shown
+- Copy plain reads canonical text from image/control metadata while views are shown
 - API names (`GetParentParagraph`, `RemoveElement`, …) may differ slightly across ONLYOFFICE versions — report issues if a command fails

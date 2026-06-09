@@ -95,7 +95,22 @@
       "compound_line_spacing_pt": 4,
       "compound_box_padding_pt": 0.12
     },
-    "onlyoffice_primary": "inline_content_control",
+    "onlyoffice_primary": "inline_image",
+    "onlyoffice_inline_image": {
+      "glyph_ratio": 0.42,
+      "compound_glyph_ratio": 0.34,
+      "compound_line_gap_ratio": -0.15,
+      "glyph_fill": 0.94,
+      "line_gap_ratio": 0,
+      "supersample": 4,
+      "headroom_em": 0.16,
+      "baseline_pad_em": 0,
+      "position_hps_per_pt": -0.72,
+      "compound_touch": true,
+      "compound_touch_overlap_ratio": 0.72,
+      "color": "#000000",
+      "font_family": "\"Hiragino Mincho ProN\",\"YuMincho\",\"Yu Mincho\",\"MS Mincho\",\"Songti SC\",\"SimSun\",serif"
+    },
     "onlyoffice_inline": {
       "font_size_ratio": 0.42,
       "min_font_size_pt": 6,

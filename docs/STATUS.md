@@ -12,7 +12,7 @@ Single source of truth for **where the three office plugins are** before self-ho
 |------|----------------|------------------|-------------|---------|
 | **LibreOffice** | ✅ feature-complete | SVG **inline image** (`libreoffice_primary: inline_image`) | **Copy plain** Unicode only | Blocked on QA |
 | **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Blocked on QA + hosting |
-| **ONLYOFFICE** | ✅ feature-complete | Inline content controls | **Copy plain** only | Blocked on QA |
+| **ONLYOFFICE** | ✅ feature-complete | **Inline image** (`onlyoffice_primary: inline_image`) | **Copy plain** only | Blocked on QA |
 
 All three support **Render**, **Unrender**, **Refresh**, and **Copy plain text** (canonical `說㆒㆑者`).
 
@@ -50,7 +50,7 @@ Word is **no longer parked** in the repo; it is **pre-release** pending QA and w
 
 | | |
 |---|---|
-| **Status** | Same command set as LO/Word; inline controls |
+| **Status** | Same command set as LO/Word; inline images with metadata; controls fallback |
 | **Limitation** | Paste from LO does not keep frames — Unicode source only |
 
 **Pre-publish QA:** [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 2.

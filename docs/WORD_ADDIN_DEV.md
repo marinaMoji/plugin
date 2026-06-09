@@ -53,14 +53,15 @@ npm run doctor
 
 Run these on **your target Word version** (Mac first; Windows separately).
 
-1. **Connect:** task pane shows **Ready — select text and click Render.**
-2. **Simple mark:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
-3. **Compound:** `說㆒㆑者` → render → marks appear as inline picture beside 說.
-4. **Refresh:** change paragraph font size → **Refresh** rescales pictures.
-5. **Copy plain:** with rendered views still showing, **Copy plain** → clipboard = `說㆒㆑者`. Reads alt-text metadata; does not unrender.
-6. **縦書き:** vertical paragraph — compound stack and placement acceptable.
-7. **Save / reopen:** rendered views survive save and reload.
-8. **Production manifest:** build with `MARINAMOJI_PLUGIN_BASE=https://your-domain/word ./build-word-manifest.sh`; sideload production manifest; confirm pane loads from hosted URL (not localhost).
+1. **Connect:** task pane shows **Ready**.
+2. **Simple mark, selection scope:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
+3. **Whole-document render:** type at least two clusters in different paragraphs, leave only the caret active (no selection), click **Render** → both clusters render.
+4. **Compound:** `說㆒㆑者` → render → marks appear as inline picture beside 說.
+5. **Refresh:** change paragraph font size → **Refresh** rescales pictures; run **Refresh** again without changing style and confirm nothing visibly changes.
+6. **Copy plain:** with rendered views still showing, **Copy plain** → clipboard = `說㆒㆑者`. Reads alt-text metadata; does not unrender.
+7. **縦書き:** vertical paragraph — compound stack and placement acceptable.
+8. **Save / reopen:** rendered views survive save and reload.
+9. **Production manifest:** build with `MARINAMOJI_PLUGIN_BASE=https://your-domain/word ./build-word-manifest.sh`; sideload production manifest; confirm pane loads from hosted URL (not localhost).
 
 When all pass, enable Word in release build (`MARINAMOJI_INCLUDE_WORD=1`) and follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 

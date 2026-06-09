@@ -15,13 +15,13 @@ Font choice alone does not fix placement; the same U+3191 can look different siz
 | Layer | Content | Purpose |
 |-------|---------|---------|
 | **Canonical source** | `說㆒㆑者` (ordinary Unicode text) | marinaMoji input; search; git; copy plain to other apps |
-| **Rendered view** | LO **frame** (as character); Word **content control** (v0.1) or **inline text box** (target) | Scholarly print layout; PDF; **not** the archival format |
+| **Rendered view** | LO **SVG image**; Word **inline PNG picture**; ONLYOFFICE **inline PNG image** | Scholarly print layout; PDF; **not** the archival format |
 
 Frames and textboxes are a **view**, not the source of truth. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 **LibreOffice (2026):** ruby rejected; subscript fallback only; **borderless frame** primary — [docs/LIBREOFFICE_FRAMES.md](docs/LIBREOFFICE_FRAMES.md).
 
-**Microsoft Word (2026):** ruby rejected; **content controls** default in add-in; **inline text box** (`textWrap.inline`) documented as next spike toward LO-like layout — [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md), [docs/WORD_ADDIN_ATTEMPTS.md](docs/WORD_ADDIN_ATTEMPTS.md).
+**Microsoft Word (2026):** ruby and content controls rejected for final layout; **inline PNG picture** is the default renderer — [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md), [docs/WORD_ADDIN_ATTEMPTS.md](docs/WORD_ADDIN_ATTEMPTS.md).
 
 ## Workflow (v1) — manual formatting only
 
@@ -46,7 +46,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | In scope (v1) | Later |
 |---------------|-------|
 | LO extension: frame render + refresh | Auto-format on save (optional) |
-| Word add-in: content controls (dev; Mac QA pending) | Word textbox renderer (closer to manual experiments) |
+| Word add-in: inline picture render + refresh | Word Online QA |
 | **Format kaeriten** + **Refresh** commands | 再読, okurigana |
 | Canonical Unicode in document | |
 | Render / Unrender / Refresh / Copy plain (all hosts) | |
@@ -54,7 +54,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | Out of scope (v1) | |
 |-------------------|---|
 | OnlyOffice frame parity (paste from LO) | |
-| OnlyOffice plugin (inline controls, dev) | |
+| OnlyOffice plugin (inline image render + refresh) | |
 | Hidden metadata as canonical semantics | |
 | Auto-format while typing | |
 
@@ -84,6 +84,9 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/STATUS.md](docs/STATUS.md) | Current state — pre-publish QA gate |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased build plan |
 | [docs/BACKGROUND.md](docs/BACKGROUND.md) | Prior art survey |
+| [docs/OTHER_HOSTS.md](docs/OTHER_HOSTS.md) | Google Docs, Word Online, and other hosts — expansion reflections |
+| [docs/MARKDOWN_AND_RTF.md](docs/MARKDOWN_AND_RTF.md) | Markdown / HTML preview and Apple RTF / RTFD export study |
+| [docs/RENDERING_IMPROVEMENTS.md](docs/RENDERING_IMPROVEMENTS.md) | Planned: OO inline images, Word whole-doc render, LO smart incremental render |
 | [docs/SOURCES.md](docs/SOURCES.md) | Bibliography |
 | [docs/UNICODE_AND_MARINAMOJI.md](docs/UNICODE_AND_MARINAMOJI.md) | `;` shortcuts ↔ code points |
 
@@ -131,6 +134,6 @@ See **[docs/STATUS.md](docs/STATUS.md)** for the full picture.
 
 **Word** — inline pictures; developers use localhost + mkcert; end users need hosted `dist/`.
 
-**ONLYOFFICE** — sidebar plugin; experimental parity with LO/Word.
+**ONLYOFFICE** — sidebar plugin; inline images; experimental parity with LO/Word.
 
 **Export:** **Copy plain Unicode only.** TEI and LaTeX buttons removed — no consensus standard for kanbun in those formats.

@@ -5,6 +5,9 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 DIST="${ROOT}/dist"
 PLUGIN="${DIST}/marinamoji-kaeriten.plugin"
 MOZC="${ROOT}/../../../marinaMoji/src/unix/ibus/toolbar_icons"
+if [[ ! -d "${MOZC}" ]]; then
+  MOZC="${ROOT}/../../../marinaMozc/src/unix/ibus/toolbar_icons"
+fi
 LIGHT_SVG="${ROOT}/resources/light/logo_square_light.svg"
 DARK_SVG="${ROOT}/resources/dark/logo_square_dark.svg"
 IMG="${ROOT}/resources/img"
@@ -40,6 +43,98 @@ else
 
   render_icon_set "${LIGHT_SVG}" "${ROOT}/resources/light"
   render_icon_set "${DARK_SVG}" "${ROOT}/resources/dark"
+  # Plugin Manager tile art: master icon.svg / icon.png at 240×120 (@2x).
+  # ONLYOFFICE paints store.background behind a centered 120×60 logo overlay.
+  # Strip the #203758 backdrop from tile icons so the header fills edge-to-edge.
+  STORE_TILE_BG="#203758"
+  store_icon_svg_no_bg() {
+    local src="$1"
+    local dest="$2"
+    python3 - "${src}" "${dest}" <<'PY'
+import re, sys
+svg = open(sys.argv[1], encoding="utf-8").read()
+svg = re.sub(r"<rect\b[^>]*\bid=\"rect1\"[^>]*/>", "", svg, count=1, flags=re.S)
+open(sys.argv[2], "w", encoding="utf-8").write(svg)
+PY
+  }
+  png_no_bg() {
+    local src="$1"
+    local dest="$2"
+    python3 - "${src}" "${dest}" "${STORE_TILE_BG}" <<'PY'
+import sys
+from PIL import Image
+
+src, dest, bg = sys.argv[1:4]
+bg = tuple(int(bg[i:i+2], 16) for i in (1, 3, 5))
+im = Image.open(src).convert("RGBA")
+px = im.load()
+w, h = im.size
+for y in range(h):
+    for x in range(w):
+        r, g, b, a = px[x, y]
+        if (r, g, b) == bg:
+            px[x, y] = (r, g, b, 0)
+im.save(dest)
+PY
+  }
+  render_store_icon_set_from_svg() {
+    local svg="$1"
+    local outdir="$2"
+    [[ -f "${svg}" ]] || return 0
+    local tmp_svg="${outdir}/.tile_no_bg.svg"
+    store_icon_svg_no_bg "${svg}" "${tmp_svg}"
+    rsvg-convert -w 120 -h 60 "${tmp_svg}" -o "${outdir}/icon.png"
+    rsvg-convert -w 150 -h 75 "${tmp_svg}" -o "${outdir}/icon@1.25x.png"
+    rsvg-convert -w 180 -h 90 "${tmp_svg}" -o "${outdir}/icon@1.5x.png"
+    rsvg-convert -w 210 -h 105 "${tmp_svg}" -o "${outdir}/icon@1.75x.png"
+    rsvg-convert -w 240 -h 120 "${tmp_svg}" -o "${outdir}/icon@2x.png"
+    cp "${tmp_svg}" "${outdir}/icon.svg"
+    rm -f "${tmp_svg}"
+  }
+  render_store_icon_set_from_png() {
+    local png="$1"
+    local outdir="$2"
+    [[ -f "${png}" ]] || return 0
+    local tmp_png="${outdir}/.tile_no_bg.png"
+    png_no_bg "${png}" "${tmp_png}"
+    sips -z 60 120 "${tmp_png}" --out "${outdir}/icon.png" >/dev/null
+    sips -z 75 150 "${tmp_png}" --out "${outdir}/icon@1.25x.png" >/dev/null
+    sips -z 90 180 "${tmp_png}" --out "${outdir}/icon@1.5x.png" >/dev/null
+    sips -z 105 210 "${tmp_png}" --out "${outdir}/icon@1.75x.png" >/dev/null
+    cp "${tmp_png}" "${outdir}/icon@2x.png"
+    rm -f "${tmp_png}"
+  }
+  mkdir -p "${ROOT}/resources/store/icons" "${ROOT}/resources/store/screenshots"
+  if [[ -f "${ROOT}/icon.svg" ]]; then
+    render_store_icon_set_from_svg "${ROOT}/icon.svg" "${ROOT}/resources/store/icons"
+  elif [[ -f "${ROOT}/icon.png" ]]; then
+    render_store_icon_set_from_png "${ROOT}/icon.png" "${ROOT}/resources/store/icons"
+  else
+    render_store_icon_set_from_svg "${MOZC}/logo_long_light.svg" "${ROOT}/resources/store/icons"
+  fi
+  rsvg-convert -w 1020 -h 228 \
+    "${MOZC}/logo_long_light.svg" \
+    -o "${ROOT}/resources/store/screenshots/logo_long_light.png"
+  rsvg-convert -w 1020 -h 228 \
+    "${MOZC}/logo_long_dark.svg" \
+    -o "${ROOT}/resources/store/screenshots/logo_long_dark.png"
+  if [[ -f "${ROOT}/icon.png" ]]; then
+    cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/install.png"
+    cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/uninstall.png"
+  elif [[ -f "${ROOT}/icon.svg" ]]; then
+    rsvg-convert -w 240 -h 120 \
+      "${ROOT}/icon.svg" \
+      -o "${ROOT}/resources/store/screenshots/install.png"
+    cp "${ROOT}/resources/store/screenshots/install.png" \
+      "${ROOT}/resources/store/screenshots/uninstall.png"
+  else
+    rsvg-convert -w 1280 -h 720 \
+      "${ROOT}/resources/store/screenshots/install.svg" \
+      -o "${ROOT}/resources/store/screenshots/install.png"
+    rsvg-convert -w 1280 -h 720 \
+      "${ROOT}/resources/store/screenshots/uninstall.svg" \
+      -o "${ROOT}/resources/store/screenshots/uninstall.png"
+  fi
   echo "Updated ONLYOFFICE plugin icons (light + dark, multi-scale)"
 fi
 

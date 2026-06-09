@@ -6,6 +6,7 @@ Shipped in the .oxt as a UNO Job (toolbar/menu) and optionally copied to user/Sc
 """
 
 import json
+import hashlib
 import os
 import re
 import subprocess
@@ -83,14 +84,43 @@ def _sort_clusters(clusters):
     return sorted(clusters, key=lambda c: c.start, reverse=True)
 
 
-def _encode_desc(marks):
-    return _SOURCE_PREFIX + marks
+def _short_hash(data):
+    payload = json.dumps(data, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()[:12]
+
+
+def _safe_meta_value(value):
+    return str(value).replace(";", "_").replace("|", "_").replace("=", "_")
+
+
+def _encode_desc(marks, fingerprint=None):
+    desc = _SOURCE_PREFIX + marks
+    if fingerprint:
+        desc += ";fp=" + str(fingerprint).replace(";", "_")
+    return desc
+
+
+def _desc_fields(description):
+    if not description or not description.startswith(_SOURCE_PREFIX):
+        return None, None
+    body = description[len(_SOURCE_PREFIX) :]
+    marks, _sep, rest = body.partition(";")
+    fp = None
+    for field in rest.split(";"):
+        if field.startswith("fp="):
+            fp = field[3:]
+            break
+    return marks, fp
 
 
 def _decode_desc(description):
-    if not description or not description.startswith(_SOURCE_PREFIX):
-        return None
-    return description[len(_SOURCE_PREFIX) :]
+    marks, _fp = _desc_fields(description)
+    return marks
+
+
+def _decode_fp(description):
+    _marks, fp = _desc_fields(description)
+    return fp
 
 
 def _script_dir():
@@ -134,6 +164,15 @@ class _MarkMapper(object):
         lo = rendering.get("libreoffice_frame", {})
         word_img = rendering.get("word_inline_picture", {})
         lo_img = rendering.get("libreoffice_image", {})
+        self._rendering_hash = _short_hash(
+            {
+                "version": data.get("version"),
+                "libreoffice_primary": self._lo_primary,
+                "libreoffice_frame": lo,
+                "libreoffice_image": lo_img,
+                "marks": data.get("marks", []),
+            }
+        )
         self._char_height_pt = float(lo.get("font_size_pt", 5.0))
         self._font_size_ratio = float(lo.get("font_size_ratio", 0.42))
         self._runtime_char_height = None
@@ -372,6 +411,28 @@ def _char_height_from_style_family(doc, family_name, style_name):
         return None
 
 
+def _char_font_from_props(prop_set):
+    for name in ("CharFontNameAsian", "CharFontName"):
+        try:
+            v = prop_set.getPropertyValue(name)
+            if v:
+                return str(v)
+        except Exception:
+            pass
+    return None
+
+
+def _char_font_from_style_family(doc, family_name, style_name):
+    if not style_name:
+        return None
+    try:
+        styles = doc.getStyleFamilies().getByName(family_name)
+        style = styles.getByName(style_name)
+        return _char_font_from_props(style)
+    except Exception:
+        return None
+
+
 def _resolve_char_height_pt(doc, cursor):
     """Effective point size; 0 on cursor means 'inherit' — walk paragraph/char styles."""
     h = _char_height_from_props(cursor)
@@ -391,6 +452,29 @@ def _resolve_char_height_pt(doc, cursor):
         )
         if h:
             return h
+    except Exception:
+        pass
+    return None
+
+
+def _resolve_char_font_name(doc, cursor):
+    font = _char_font_from_props(cursor)
+    if font:
+        return font
+    try:
+        font = _char_font_from_style_family(
+            doc, "CharacterStyles", cursor.getPropertyValue("CharStyleName")
+        )
+        if font:
+            return font
+    except Exception:
+        pass
+    try:
+        font = _char_font_from_style_family(
+            doc, "ParagraphStyles", cursor.getPropertyValue("ParaStyleName")
+        )
+        if font:
+            return font
     except Exception:
         pass
     return None
@@ -420,6 +504,32 @@ def _host_char_height(doc, text, cursor_at_marks):
 
 def _host_char_height_at_anchor(doc, text, anchor):
     return _host_char_height(doc, text, text.createTextCursorByRange(anchor))
+
+
+def _host_char_font(doc, text, cursor_at_marks):
+    """Font family of the kanji before kaeriten marks (or paragraph default)."""
+    host = text.createTextCursorByRange(cursor_at_marks)
+    try:
+        if host.goLeft(1, False):
+            host.goRight(1, True)
+            font = _resolve_char_font_name(doc, host)
+            if font:
+                return font
+    except Exception:
+        pass
+    try:
+        para = text.createTextCursorByRange(cursor_at_marks)
+        para.gotoStartOfParagraph(False)
+        font = _resolve_char_font_name(doc, para)
+        if font:
+            return font
+    except Exception:
+        pass
+    return ""
+
+
+def _host_char_font_at_anchor(doc, text, anchor):
+    return _host_char_font(doc, text, text.createTextCursorByRange(anchor))
 
 
 def _page_style_is_vertical(doc, name):
@@ -517,6 +627,27 @@ def _is_vertical_writing(doc, cursor):
         except Exception:
             name = None
     return _page_style_is_vertical(doc, name)
+
+
+def _render_fingerprint(doc, text, anchor, marks, mapper, vertical=None, host_pt=None):
+    """Fingerprint the host style + renderer settings that affect rendered views."""
+    if host_pt is None:
+        host_pt = _host_char_height_at_anchor(doc, text, anchor)
+    host = float(host_pt) if host_pt and host_pt > 0 else 12.0
+    if vertical is None:
+        vertical = _is_vertical_writing(doc, text.createTextCursorByRange(anchor))
+    font = _host_char_font_at_anchor(doc, text, anchor)
+    renderer = "image" if mapper.use_image_renderer else "frame"
+    return "|".join(
+        (
+            "v1",
+            "renderer=%s" % renderer,
+            "pt=%.1f" % host,
+            "vert=%d" % (1 if vertical else 0),
+            "font=%s" % _safe_meta_value(font),
+            "rh=%s" % mapper._rendering_hash,
+        )
+    )
 
 
 _FRAME_NAME = "marinaMoji_kaeriten"
@@ -759,8 +890,8 @@ def _graphic_from_url(file_url):
         return None
 
 
-def _set_text_content_desc(obj, marks):
-    desc = _encode_desc(marks)
+def _set_text_content_desc(obj, marks, fingerprint=None):
+    desc = _encode_desc(marks, fingerprint)
     for name, value in (
         ("Description", desc),
         ("Title", _GRAPHIC_NAME),
@@ -778,6 +909,17 @@ def _marks_from_text_content(obj):
             marks = _decode_desc(obj.getPropertyValue(name))
             if marks is not None:
                 return marks
+        except Exception:
+            pass
+    return None
+
+
+def _fingerprint_from_text_content(obj):
+    for name in ("Description", "AlternativeText"):
+        try:
+            fp = _decode_fp(obj.getPropertyValue(name))
+            if fp is not None:
+                return fp
         except Exception:
             pass
     return None
@@ -817,12 +959,12 @@ def _configure_graphic(graphic, mapper, metrics, vertical=False):
         pass
 
 
-def _insert_graphic(text, cursor, marks, mapper, doc, vertical=False):
+def _insert_graphic(text, cursor, marks, mapper, doc, vertical=False, fingerprint=None):
     path, metrics = _write_marks_svg(marks, mapper)
     url = uno.systemPathToFileUrl(path)
     graphic = doc.createInstance("com.sun.star.text.TextGraphicObject")
     _configure_graphic(graphic, mapper, metrics, vertical)
-    _set_text_content_desc(graphic, marks)
+    _set_text_content_desc(graphic, marks, fingerprint)
     loaded = _graphic_from_url(url)
     if loaded is not None:
         try:
@@ -833,7 +975,7 @@ def _insert_graphic(text, cursor, marks, mapper, doc, vertical=False):
         graphic.setPropertyValue("GraphicURL", url)
     text.insertTextContent(cursor, graphic, False)
     # Some LO versions reapply defaults after insertion; reassert metadata/layout.
-    _set_text_content_desc(graphic, marks)
+    _set_text_content_desc(graphic, marks, fingerprint)
     _configure_graphic(graphic, mapper, metrics, vertical)
 
 
@@ -875,10 +1017,10 @@ def _configure_frame(frame, mapper, vertical=False):
         pass
 
 
-def _insert_frame(text, cursor, marks, mapper, doc, vertical=False):
+def _insert_frame(text, cursor, marks, mapper, doc, vertical=False, fingerprint=None):
     frame = doc.createInstance("com.sun.star.text.TextFrame")
     _configure_frame(frame, mapper, vertical)
-    frame.setPropertyValue("Description", _encode_desc(marks))
+    frame.setPropertyValue("Description", _encode_desc(marks, fingerprint))
     try:
         frame.setPropertyValue("Name", _FRAME_NAME)
     except Exception:
@@ -895,11 +1037,11 @@ def _insert_frame(text, cursor, marks, mapper, doc, vertical=False):
     _apply_frame_dimensions(frame, mapper, n_glyphs, vertical)
 
 
-def _insert_view(text, cursor, marks, mapper, doc, vertical=False):
+def _insert_view(text, cursor, marks, mapper, doc, vertical=False, fingerprint=None):
     if mapper.use_image_renderer:
-        _insert_graphic(text, cursor, marks, mapper, doc, vertical)
+        _insert_graphic(text, cursor, marks, mapper, doc, vertical, fingerprint)
     else:
-        _insert_frame(text, cursor, marks, mapper, doc, vertical)
+        _insert_frame(text, cursor, marks, mapper, doc, vertical, fingerprint)
 
 
 def _cursor_at(text, work_range, offset):
@@ -976,11 +1118,14 @@ def _format_clusters(text, work_range, mapper, doc):
         host_pt = _host_char_height(doc, text, start)
         mapper.apply_host_size(host_pt)
         vertical = _is_vertical_writing(doc, start)
+        fingerprint = _render_fingerprint(
+            doc, text, start, marks, mapper, vertical=vertical, host_pt=host_pt
+        )
         run = text.createTextCursorByRange(start)
         run.goRight(len(marks), True)
         insert_at = text.createTextCursorByRange(start)
         run.setString("")
-        _insert_view(text, insert_at, marks, mapper, doc, vertical)
+        _insert_view(text, insert_at, marks, mapper, doc, vertical, fingerprint)
         mapper.clear_runtime_size()
         count += 1
     return count
@@ -1002,16 +1147,25 @@ def _refresh_frames_in_place(doc, work_range, mapper):
         vertical = _is_vertical_writing(
             doc, text.createTextCursorByRange(anchor)
         )
+        fingerprint = _render_fingerprint(
+            doc, text, anchor, _marks, mapper, vertical=vertical, host_pt=host_pt
+        )
         if mapper.use_image_renderer:
             try:
                 cursor = text.createTextCursorByRange(anchor)
-                _insert_graphic(text, cursor, _marks, mapper, doc, vertical)
+                _insert_graphic(text, cursor, _marks, mapper, doc, vertical, fingerprint)
                 text.removeTextContent(frame)
                 count += 1
             except Exception:
                 pass
             mapper.clear_runtime_size()
             continue
+        try:
+            if _decode_fp(frame.getPropertyValue("Description")) == fingerprint:
+                mapper.clear_runtime_size()
+                continue
+        except Exception:
+            pass
         n_glyphs = len(mapper.glyphs_for_marks(_marks)) if _marks else 1
         ft = frame.getText()
         if _marks:
@@ -1025,6 +1179,10 @@ def _refresh_frames_in_place(doc, work_range, mapper):
         _set_frame_insets_zero(frame)
         _configure_frame(frame, mapper, vertical)
         _apply_frame_dimensions(frame, mapper, n_glyphs, vertical)
+        try:
+            frame.setPropertyValue("Description", _encode_desc(_marks, fingerprint))
+        except Exception:
+            pass
         mapper.clear_runtime_size()
         count += 1
     return count
@@ -1046,6 +1204,12 @@ def _refresh_graphics_in_place(doc, work_range, mapper):
         vertical = _is_vertical_writing(
             doc, text.createTextCursorByRange(anchor)
         )
+        fingerprint = _render_fingerprint(
+            doc, text, anchor, marks, mapper, vertical=vertical, host_pt=host_pt
+        )
+        if _fingerprint_from_text_content(graphic) == fingerprint:
+            mapper.clear_runtime_size()
+            continue
         path, metrics = _write_marks_svg(marks, mapper)
         url = uno.systemPathToFileUrl(path)
         loaded = _graphic_from_url(url)
@@ -1056,7 +1220,7 @@ def _refresh_graphics_in_place(doc, work_range, mapper):
                 graphic.setPropertyValue("GraphicURL", url)
         else:
             graphic.setPropertyValue("GraphicURL", url)
-        _set_text_content_desc(graphic, marks)
+        _set_text_content_desc(graphic, marks, fingerprint)
         _configure_graphic(graphic, mapper, metrics, vertical)
         mapper.clear_runtime_size()
         count += 1

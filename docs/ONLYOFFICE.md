@@ -60,7 +60,7 @@ From interoperability tests in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 | Piece | Description |
 |-------|-------------|
 | **Sidebar UI** | Render, Unrender, Refresh, Copy plain text |
-| **Renderer** | Inline content controls (`Api.CreateInlineLvlSdt`) with tag `MARINAMOJI:source=…` |
+| **Renderer** | Inline images (`Api.CreateImage`) drawn from sidebar canvas PNGs; source stored in drawing name (`MARINAMOJI:source=…`) |
 | **Export** | Same logic as Word / LO (`exportCore.js` port) |
 
 Install and daily use: **[onlyoffice/README.md](../onlyoffice/README.md)**.
@@ -72,6 +72,7 @@ Install and daily use: **[onlyoffice/README.md](../onlyoffice/README.md)**.
 | **Code** | Feature-complete for v1 (June 2026) |
 | **Pre-publish QA** | Required before release |
 | **Recommended for daily work** | **LibreOffice** until QA passes |
+| **Renderer fallback** | Legacy inline content controls remain as a fallback path |
 
 ---
 
@@ -113,15 +114,15 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 ### Render pipeline (simplified)
 
 1. **Scan** document paragraphs for Kanbun mark clusters (`說` + `㆒㆑`).
-2. **Rebuild** each affected paragraph: plain runs + inline controls with stacked glyphs.
-3. **Unrender** finds controls by tag prefix `MARINAMOJI:source=` and restores Unicode marks.
-4. **Refresh** updates glyph text inside controls from `mapping.json`.
+2. **Rebuild** each affected paragraph: plain runs + inline images with tightly stacked glyphs.
+3. **Unrender** finds images/controls by metadata prefix `MARINAMOJI:source=` and restores Unicode marks.
+4. **Refresh** rebuilds stale rendered paragraphs from canonical metadata and `mapping.json`.
 
 ### v0.1 limitations (honest list)
 
-- **Compound stacks:** default `"stack"` uses `SetPosition` + tight spacing inside the inline control (no `AddLineBreak` — that escapes and breaks the line before the block). Tune with `"stack_step_hps"` (half-points; `0` = auto). Fallbacks: `"soft_break"` or `"horizontal"`.
+- **Compound stacks:** primary renderer paints a tight stack into an inline PNG. Legacy inline controls are still available as fallback (`onlyoffice_primary: "inline_content_control"`).
 - **Unrender:** replaces the control in place (no `Delete()`) so display glyphs are not spilled to line start.
-- **Copy plain:** reads canonical Unicode from control tags while views are shown (no Unrender required).
+- **Copy plain:** reads canonical Unicode from drawing names / control tags while views are shown (no Unrender required).
 - **API names** may differ slightly between ONLYOFFICE versions (`GetParentParagraph`, etc.).
 - **No import** of Word content controls or LO frames from other apps.
 
@@ -131,7 +132,7 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 
 | | LibreOffice | Word add-in | ONLYOFFICE plugin |
 |---|-------------|-------------|-------------------|
-| **Render primitive** | Anchored **frame** | **Content control** (v0.1) | Inline **content control** |
+| **Render primitive** | Anchored **frame** / SVG image | Inline **PNG picture** | Inline **PNG image** |
 | **Visual match to print** | Best in your tests | Good | TBD (QA) |
 | **Install difficulty** | Extension Manager `.oxt` | High (HTTPS + serve) | Medium (copy folder) |
 | **Mac daily use** | ✅ Ready after QA | ✅ Ready after QA | ⏳ Pre-publish QA |
@@ -203,14 +204,15 @@ From [ROADMAP.md](ROADMAP.md):
 - [x] Plugin skeleton
 - [ ] Install + QA (simple mark, compound, font refresh)
 - [ ] Selection-scoped render (parity with LO/Word)
-- [ ] Smarter export (read marks from control tags without manual Unrender)
+- [x] Smarter export (read marks from image/control metadata without manual Unrender)
 
 ---
 
 ## References
 
 - [ONLYOFFICE plugin getting started](https://api.onlyoffice.com/docs/plugin-and-macros/get-started/overview/)
-- [CreateInlineLvlSdt](https://api.onlyoffice.com/docs/office-api/usage-api/text-document-api/Api/Methods/CreateInlineLvlSdt/)
+- [CreateImage](https://api.onlyoffice.com/docs/office-api/usage-api/document-api/Api/Methods/CreateImage/)
+- [CreateInlineLvlSdt](https://api.onlyoffice.com/docs/office-api/usage-api/text-document-api/Api/Methods/CreateInlineLvlSdt/) — legacy fallback
 - [ARCHITECTURE.md](ARCHITECTURE.md) — source vs view
 - [WORD_FINDINGS.md](WORD_FINDINGS.md) — paste / interoperability
 - [onlyoffice/README.md](../onlyoffice/README.md) — install commands

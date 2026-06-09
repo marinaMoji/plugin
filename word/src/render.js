@@ -306,6 +306,36 @@ function selectionHasKaeritenMarks(text) {
   return /[\u3190-\u319f]/.test(text || "");
 }
 
+function hashString(text) {
+  let h = 5381;
+  const s = String(text ?? "");
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h) ^ s.charCodeAt(i);
+  return (h >>> 0).toString(16);
+}
+
+function renderSettingsHash(mappingData) {
+  const r = mappingData?.rendering || {};
+  return hashString(
+    JSON.stringify({
+      version: mappingData?.version,
+      wordPrimary: r.word_primary,
+      wordInlinePicture: r.word_inline_picture,
+      marks: mappingData?.marks || [],
+    })
+  );
+}
+
+function pictureRenderFingerprint(mappingData, hostPt, vertical, opts) {
+  return [
+    "v1",
+    "renderer=inline_picture",
+    `pt=${Number(hostPt || 12).toFixed(1)}`,
+    `vert=${vertical ? 1 : 0}`,
+    `rh=${renderSettingsHash(mappingData)}`,
+    `row=${opts?.row ? 1 : 0}`,
+  ].join("|");
+}
+
 export async function getWorkRange(context) {
   const selection = context.document.getSelection();
   selection.load("text");
@@ -321,7 +351,7 @@ export async function getWorkRange(context) {
   return context.document.body.getRange();
 }
 
-/** Render/Unrender scope: selection must include marks (avoids silent whole-document scans). */
+/** Render scope: non-empty selection if it contains marks, otherwise whole document. */
 /** Unrender scope: need a selection (do not scan the whole document). */
 export async function getWorkRangeForUnrender(context) {
   const selection = context.document.getSelection();
@@ -346,10 +376,13 @@ export async function getWorkRangeForRender(context) {
   selection.load("text");
   await context.sync();
   const selText = selection.text || "";
-  if (!selText.trim() || !selectionHasKaeritenMarks(selText)) {
+  if (!selText.trim()) {
+    return context.document.body.getRange();
+  }
+  if (!selectionHasKaeritenMarks(selText)) {
     throw new Error(
-      "Select the text that contains kaeriten marks (e.g. 漢㆒㆑字), then Render. " +
-        "A cursor on an empty line is not enough."
+      "The selected text does not contain kaeriten marks (e.g. 漢㆒㆑字). " +
+        "Select text with marks, or clear the selection to render the whole document."
     );
   }
   if (isPlaceholderText(selText)) {
@@ -904,7 +937,8 @@ async function renderClusterWithInlinePicture(
   baseChar,
   marks,
   byChar,
-  opts
+  opts,
+  mappingData
 ) {
   const baseRange = await baseRangeAtClusterStart(
     context,
@@ -963,6 +997,12 @@ async function renderClusterWithInlinePicture(
 
   const viewId = nextKaeritenViewId();
   const imageOpts = imageOptsForFlow(opts, vertical, marks.length);
+  imageOpts.renderFingerprint = pictureRenderFingerprint(
+    mappingData,
+    hostPt,
+    vertical,
+    imageOpts
+  );
   await insertKaeritenInlinePicture(
     context,
     marksRange,
@@ -1027,7 +1067,8 @@ async function renderClustersInRange(context, workRange, mappingData) {
               baseChar,
               marks,
               byChar,
-              opts
+              opts,
+              mappingData
             );
           } else if (opts.useOoxml) {
             await renderClusterWithOoxml(
@@ -1068,28 +1109,26 @@ async function renderClustersInRange(context, workRange, mappingData) {
 }
 
 export async function renderKaeritenDocument(context, mappingData) {
-  const selection = context.document.getSelection();
-  selection.load("text");
-  await context.sync();
-  const selText = selection.text || "";
-  const expectedClusters = findClusters(selText).length;
-
   const workRange = await getWorkRangeForRender(context);
+  workRange.load("text");
+  await context.sync();
+  const beforeText = workRange.text || "";
+  const expectedClusters = findClusters(beforeText).length;
   const count = await renderClustersInRange(context, workRange, mappingData);
 
   if (count === 0) {
     throw new Error(
-      "Render could not format any marks in the selection. Re-type 漢㆒㆑字 on one line, select all of it, then Render."
+      "Render could not format any kaeriten marks. Re-type 漢㆒㆑字 on one line, select it, or clear the selection to scan the whole document."
     );
   }
 
-  selection.load("text");
+  workRange.load("text");
   await context.sync();
-  const marksLeft = selectionHasKaeritenMarks(selection.text);
+  const marksLeft = selectionHasKaeritenMarks(workRange.text);
   if (marksLeft) {
     throw new Error(
-      `Only ${count} of ${expectedClusters} mark group(s) in the selection were formatted. ` +
-        "Put all marks on one line (no line break between ㆒ and ㆑), select the whole word, then Render again."
+      `Only ${count} of ${expectedClusters} mark group(s) in the render scope were formatted. ` +
+        "Put each compound mark group on one line (no line break between ㆒ and ㆑), then Render again."
     );
   }
 
@@ -1717,7 +1756,7 @@ export async function refreshKaeritenDocument(context, mappingData) {
   if (wordHasInlinePictureApi()) {
     pictureItems = await listMarinaMojiInlinePictures(context, workRange);
   }
-  for (const { pic, marks, viewId } of pictureItems) {
+  for (const { pic, marks, viewId, fp } of pictureItems) {
     const baseRange = await baseKanjiAdjacentBefore(
       context,
       pic.getRange(W.rangeWhole())
@@ -1730,13 +1769,23 @@ export async function refreshKaeritenDocument(context, mappingData) {
       hostPt = baseRange.font.size || 12;
       vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
     }
+    const imageOpts = imageOptsForFlow(opts, vertical, marks.length);
+    imageOpts.renderFingerprint = pictureRenderFingerprint(
+      mappingData,
+      hostPt,
+      vertical,
+      imageOpts
+    );
+    if (fp === imageOpts.renderFingerprint) {
+      continue;
+    }
     await refreshInlinePicture(
       context,
       pic,
       marks,
       byChar,
       hostPt,
-      imageOptsForFlow(opts, vertical, marks.length),
+      imageOpts,
       viewId
     );
   }

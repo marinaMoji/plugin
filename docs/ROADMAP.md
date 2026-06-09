@@ -49,8 +49,21 @@
 - [ ] **Pre-publish QA:** Accueil pane connects; render/unrender/refresh; 縦書き; compound; copy plain
 - [ ] Self-hosted `dist/` + production manifest ([SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md))
 
-## Phase 4 — Optional
+## Phase 4 — Rendering improvements
 
+See [RENDERING_IMPROVEMENTS.md](RENDERING_IMPROVEMENTS.md) for design notes.
+
+- [x] **ONLYOFFICE:** inline **image** renderer (canvas PNG + `Api.CreateImage`, tight compound stack — parity with Word)
+- [x] **Word:** Render **whole document** when selection is empty (parity with LibreOffice `_work_range`)
+- [x] **LibreOffice:** incremental Render — format unrendered marks only; refresh views when font / size / orientation changed; skip if fingerprint matches
+- [x] Port fingerprint / incremental logic to Word and ONLYOFFICE
+
+## Phase 5 — Optional
+
+- [ ] Word Online QA (reuse Word add-in where Office.js allows)
+- [ ] OpenOffice smoke test (reuse LibreOffice `.oxt`)
+- [ ] Markdown → HTML preview/export from Unicode source ([MARKDOWN_AND_RTF.md](MARKDOWN_AND_RTF.md))
+- [ ] Apple RTFD exporter spike (TextEdit / Pages preview; Mac-local)
 - [ ] Auto-format on save or idle (**not** on every keystroke)
 - [ ] 漢文エディタ `[レ]` import
 - [ ] 再読 / okurigana (ruby + fields in Word; separate from kaeriten views)
@@ -63,10 +76,15 @@
 - [ ] **Pre-publish QA** on ONLYOFFICE Desktop
 - [x] Document: Unicode source; no frame parity with LO on paste
 
+## Future hosts (planning only)
+
+See [OTHER_HOSTS.md](OTHER_HOSTS.md) and [MARKDOWN_AND_RTF.md](MARKDOWN_AND_RTF.md) for Google Docs, Pages, WPS, Collabora Online, LaTeX converters, Markdown/HTML, RTFD, and Ichitaro — **not** scheduled until LO / Word / OnlyOffice v1 QA ships.
+
 ## Deferred / rejected
 
 | Item | Status |
 |------|--------|
+| Google Docs kaeriten renderer (v1) | **Deferred** — weak 縦書き; Unicode workflow sufficient; see [OTHER_HOSTS.md](OTHER_HOSTS.md) |
 | Asian ruby as primary kaeriten | **Rejected** |
 | Frames/textboxes as source of truth | **Rejected** |
 | Hidden metadata as canonical semantics | **Rejected** for v1 |

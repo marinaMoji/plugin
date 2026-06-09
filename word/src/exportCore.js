@@ -26,7 +26,7 @@ export function nextKaeritenViewId() {
 }
 
 /** Tag on CC / shape alt text. New renders use a unique id + source marks. */
-export function encodeKaeritenSourceTag(marks, viewId = null, flow = null) {
+export function encodeKaeritenSourceTag(marks, viewId = null, flow = null, fingerprint = null) {
   const id = viewId || nextKaeritenViewId();
   const source = normalizeMarks(marks);
   const flowBit =
@@ -35,35 +35,40 @@ export function encodeKaeritenSourceTag(marks, viewId = null, flow = null) {
       : flow === "h" || flow === "horizontal"
         ? ";flow=h"
         : "";
-  return `${KAERITEN_TAG_PREFIX}id=${id};source=${source}${flowBit}`;
+  const fpBit = fingerprint ? `;fp=${String(fingerprint).replace(/;/g, "_")}` : "";
+  return `${KAERITEN_TAG_PREFIX}id=${id};source=${source}${flowBit}${fpBit}`;
 }
 
 /**
  * Parse marinaMoji tag (new or legacy `MARINAMOJI:source=㆒㆑`).
- * @returns {{ viewId: string|null, marks: string }|null}
+ * @returns {{ viewId: string|null, marks: string, fp: string|null }|null}
  */
 export function parseKaeritenSourceTag(raw) {
   const s = String(raw ?? "").trim();
   if (!s) return null;
   if (/^[\u3190-\u319f]+$/.test(s)) {
-    return { viewId: null, marks: normalizeMarks(s) };
+    return { viewId: null, marks: normalizeMarks(s), fp: null };
   }
+  const fpMatch = s.match(/(?:^|;)fp=([^;]+)/i);
+  const fp = fpMatch ? fpMatch[1] : null;
   const idFirst = s.match(/id=([^;]+);source=([\u3190-\u319f]+)/i);
   if (idFirst) {
     return {
       viewId: idFirst[1],
       marks: normalizeMarks(idFirst[2]),
+      fp,
     };
   }
   if (s.startsWith(SOURCE_PREFIX)) {
     return {
       viewId: null,
-      marks: normalizeMarks(s.slice(SOURCE_PREFIX.length)),
+      marks: normalizeMarks(s.slice(SOURCE_PREFIX.length).split(";")[0]),
+      fp,
     };
   }
   const loose = s.match(/source=([\u3190-\u319f]+)/i);
   if (loose && /marinamoji/i.test(s)) {
-    return { viewId: null, marks: normalizeMarks(loose[1]) };
+    return { viewId: null, marks: normalizeMarks(loose[1]), fp };
   }
   return null;
 }

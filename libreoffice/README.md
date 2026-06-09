@@ -69,6 +69,8 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 4. Edit source with **Unrender**; do not edit inside rendered images/frames
 5. **Copy plain text** — paste elsewhere (canonical Unicode)
 
+Render is incremental: it formats new Unicode marks, refreshes rendered views when font / size / orientation changes, and skips views that are already current.
+
 Export reads **Unicode source** (including marks from rendered images/frames). See [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
 **Publishing:** maintainer steps for GitHub Releases and website → [docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 1).

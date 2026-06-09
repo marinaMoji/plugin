@@ -27,8 +27,13 @@ def test_compound_cluster():
 
 
 def test_mapping_file():
-    root = os.path.join(os.path.dirname(__file__), "..", "marinamoji_kaeriten")
-    path = os.path.join(root, "mapping.json")
+    here = os.path.dirname(__file__)
+    candidates = (
+        os.path.join(here, "..", "marinamoji_kaeriten", "mapping.json"),
+        os.path.join(here, "..", "..", "mapping.json"),
+    )
+    path = next((p for p in candidates if os.path.exists(p)), None)
+    assert path is not None
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
     assert len(data.get("marks", [])) >= 2
