@@ -27,10 +27,10 @@
 
 ## Phase 1.5 — Sync and source mode
 
-- [ ] **Refresh rendering** (idempotent rebuild from source marks)
+- [ ] **Refresh rendering** (idempotent rebuild from source marks) — covered by **Format kaeriten** / **Render** on all hosts
 - [ ] **Show source** — edit `說㆒㆑者`; views hidden or removed
 - [ ] Find marinaMoji frames by editor-local tags (if metadata used)
-- [ ] Paragraph font-size change → user **Refresh** or relative frame sizing
+- [ ] Paragraph font-size change → user runs **Render** again (smart refresh skips unchanged views)
 - [x] **Copy as plain text** (canonical clipboard)
 
 ## Phase 2 — Export and fallback
@@ -43,11 +43,12 @@
 
 - [x] Office.js add-in — [word/](../word/)
 - [x] **Inline picture** renderer (Mac default; `word_primary: inline_picture`)
-- [x] **Render** + **Refresh** + **Unrender** + **Copy plain** (parity with LO toolbar)
+- [x] **Render** + **Unrender** + **Copy plain** (parity with LO toolbar; **Render** includes smart refresh)
 - [x] Alt-text metadata (`MARINAMOJI:kaeriten:id=…;source=…`) for round-trip
 - [x] Mac dev tooling: HTTPS server, mkcert, `doctor`, task pane + Accueil ribbon ([WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md))
-- [ ] **Pre-publish QA:** Accueil pane connects; render/unrender/refresh; 縦書き; compound; copy plain
-- [ ] Self-hosted `dist/` + production manifest ([SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md))
+- [x] GitHub Pages hosting for production `dist/` ([GITHUB_PAGES.md](GITHUB_PAGES.md))
+- [ ] **Pre-publish QA:** Accueil pane connects; render/unrender; font-size re-render via **Render**; 縦書き; compound; copy plain
+- [ ] Include Word in default release build (`MARINAMOJI_INCLUDE_WORD=1`) after QA
 
 ## Phase 4 — Rendering improvements
 

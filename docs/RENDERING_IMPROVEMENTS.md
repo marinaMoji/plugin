@@ -1,6 +1,6 @@
-# Rendering improvements — exploration notes
+# Rendering improvements — implementation notes
 
-Implementation notes (June 2026). Captures three cross-host rendering improvements discussed for post–v1 QA work.
+Cross-host rendering improvements (June 2026). All three items below are **implemented**.
 
 **Related:** [ARCHITECTURE.md](ARCHITECTURE.md), [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md), [WORD_FINDINGS.md](WORD_FINDINGS.md), [ONLYOFFICE.md](ONLYOFFICE.md), [mapping.json](../mapping.json).
 
@@ -134,7 +134,7 @@ So today: Render = “new + refresh stale existing views in scope.”
 
 ### Implemented first pass
 
-Single **Render** command (and optional dedicated **Refresh**):
+Single **Render** command on Word and ONLYOFFICE; LibreOffice **Format kaeriten** / **Refresh rendering** (same function):
 
 | Cluster state | Action |
 |---------------|--------|
@@ -210,8 +210,8 @@ On Render:
 
 ## Open questions
 
-1. Should **Refresh** remain a separate command that **never** inserts new views (only updates dirty views), with **Render** = unrendered + dirty? Current ONLYOFFICE Refresh rebuilds paragraphs from canonical metadata and raw marks.
-2. Whole-document Word Render: silent or confirmation dialog?
+1. ~~Should **Refresh** remain a separate command?~~ **Resolved:** Word and ONLYOFFICE use a single **Render** button (render + smart refresh). LibreOffice **Refresh rendering** menu item remains an alias for **Format kaeriten**.
+2. Whole-document Word Render: silent or confirmation dialog? (Currently silent, like LibreOffice.)
 3. ONLYOFFICE image path: keep content-control fallback in `mapping.json` for older builds?
 4. Store fingerprint in user-visible Description vs hidden property only?
 

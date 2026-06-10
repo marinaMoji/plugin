@@ -100,7 +100,7 @@ Format kaeriten  (manual command)
 View:  說 [box: 一/レ] 者   (read-only view)
 ```
 
-After mark or style changes → **Refresh rendering** (rebuild boxes from source).
+After mark or style changes → run **Format kaeriten** / **Render** again (rebuild boxes from source).
 
 ## Interoperability (Word + LibreOffice)
 

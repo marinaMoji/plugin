@@ -4,7 +4,7 @@ JavaScript plugin for **ONLYOFFICE Document Editor** (Writer). Same model as the
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
 - **View:** inline PNG images with stacked display glyphs (一 / レ); inline content controls remain as a fallback
-- **Commands:** Render, Unrender, Refresh, Copy plain text
+- **Commands:** **Render** (includes smart refresh), Unrender, Copy plain text
 
 **Status (June 2026):** Implementation complete for v1. **Pre-publish QA** on ONLYOFFICE Desktop before release. LibreOffice remains the recommended daily driver after QA.
 

@@ -52,7 +52,7 @@ End users **never** install mkcert or Node. They only:
 2. Run our **Word installer** once (copies manifest).
 3. Open Word → **Accueil → Kaeriten**.
 
-We publish `plugin/word/dist/` to `https://<your-domain>/word/` on each release.
+We publish `plugin/word/dist/` to `https://marinamoji.github.io/plugin/word/` (GitHub Pages for this repo) or your own domain on each release. See [GITHUB_PAGES.md](GITHUB_PAGES.md).
 
 ---
 
@@ -153,6 +153,8 @@ Optional **`install.sh`** (Terminal) — same macro copy as the Mac installer; f
 
 ### Hosting (required before release)
 
+For **this repo**, GitHub Pages already hosts the Word add-in — see [GITHUB_PAGES.md](GITHUB_PAGES.md). On your own domain:
+
 1. Build: `cd plugin/word && ./build.sh` (or `npm run build`).
 2. Upload contents of `plugin/word/dist/` to  
    `https://<your-domain>/word/`  
@@ -160,6 +162,8 @@ Optional **`install.sh`** (Terminal) — same macro copy as the Mac installer; f
 3. Generate production manifest:  
    `MARINAMOJI_PLUGIN_BASE=https://<your-domain>/word ./packaging/build-word-manifest.sh`
 4. Ship `manifest.production.xml` (or embedded in the Mac installer).
+
+**Testers (this repo):** `./word/install-mac-production.sh` — no upload step needed; workflow deploys on push to `main`.
 
 TLS must be valid (Let’s Encrypt is fine). **No** self-signed certs for end users.
 

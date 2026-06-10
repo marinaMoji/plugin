@@ -291,15 +291,15 @@ Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to
 
 ### 4.3 Future automation (optional backlog)
 
-| Idea | Effort | Benefit |
-|------|--------|---------|
-| **`version.json` on Pages** | Low | One URL for all hosts to check |
-| **Task pane update banner** | Low | Word users see “new release” when manifest reinstall needed |
-| **LO `updateURL` feed** | Medium | Native “update extension” in Extension Manager |
-| **GitHub Action: release on tag** | Medium | Tag push builds + publishes without local Mac (DMG still needs macOS runner) |
-| **ONLYOFFICE Marketplace** | High | In-app install + updates for OO users |
-| **Apple notarization** | Medium ($99/yr) | Smoother Mac installs; still not auto-update |
-| **M365 Centralized Deployment** | High (institutional) | IT pushes Word manifest to lab machines |
+| Idea                              | Effort               | Benefit                                                                      |
+| --------------------------------- | -------------------- | ---------------------------------------------------------------------------- |
+| **`version.json` on Pages**       | Low                  | One URL for all hosts to check                                               |
+| **Task pane update banner**       | Low                  | Word users see “new release” when manifest reinstall needed                  |
+| **LO `updateURL` feed**           | Medium               | Native “update extension” in Extension Manager                               |
+| **GitHub Action: release on tag** | Medium               | Tag push builds + publishes without local Mac (DMG still needs macOS runner) |
+| **ONLYOFFICE Marketplace**        | High                 | In-app install + updates for OO users                                        |
+| **Apple notarization**            | Medium ($99/yr)      | Smoother Mac installs; still not auto-update                                 |
+| **M365 Centralized Deployment**   | High (institutional) | IT pushes Word manifest to lab machines                                      |
 
 ---
 

@@ -119,7 +119,7 @@ Office.context.requirements.isSetSupported("WordApiDesktop", "1.2")
 | Match LO “as character” | Approximate (in-flow text) | **Poor** on Mac (float + nudges) | **Promising** per MS `textWrap.inline` |
 | Tag / store source marks | **Easy** (`tag`) | `altTextDescription` | Same as B |
 | Lock from editing | **Built-in** | Manual | Manual |
-| Font size refresh | Rescale inner text | **Refresh** command | Same |
+| Font size refresh | Rescale inner text | **Render** again (smart refresh) | Same |
 | Search `說` + `者` across mark | **Fails** when object between chars | Same (expected) | Same (expected) |
 | Implementation cost | **Done** | Done but off by default | Small delta on `wordTextBox.js` |
 | Word on the web | Supported | Desktop-oriented | Desktop-oriented |
@@ -139,21 +139,20 @@ Office.context.requirements.isSetSupported("WordApiDesktop", "1.2")
 
 Legend: ✅ done / reliable · 🟡 partial · ❌ no · 🔧 dev only · ⏳ not QA’d
 
-| Feature | LibreOffice extension | Word add-in v0.1.2 | ONLYOFFICE plugin v0.1 |
+| Feature | LibreOffice extension | Word add-in v0.1.3 | ONLYOFFICE plugin v0.1.11 |
 |---------|----------------------|--------------------|-------------------------|
-| **Canonical source `說㆒㆑者`** | ✅ | ✅ (design) | ✅ (design) |
-| **Render** | ✅ inline SVG images | ✅ inline pictures | ✅ inline CC |
+| **Canonical source `說㆒㆑者`** | ✅ | ✅ | ✅ |
+| **Render** (includes smart refresh) | ✅ | ✅ | ✅ |
 | **Unrender** | ✅ | ✅ | ✅ |
-| **Refresh** | ✅ | ✅ | ✅ |
 | **Copy plain** | ✅ | ✅ | ✅ |
 | **Scope: selection** | ✅ | ✅ | ❌ (OO: whole doc scan) |
 | **Scope: whole document** | ✅ | ✅ | ✅ |
 | **Silent UI (no dialogs)** | ✅ | ✅ | ✅ |
 | **Toolbar / ribbon** | ✅ marinaMoji bar | 🟡 Accueil → Kaeriten | ⏳ Plugins sidebar |
-| **Install friction** | Extension Manager | High (HTTPS + serve) | Medium (copy plugin folder) |
+| **Install friction** | Extension Manager | Medium (GitHub Pages manifest) | Medium (copy plugin folder / DMG) |
 | **Paste LO → host visuals** | — | ❌ | ❌ |
 | **縦書き** | 🟡 manual QA pending | ⏳ | ⏳ |
-| **Compound ㆒㆑** | ✅ | 🔧 (logic shared) | ⏳ |
+| **Compound ㆒㆑** | ✅ | ✅ | ✅ |
 | **Daily use ready** | **After QA** | **After QA** | **After QA** |
 
 **Pre-publish gate (June 2026):** implementation complete on all three hosts; see [STATUS.md](STATUS.md). QA checklists in [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) and [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md).

@@ -1,0 +1,195 @@
+{
+  "main": {
+    "id": "d0779c1f3c7fc208",
+    "type": "split",
+    "children": [
+      {
+        "id": "114a17f7dfbaa5e5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e1295ecf8d22cb13",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "INSTALLERS_AND_UPDATES.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "INSTALLERS_AND_UPDATES"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "734fac9250417044",
+    "type": "split",
+    "children": [
+      {
+        "id": "91e417ccddf8bd42",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e18577473542838e",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "ef935a8ae8b732e8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "2816bf409b37cc4a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "129b13c1d2e71aff",
+    "type": "split",
+    "children": [
+      {
+        "id": "9a646513494c8e58",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "538d0a72a69bd81d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "INSTALLERS_AND_UPDATES.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for INSTALLERS_AND_UPDATES"
+            }
+          },
+          {
+            "id": "64119c8739c5119d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "INSTALLERS_AND_UPDATES.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from INSTALLERS_AND_UPDATES"
+            }
+          },
+          {
+            "id": "0500ff29722b2b8b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d3651b56978a889d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "610a4b4cdd14e9cc",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "INSTALLERS_AND_UPDATES.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of INSTALLERS_AND_UPDATES"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "e1295ecf8d22cb13",
+  "lastOpenFiles": [
+    "INSTALL-MAC-GATEKEEPER.md",
+    "GITHUB_PAGES.md",
+    "DISTRIBUTION.md",
+    "CONVENTIONS.md",
+    "BACKGROUND.md",
+    "ARCHITECTURE.md"
+  ]
+}

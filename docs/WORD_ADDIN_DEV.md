@@ -10,12 +10,12 @@ Handoff notes for **marinaMoji Kaeriten** in Microsoft Word (`plugin/word/`). Fo
 
 | Area | Status |
 |------|--------|
-| **Implementation** | ✅ Render / Unrender / Refresh / Copy plain; inline picture renderer (`word_primary: inline_picture`) |
-| **Mac dev workflow** | ✅ HTTPS + mkcert + sideload + task pane |
+| **Implementation** | ✅ Render (includes smart refresh), Unrender, Copy plain; inline picture renderer (`word_primary: inline_picture`) |
+| **Mac dev workflow** | ✅ HTTPS + mkcert + `./install-mac.sh` + task pane |
 | **Pre-publish QA** | ⏳ Required before GitHub/website release |
-| **End-user hosting** | ⏳ Upload `dist/` to public HTTPS; ship production manifest |
+| **End-user hosting** | ✅ GitHub Pages — `https://marinamoji.github.io/plugin/word/` ([GITHUB_PAGES.md](GITHUB_PAGES.md)) |
 
-The add-in loads HTML from a **local HTTPS server** (`https://127.0.0.1:3000`) during development. End users load from **your website** — never localhost.
+The add-in loads HTML from a **local HTTPS server** (`https://127.0.0.1:3000`) during development. Testers and end users load from **GitHub Pages** — use `./install-mac-production.sh`, not `./install-mac.sh`.
 
 **Compléments navigator preview** does not connect to Word — expected. Use **Accueil → Kaeriten pane** with a document open.
 
@@ -57,11 +57,11 @@ Run these on **your target Word version** (Mac first; Windows separately).
 2. **Simple mark, selection scope:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
 3. **Whole-document render:** type at least two clusters in different paragraphs, leave only the caret active (no selection), click **Render** → both clusters render.
 4. **Compound:** `說㆒㆑者` → render → marks appear as inline picture beside 說.
-5. **Refresh:** change paragraph font size → **Refresh** rescales pictures; run **Refresh** again without changing style and confirm nothing visibly changes.
+5. **Smart refresh:** change paragraph font size → **Render** rescales pictures; run **Render** again without changing style and confirm nothing visibly changes.
 6. **Copy plain:** with rendered views still showing, **Copy plain** → clipboard = `說㆒㆑者`. Reads alt-text metadata; does not unrender.
 7. **縦書き:** vertical paragraph — compound stack and placement acceptable.
 8. **Save / reopen:** rendered views survive save and reload.
-9. **Production manifest:** build with `MARINAMOJI_PLUGIN_BASE=https://your-domain/word ./build-word-manifest.sh`; sideload production manifest; confirm pane loads from hosted URL (not localhost).
+9. **Production manifest:** `./install-mac-production.sh` (or build with `MARINAMOJI_PLUGIN_BASE=https://marinamoji.github.io/plugin/word ./build-word-manifest.sh`); confirm pane loads from GitHub Pages (not localhost).
 
 When all pass, enable Word in release build (`MARINAMOJI_INCLUDE_WORD=1`) and follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
@@ -79,7 +79,10 @@ When all pass, enable Word in release build (`MARINAMOJI_INCLUDE_WORD=1`) and fo
 
 Mac sideload folder: `~/Library/Containers/com.microsoft.Word/Data/Documents/wef/`
 
-Install script: `plugin/word/install-mac.sh`
+| Script | Purpose |
+|--------|---------|
+| `./install-mac.sh` | Dev manifest → `127.0.0.1:3000` (requires `npm run serve`) |
+| `./install-mac-production.sh` | Production manifest from GitHub Pages |
 
 ---
 
@@ -93,7 +96,7 @@ Run **`npm run diagnose`** first.
 | Blank pane | HTTPS cert not trusted | `mkcert -install`; `npm run serve` |
 | « Erreur relative au complément » | Server not running | `npm run serve` (HTTPS); keep terminal open |
 | **Word did not connect** in Compléments | Preview only | Open document → **Accueil → Kaeriten pane** |
-| **Word did not connect** from ribbon | Server down or stale manifest | `npm run doctor`; Cmd+Q Word; `npm run reset-word` |
+| **Word did not connect** from ribbon | Server down or stale manifest | Dev: `npm run doctor`; production: `./install-mac-production.sh`; Cmd+Q Word |
 
 Safari check: `https://127.0.0.1:3000/taskpane.html` should load without “not secure” after `mkcert -install`.
 

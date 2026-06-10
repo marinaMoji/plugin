@@ -8,7 +8,7 @@
 | Layer | LibreOffice | Word | OnlyOffice (v1) |
 |-------|-------------|------|-----------------|
 | Source | `說㆒㆑者` | `說㆒㆑者` | `說㆒㆑者` |
-| Primary view | Anchored **frame** | **Content control** (v0.1); **inline text box** (target) | None (use source or subscript fallback) |
+| Primary view | Inline **SVG image** (frame fallback) | Inline **PNG picture** | Inline **PNG image** |
 | Export input | Source + `mapping.json` | Source + `mapping.json` | Source + `mapping.json` |
 
 See [ARCHITECTURE.md](ARCHITECTURE.md), [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md), [WORD_FINDINGS.md](WORD_FINDINGS.md).
@@ -19,7 +19,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md), [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAM
 1. Type source:     說㆒㆑者
 2. Format kaeriten:  (selection / paragraph / document)
 3. Edit source only — not inside frame/textbox
-4. Refresh rendering after mark or style changes
+4. **Render** again after mark or style changes (LO menu: **Refresh rendering** — same command)
 ```
 
 Auto-format while typing is **out of scope** for v1.

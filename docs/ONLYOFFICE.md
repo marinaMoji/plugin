@@ -59,7 +59,7 @@ From interoperability tests in [WORD_FINDINGS.md](WORD_FINDINGS.md):
 
 | Piece | Description |
 |-------|-------------|
-| **Sidebar UI** | Render, Unrender, Refresh, Copy plain text |
+| **Sidebar UI** | Render (includes smart refresh), Unrender, Copy plain text |
 | **Renderer** | Inline images (`Api.CreateImage`) drawn from sidebar canvas PNGs; source stored in drawing name (`MARINAMOJI:source=…`) |
 | **Export** | Same logic as Word / LO (`exportCore.js` port) |
 
@@ -116,7 +116,7 @@ Paths vary by Docker image — see ONLYOFFICE deployment docs for your image ver
 1. **Scan** document paragraphs for Kanbun mark clusters (`說` + `㆒㆑`).
 2. **Rebuild** each affected paragraph: plain runs + inline images with tightly stacked glyphs.
 3. **Unrender** finds images/controls by metadata prefix `MARINAMOJI:source=` and restores Unicode marks.
-4. **Refresh** rebuilds stale rendered paragraphs from canonical metadata and `mapping.json`.
+4. **Render** (again) rebuilds stale rendered paragraphs from canonical metadata and `mapping.json`; unchanged views are skipped via fingerprints.
 
 ### v0.1 limitations (honest list)
 

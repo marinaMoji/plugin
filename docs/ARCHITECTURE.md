@@ -65,18 +65,18 @@ type:     說㆒㆑者
               ↓
 user edits source (Show source / visible ㆒㆑)
               ↓
-     [Refresh rendering]   ← rebuild views from source
+     [Format kaeriten / Render]   ← rebuild views from source (same command on LO; Word/OO: one Render button)
 ```
 
 Annotation objects should be **read-only** from the user’s perspective. Never require clicking inside a frame/textbox to change kaeriten.
 
-## User-facing commands (planned)
+## User-facing commands
 
-| Menu label (preferred) | Also called | Purpose |
-|------------------------|-------------|---------|
-| **Render kaeriten** | Format + refresh | Selection if highlighted, else document: source → frames; rescale existing frames |
-| **Unrender kaeriten** | Show source | Same scope: frames → Unicode marks for editing |
-| **Copy plain text** | Copy as plain text | Clipboard = `說㆒㆑者` (marks from rendered views spliced in) |
+| Menu label (preferred) | Host UI names | Purpose |
+| ---------------------- | ------------- | ------- |
+| **Render kaeriten** | LO: **Format kaeriten** / **Refresh rendering**; Word & ONLYOFFICE: **Render** | Selection if highlighted, else document: source → views; smart-refresh existing views when font/size/orientation changed |
+| **Unrender kaeriten** | **Unrender** / **Show source** | Same scope: views → Unicode marks for editing |
+| **Copy plain text** | **Copy plain** | Clipboard = `說㆒㆑者` (marks from rendered views spliced in) |
 
 **Not in v1:**
 
@@ -141,7 +141,7 @@ Export pipelines **never** depend on reading frame/image pixels as the semantic 
   4. Hide or remove visible mark cluster (strategy TBD — see [CONVENTIONS.md](CONVENTIONS.md)).
   5. Optionally register editor-local frame ID for refresh (not for export semantics).
 
-- **Refresh triggers:** **Refresh rendering** command; optional hook on paragraph font-size change.
+- **Refresh triggers:** run **Render kaeriten** again (LO menu **Refresh rendering** is the same command); optional hook on paragraph font-size change.
 
 Details: [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md).
 

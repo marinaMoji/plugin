@@ -38,7 +38,7 @@ your-domain.example
 |--------|------|-------------------|---------------------|----------------------------|
 | **LibreOffice** | ✅ feature-complete | ✅ `.oxt`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on target LO version |
 | **ONLYOFFICE** | ✅ feature-complete | ✅ `.zip`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on ONLYOFFICE Desktop |
-| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | 🟡 opt-in (`MARINAMOJI_INCLUDE_WORD=1`) | **Pre-publish QA** + upload `dist/` to HTTPS |
+| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | 🟡 opt-in (`MARINAMOJI_INCLUDE_WORD=1`) | **Pre-publish QA** (hosting live on [GitHub Pages](GITHUB_PAGES.md)) |
 
 See [STATUS.md](STATUS.md) for the current gate: implementation is done; **testing** blocks publish.
 
@@ -86,7 +86,7 @@ Every page should say: **Install marinaMoji IME first**, then the office plugin.
 
 Any static host with valid TLS:
 
-- **GitHub Pages** — [docs/GITHUB_PAGES.md](GITHUB_PAGES.md) (`https://marinaMoji.github.io/plugin/word/` for this repo)
+- **GitHub Pages** — [docs/GITHUB_PAGES.md](GITHUB_PAGES.md) (`https://marinamoji.github.io/plugin/word/` for this repo)
 - University web space + Let’s Encrypt
 - Cloudflare Pages / Netlify
 - S3 + CloudFront
@@ -125,7 +125,7 @@ No separate “plugin server” for LibreOffice.
 ### 1.3 QA gate (before linking from website)
 
 - [ ] Fresh Mac: `.dmg` installer → Extension Manager → restart Writer
-- [ ] Toolbar **Render / Unrender / Refresh** work
+- [ ] Toolbar **Render / Unrender** work (Render includes smart refresh)
 - [ ] **Copy plain text** to clipboard
 - [ ] Vertical page + compound kaeriten (image renderer)
 - [ ] Linux or Windows: `.oxt` only path tested once
@@ -182,21 +182,26 @@ If colleagues use **browser ONLYOFFICE** via Docker, IT must deploy the plugin f
 
 ## Phase 3 — Word (ship when Mac QA passes)
 
-Word is the only plugin that needs **you to keep a website folder updated** on every release.
+Word is the only plugin that needs **ongoing web hosting** on every release. For this repo, **GitHub Pages** already serves `dist/` — see [GITHUB_PAGES.md](GITHUB_PAGES.md).
 
 ### 3.1 Finish development QA first
 
 Do **not** publish until these pass from **Accueil → Kaeriten pane** (not Compléments preview):
 
 - [ ] Task pane shows **Ready**
-- [ ] Render / Unrender / Refresh on simple + compound marks
+- [ ] Render / Unrender on simple + compound marks (Render rescales after font-size change)
 - [ ] Copy plain text
 - [ ] Save document, quit Word, reopen — marks still round-trip
 - [ ] Test once on Windows (upload manifest) if you support Windows users
+- [ ] Production install: `./install-mac-production.sh` loads pane from GitHub Pages (no local server)
 
 Checklist: [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B.
 
 ### 3.2 Build Word assets
+
+**This repo:** pushing to `main` runs [.github/workflows/word-pages.yml](../.github/workflows/word-pages.yml) — no manual upload unless you use a custom domain.
+
+For a **custom domain** or local release packaging:
 
 ```bash
 cd plugin/word
@@ -205,7 +210,7 @@ npm run validate              # manifest schema check (dev manifest)
 
 cd ../packaging
 export MARINAMOJI_INCLUDE_WORD=1
-export MARINAMOJI_PLUGIN_BASE="https://marinamoji.example.org/word"
+export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"   # or your domain
 export MARINAMOJI_RELEASE_VERSION="0.4.0"
 ./build-release.sh
 ```
@@ -222,6 +227,13 @@ Template: [word/manifest.production.xml](../word/manifest.production.xml).
 Generator: [packaging/build-word-manifest.sh](../packaging/build-word-manifest.sh).
 
 ### 3.3 Deploy static files (every Word release)
+
+**GitHub Pages (this repo):** merge to `main` — workflow uploads `dist/` automatically. Verify:
+
+- `https://marinamoji.github.io/plugin/word/taskpane.html`
+- `https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml`
+
+**Custom domain:**
 
 1. Unzip `word-dist.zip` contents to your web root under `/word/`.
 2. Verify in a browser (no cert warnings):

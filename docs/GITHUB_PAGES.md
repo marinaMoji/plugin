@@ -5,7 +5,7 @@ Host the Word add-in static files on **GitHub Pages** so end users load the task
 **Live base URL (this repo):**
 
 ```text
-https://marinaMoji.github.io/plugin/word
+https://marinamoji.github.io/plugin/word
 ```
 
 Word loads `taskpane.html`, `commands.html`, and bundled JS from that path every session.
@@ -27,12 +27,12 @@ gh api -X POST repos/marinaMoji/plugin/pages -f build_type=workflow
 ```
 
 4. **Actions** → **Word add-in — GitHub Pages** → **Run workflow** (or push to `main`).
-5. Pages should show: `https://marinaMoji.github.io/plugin/`
+5. Pages should show: `https://marinamoji.github.io/plugin/`
 
 Verify in a browser:
 
-- `https://marinaMoji.github.io/plugin/word/taskpane.html`
-- `https://marinaMoji.github.io/plugin/marinamoji-kaeriten-word.xml`
+- `https://marinamoji.github.io/plugin/word/taskpane.html`
+- `https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml`
 
 ---
 
@@ -55,7 +55,7 @@ Download the manifest from the latest workflow run (**Artifacts** → `marinamoj
 ```bash
 cp packaging/word-release.env.example packaging/word-release.env
 # Set:
-# MARINAMOJI_PLUGIN_BASE=https://marinaMoji.github.io/plugin/word
+# MARINAMOJI_PLUGIN_BASE=https://marinamoji.github.io/plugin/word
 ./packaging/build-word-release.sh
 ```
 

@@ -4,11 +4,11 @@ Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice e
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
 - **View:** inline PNG pictures (canvas-drawn glyphs; default `word_primary: inline_picture`)
-- **Commands:** Render, Unrender, Refresh, Copy plain text
+- **Commands:** **Render** (includes smart refresh), Unrender, Copy plain text
 
-**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and HTTPS hosting required before distribution. Dev setup: [../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md). Project status: [../docs/STATUS.md](../docs/STATUS.md).
+**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and production hosting required before distribution. **Testers:** GitHub Pages + `./install-mac-production.sh` ([../docs/GITHUB_PAGES.md](../docs/GITHUB_PAGES.md)). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). Project status: [../docs/STATUS.md](../docs/STATUS.md).
 
-**End-user distribution (no Terminal):** Host `dist/` on your website; ship the Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
+**End-user distribution (no Terminal):** GitHub Pages hosts `dist/` at `https://marinamoji.github.io/plugin/word/`; Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
 
 See also [../docs/WORD_FINDINGS.md](../docs/WORD_FINDINGS.md), [../docs/WORD_ADDIN_ATTEMPTS.md](../docs/WORD_ADDIN_ATTEMPTS.md), and [../docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md).
 
@@ -32,9 +32,9 @@ This installs npm dependencies (first time), bundles JavaScript into `dist/`, co
 
 ## Sideload for development (Mac)
 
-Word on Mac (French or English) **does not** have LibreOffice-style “Extension Manager”, and **there is usually no “Upload my add-in” menu** in the desktop app. Manifests go in Word’s `wef` folder via `install-mac.sh`.
+Word on Mac (French or English) **does not** have LibreOffice-style “Extension Manager”, and **there is usually no “Upload my add-in” menu** in the desktop app. Manifests go in Word’s `wef` folder via `install-mac.sh` (dev) or `install-mac-production.sh` (GitHub Pages).
 
-### Quick start (recommended)
+### Quick start — development (localhost)
 
 ```bash
 cd plugin/word
@@ -53,6 +53,15 @@ npm run doctor         # expect: All checks passed.
 ```
 
 Then **quit Word (Cmd+Q)**, reopen with a **document open**, and open the pane from **Accueil → Kaeriten → Kaeriten pane** (not only the Compléments preview).
+
+### Quick start — testers (GitHub Pages, no local server)
+
+```bash
+cd plugin/word
+./install-mac-production.sh
+```
+
+Quit Word (Cmd+Q), reopen with a document open → **Accueil → Kaeriten → Kaeriten pane**. See [../docs/GITHUB_PAGES.md](../docs/GITHUB_PAGES.md).
 
 Full troubleshooting: [../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md).
 
@@ -98,7 +107,7 @@ npm run reset-word     # refresh sideload manifest after changes
 | Where | French UI | Notes |
 |--------|-----------|--------|
 | **Task pane (main UI)** | **Accueil** → **Kaeriten** → **Kaeriten pane** | Use this after a document is open |
-| **Ribbon shortcuts** | **Accueil** → group **Kaeriten** | Render, Unrender, … |
+| **Ribbon shortcuts** | **Accueil** → group **Kaeriten** | Render, Unrender, Copy plain |
 | **Compléments list** | **Compléments** → marinaMoji Kaeriten | Registers add-in; **preview often does not connect** |
 
 **Important:** The **Compléments** add-in browser (*navigateur*) shows a preview. Office.js often **never connects** there → *“Word did not connect”*. That is normal. Open a document, keep `npm run serve` running, then use **Accueil → Kaeriten pane**.
@@ -124,9 +133,9 @@ To stop debugging: `npm stop`.
 
 1. Type with marinaMoji, e.g. `說㆒㆑者`.
 2. Select text (or leave nothing selected to use the whole document).
-3. Click **Render** — marks become small stacked views after the base character.
+3. Click **Render** — marks become small stacked views after the base character; existing views are smart-refreshed when font or orientation changed.
 4. Edit the **Unicode source** (run **Unrender** first, or edit before rendering).
-5. After changing paragraph font size, click **Refresh**.
+5. After changing paragraph font size, click **Render** again (unchanged views are skipped).
 6. **Copy plain** puts canonical Unicode on the clipboard.
 
 Operations are silent (no dialog boxes). Check the result in the document or by pasting elsewhere.
@@ -136,7 +145,7 @@ Operations are silent (no dialog boxes). Check the result in the document or by 
 | Path | Role |
 |------|------|
 | `src/exportCore.js` | Parser + plain export (port of LO `export_core.py`) |
-| `src/render.js` | Render / unrender / refresh in Word |
+| `src/render.js` | Render (includes refresh), unrender in Word |
 | `src/officeReady.js` | Wait for Office.js / Word host |
 | `src/taskpane/` | Task pane HTML + UI |
 | `src/commands/commands.js` | Ribbon `ExecuteFunction` handlers |
@@ -147,7 +156,7 @@ Operations are silent (no dialog boxes). Check the result in the document or by 
 
 ## Notes
 
-- v0.1 uses **content controls** (default via Office.js). Optional **floating** text boxes (`word_primary: textbox`) exist but failed Mac placement QA.
+- v0.1 uses **inline pictures** (canvas PNG, default via `word_primary: inline_picture`). Optional **floating** text boxes (`word_primary: textbox`) exist but failed Mac placement QA.
 - **Next documented path** for LO-like layout: `insertTextBox` + `textWrap.type = inline` (Renderer C) — see [WORD_ADDIN_ATTEMPTS.md](../docs/WORD_ADDIN_ATTEMPTS.md) and [WORD_FINDINGS.md](../docs/WORD_FINDINGS.md). Microsoft documents `insertTextBox` as **floating** by default; inline wrap is a separate property.
 - Export reads canonical Unicode from tagged views without changing the document; use the copy box + ⌘C if automatic clipboard fails on Mac.
 - Word does not read LibreOffice frames — format from source in each app.

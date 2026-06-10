@@ -33,15 +33,17 @@ Stack order inside the frame/textbox follows **source order** (first typed mark 
 | Do this | Not this |
 |---------|----------|
 | Change `說㆒㆑者` in the document (or **Show source**) | Click inside the frame/textbox to “fix” kaeriten |
-| **Format kaeriten** after drafting a section | Expect layout to update on every keypress (v1) |
-| **Refresh rendering** after mark or font changes | Manually resize each annotation object |
+| **Format kaeriten** / **Render** after drafting a section | Expect layout to update on every keypress (v1) |
+| **Format kaeriten** / **Render** again after mark or font changes | Manually resize each annotation object |
+
+LibreOffice menu: **Format kaeriten** and **Refresh rendering** (same command). Word and ONLYOFFICE: single **Render** button (formats new marks and smart-refreshes existing views).
 
 Rendered frames (LibreOffice) and textboxes (Word) are **read-only views**. The plugin rebuilds them from Unicode source.
 
 ## Do
 
-- Draft in **source form** (`說㆒㆑者`) with marinaMoji; run **Format kaeriten** when the sentence is stable.
-- Use **Refresh rendering** after changing marks or paragraph font size.
+- Draft in **source form** (`說㆒㆑者`) with marinaMoji; run **Format kaeriten** (LO) or **Render** (Word / ONLYOFFICE) when the sentence is stable.
+- Run **Format kaeriten** / **Render** again after changing marks or paragraph font size.
 - Use **Copy as plain text** when pasting into gedit, email, or OnlyOffice.
 - Keep a `.txt` sidecar with Unicode marks for git if the ODT/DOCX hides marks after format.
 
@@ -62,7 +64,7 @@ Test **縦書き** early; frame/textbox offset may need axis-specific tuning (se
 
 - **Inside LibreOffice or Word (with extension):** formatted document for print/teaching.
 - **Outside those apps:** canonical Unicode string (`說㆒㆑者`) — interoperable without the extension.
-- Collaborators without marinaMoji can work on rendered files; scholars with marinaMoji should edit source marks, then **Refresh rendering**.
+- Collaborators without marinaMoji can work on rendered files; scholars with marinaMoji should edit source marks, then run **Format kaeriten** / **Render** again.
 
 ## Related
 
