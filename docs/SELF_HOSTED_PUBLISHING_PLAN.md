@@ -38,7 +38,7 @@ your-domain.example
 |--------|------|-------------------|---------------------|----------------------------|
 | **LibreOffice** | ✅ feature-complete | ✅ `.oxt`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on target LO version |
 | **ONLYOFFICE** | ✅ feature-complete | ✅ `.zip`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on ONLYOFFICE Desktop |
-| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | 🟡 opt-in (`MARINAMOJI_INCLUDE_WORD=1`) | **Pre-publish QA** (hosting live on [GitHub Pages](GITHUB_PAGES.md)) |
+| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | ✅ yes (default since 2026-08-26) | Windows QA still open (Mac QA passed) |
 
 See [STATUS.md](STATUS.md) for the current gate: implementation is done; **testing** blocks publish.
 
@@ -188,12 +188,14 @@ Word is the only plugin that needs **ongoing web hosting** on every release. For
 
 Do **not** publish until these pass from **Accueil → Kaeriten pane** (not Compléments preview):
 
-- [ ] Task pane shows **Ready**
-- [ ] Render / Unrender on simple + compound marks (Render rescales after font-size change)
-- [ ] Copy plain text
-- [ ] Save document, quit Word, reopen — marks still round-trip
+- [x] Task pane shows **Ready**
+- [x] Render / Unrender on simple + compound marks (Render rescales after font-size change)
+- [x] Copy plain text
+- [x] Save document, quit Word, reopen — marks still round-trip
 - [ ] Test once on Windows (upload manifest) if you support Windows users
-- [ ] Production install: `./install-mac-production.sh` loads pane from GitHub Pages (no local server)
+- [x] Production install: `./install-mac-production.sh` loads pane from GitHub Pages (no local server)
+
+**Mac QA passed (2026-08-26).** Windows still open — run before shipping to Windows users.
 
 Checklist: [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B.
 
@@ -250,14 +252,12 @@ Generator: [packaging/build-word-manifest.sh](../packaging/build-word-manifest.s
 
 Mac installer script: [packaging/mac/install-word-addin.applescript](../packaging/mac/install-word-addin.applescript).
 
-### 3.5 Un-park Word in release pipeline
+### 3.5 Un-park Word in release pipeline — done (2026-08-26)
 
-When ready for public Word distribution, update these (maintainer one-time edits):
-
-1. **`packaging/build-release.sh`** — set `MARINAMOJI_INCLUDE_WORD=1` by default, or document the env var prominently.
-2. **`packaging/publish-github-release.sh`** — add `word-dist.zip`, Word `.dmg`, and manifest to uploaded assets.
-3. **`packaging/release/INSTALL.txt`** — add Word section (generated text in `build-release.sh`).
-4. **`officeReady.js` error strings** — replace “npm run serve” with “check your internet connection / support page” for production users.
+1. [x] **`packaging/build-release.sh`** — `MARINAMOJI_INCLUDE_WORD` now defaults to `1`.
+2. [x] **`packaging/publish-github-release.sh`** — already auto-includes `word-dist.zip`, Word `.dmg`, and manifest when present; no change needed.
+3. [x] **`packaging/release/INSTALL.txt`** — Word section already generated automatically once `WORD_BUILT=1`.
+4. [x] **`officeReady.js` error strings** — replaced dev-only "npm run serve" hints with production-safe wording ("check your internet connection").
 
 ### 3.6 Word-specific ongoing maintenance
 

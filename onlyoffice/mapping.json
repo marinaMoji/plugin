@@ -1,6 +1,6 @@
 {
   "$schema": "marinaMoji kaeriten mapping (v1)",
-  "description": "Canonical Unicode marks from marinaMoji IME; display glyphs and render hints for LibreOffice extension and exporters.",
+  "description": "Canonical Unicode marks from marinaMoji IME; display glyphs and render hints for LibreOffice, Word, and ONLYOFFICE. To change kaeriten size, edit glyph_ratio (and compound_glyph_ratio) in the three image blocks under rendering; see docs/TWEAKING_LAYOUT.md.",
   "version": 2,
   "rendering": {
     "libreoffice_primary": "inline_image",

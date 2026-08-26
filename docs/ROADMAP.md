@@ -47,8 +47,9 @@
 - [x] Alt-text metadata (`MARINAMOJI:kaeriten:id=…;source=…`) for round-trip
 - [x] Mac dev tooling: HTTPS server, mkcert, `doctor`, task pane + Accueil ribbon ([WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md))
 - [x] GitHub Pages hosting for production `dist/` ([GITHUB_PAGES.md](GITHUB_PAGES.md))
-- [ ] **Pre-publish QA:** Accueil pane connects; render/unrender; font-size re-render via **Render**; 縦書き; compound; copy plain
-- [ ] Include Word in default release build (`MARINAMOJI_INCLUDE_WORD=1`) after QA
+- [x] **Pre-publish QA (Mac):** Accueil pane connects; render/unrender; font-size re-render via **Render**; 縦書き; compound; copy plain
+- [ ] Pre-publish QA (Windows) — not yet run
+- [x] Include Word in default release build (`MARINAMOJI_INCLUDE_WORD=1` now the default in `build-release.sh`) — Mac QA passed 2026-08-26; Windows QA still open
 
 ## Phase 4 — Rendering improvements
 

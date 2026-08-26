@@ -84,6 +84,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/WORD_FINDINGS.md](docs/WORD_FINDINGS.md) | Word experiments (May–June 2026) |
 | [docs/TARGET_LAYOUT.md](docs/TARGET_LAYOUT.md) | LO frames vs Word textboxes |
 | [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Typing order; compound clusters; user workflow |
+| [docs/TWEAKING_LAYOUT.md](docs/TWEAKING_LAYOUT.md) | Change kaeriten size, colour, and drop (`glyph_ratio` in `mapping.json`) |
 | [docs/STATUS.md](docs/STATUS.md) | Current state — pre-publish QA gate |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased build plan |
 | [docs/BACKGROUND.md](docs/BACKGROUND.md) | Prior art survey |

@@ -13,7 +13,7 @@ echo "== LibreOffice .oxt"
 (cd "${PLUGIN}/libreoffice" && ./build.sh)
 cp "${PLUGIN}/libreoffice/dist/MarinaMojiKaeriten.oxt" "${RELEASE}/"
 
-if [[ "${MARINAMOJI_INCLUDE_WORD:-0}" == "1" ]] && [[ -d "${PLUGIN}/word" ]] && [[ -f "${PLUGIN}/word/package.json" ]]; then
+if [[ "${MARINAMOJI_INCLUDE_WORD:-1}" == "1" ]] && [[ -d "${PLUGIN}/word" ]] && [[ -f "${PLUGIN}/word/package.json" ]]; then
   echo "== Word dist zip"
   (cd "${PLUGIN}/word" && npm run build --silent 2>/dev/null || npm run build)
   (cd "${PLUGIN}/word/dist" && zip -r -q "${RELEASE}/word-dist.zip" .)
@@ -45,7 +45,7 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
   "${PACKAGING}/mac/build-libreoffice-dmg.sh"
   "${PACKAGING}/mac/build-onlyoffice-dmg.sh"
 
-  if [[ "${MARINAMOJI_INCLUDE_WORD:-0}" == "1" ]] && \
+  if [[ "${MARINAMOJI_INCLUDE_WORD:-1}" == "1" ]] && \
      [[ -f "${RELEASE}/marinamoji-kaeriten-word.xml" ]] && \
      [[ -f "${PACKAGING}/mac/build-word-installer-app.sh" ]]; then
     "${PACKAGING}/mac/build-word-installer-app.sh"

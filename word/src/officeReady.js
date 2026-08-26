@@ -4,10 +4,10 @@ import { wordEnumsReady } from "./wordEnums.js";
 
 const CATALOG_HINT =
   "Compléments shows a preview only — Word is not connected here. " +
-  "Open a document, then Accueil → Kaeriten → Kaeriten pane (keep npm run serve running).";
+  "Open a document, then Accueil → Kaeriten → Kaeriten pane.";
 
 const TIMEOUT_HINT =
-  "Word did not connect. Run npm run serve, quit Word (Cmd+Q), reopen the pane from Accueil → Kaeriten.";
+  "Word did not connect. Check your internet connection, quit Word (Cmd+Q), reopen the pane from Accueil → Kaeriten.";
 
 function hostConnected() {
   try {
@@ -29,7 +29,7 @@ export function whenOfficeReady(timeoutMs = 45000, { onSlow } = {}) {
     if (typeof Office === "undefined") {
       reject(
         new Error(
-          "Office.js did not load. Run npm run build, keep npm run serve running, restart Word."
+          "Office.js did not load. Check your internet connection and restart Word."
         )
       );
       return;

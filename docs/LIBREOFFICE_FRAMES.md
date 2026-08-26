@@ -53,7 +53,7 @@ Tiny **SVG graphic** anchored **as character**, containing painted glyphs rather
 | Anchor | As character (after preceding kanji) |
 | Image source | Runtime SVG file loaded into a `TextGraphicObject` |
 | Source metadata | `Description = MARINAMOJI:source=...` |
-| Font size | `glyph_ratio` / `compound_glyph_ratio` × host kanji height |
+| Font size | `glyph_ratio` / `compound_glyph_ratio` × host kanji height (how to choose values: [TWEAKING_LAYOUT.md](TWEAKING_LAYOUT.md)) |
 | Compound spacing | `compound_line_gap_ratio`, or `compound_touch` + `compound_touch_overlap_ratio` |
 | Vertical side | `vertical_vert_orient = char_bottom` → left of the vertical column |
 

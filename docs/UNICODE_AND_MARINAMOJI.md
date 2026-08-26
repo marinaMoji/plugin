@@ -41,7 +41,7 @@ For fallback layout, convert Kanbun code points to **normal Japanese characters 
 | ㆓ | 二 | Subscript |
 | ㆔–㆟ | 三, 四, 上, 中, 下, 甲, 乙, 丙, 丁, 天, 地, 人 | Subscript (confirm typography per your style sheet) |
 
-Keep mapping in **one JSON file** (`mapping.json`) shared by the LO extension, exporters, and (later) Word.
+Keep mapping in **one JSON file** (`mapping.json`) shared by the LO, Word, and ONLYOFFICE plugins. Glyph **size** is `glyph_ratio` in that file — [TWEAKING_LAYOUT.md](TWEAKING_LAYOUT.md).
 
 ## Compound clusters
 

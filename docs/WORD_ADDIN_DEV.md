@@ -53,17 +53,20 @@ npm run doctor
 
 Run these on **your target Word version** (Mac first; Windows separately).
 
-1. **Connect:** task pane shows **Ready**.
-2. **Simple mark, selection scope:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
-3. **Whole-document render:** type at least two clusters in different paragraphs, leave only the caret active (no selection), click **Render** → both clusters render.
-4. **Compound:** `說㆒㆑者` → render → marks appear as inline picture beside 說.
-5. **Smart refresh:** change paragraph font size → **Render** rescales pictures; run **Render** again without changing style and confirm nothing visibly changes.
-6. **Copy plain:** with rendered views still showing, **Copy plain** → clipboard = `說㆒㆑者`. Reads alt-text metadata; does not unrender.
-7. **縦書き:** vertical paragraph — compound stack and placement acceptable.
-8. **Save / reopen:** rendered views survive save and reload.
-9. **Production manifest:** `./install-mac-production.sh` (or build with `MARINAMOJI_PLUGIN_BASE=https://marinamoji.github.io/plugin/word ./build-word-manifest.sh`); confirm pane loads from GitHub Pages (not localhost).
+**Mac: passed (2026-08-26).** Windows not yet tested.
 
-When all pass, enable Word in release build (`MARINAMOJI_INCLUDE_WORD=1`) and follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
+1. [x] **Connect:** task pane shows **Ready**.
+2. [x] **Simple mark, selection scope:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
+3. [x] **Whole-document render:** type at least two clusters in different paragraphs, leave only the caret active (no selection), click **Render** → both clusters render.
+4. [x] **Compound:** `說㆒㆑者` → render → marks appear as inline picture beside 說.
+5. [x] **Smart refresh:** change paragraph font size → **Render** rescales pictures; run **Render** again without changing style and confirm nothing visibly changes.
+6. [x] **Copy plain:** with rendered views still showing, **Copy plain** → clipboard = `說㆒㆑者`. Reads alt-text metadata; does not unrender.
+7. [x] **縦書き:** vertical paragraph — compound stack and placement acceptable.
+8. [x] **Save / reopen:** rendered views survive save and reload.
+9. [x] **Production manifest:** `./install-mac-production.sh` (or build with `MARINAMOJI_PLUGIN_BASE=https://marinamoji.github.io/plugin/word ./build-word-manifest.sh`); confirm pane loads from GitHub Pages (not localhost).
+10. [ ] **Windows:** test once (upload manifest) if you support Windows users — not yet run.
+
+Mac QA passed. Before shipping to Windows users, run this checklist there too. To enable Word in the release build now (`MARINAMOJI_INCLUDE_WORD=1`), follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
 **Export note:** v1 ships **Copy plain Unicode only**. TEI and LaTeX buttons were removed — no single standard for kanbun in those formats.
 

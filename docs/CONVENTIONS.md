@@ -44,6 +44,7 @@ Rendered frames (LibreOffice) and textboxes (Word) are **read-only views**. The 
 
 - Draft in **source form** (`說㆒㆑者`) with marinaMoji; run **Format kaeriten** (LO) or **Render** (Word / ONLYOFFICE) when the sentence is stable.
 - Run **Format kaeriten** / **Render** again after changing marks or paragraph font size.
+- To make marks smaller (woodblock-like) or larger (screen-first), edit `glyph_ratio` in [mapping.json](../mapping.json) — see [TWEAKING_LAYOUT.md](TWEAKING_LAYOUT.md). Do not drag-resize the pictures.
 - Use **Copy as plain text** when pasting into gedit, email, or OnlyOffice.
 - Keep a `.txt` sidecar with Unicode marks for git if the ODT/DOCX hides marks after format.
 
@@ -69,4 +70,5 @@ Test **縦書き** early; frame/textbox offset may need axis-specific tuning (se
 ## Related
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — source vs view; metadata policy
+- [TWEAKING_LAYOUT.md](TWEAKING_LAYOUT.md) — kaeriten size and colour (`mapping.json`)
 - [WORD_FINDINGS.md](WORD_FINDINGS.md) — Word textbox UX

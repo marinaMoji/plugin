@@ -11,7 +11,7 @@ Single source of truth for **where the three office plugins are** before self-ho
 | Host | Implementation | Default renderer | User export | Publish |
 |------|----------------|------------------|-------------|---------|
 | **LibreOffice** | ✅ feature-complete | SVG **inline image** (`libreoffice_primary: inline_image`) | **Copy plain** Unicode only | Blocked on QA |
-| **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Blocked on QA (hosting live on GitHub Pages) |
+| **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Mac QA passed; Windows QA + release-flag flip remain |
 | **ONLYOFFICE** | ✅ feature-complete | **Inline image** (`onlyoffice_primary: inline_image`) | **Copy plain** only | Blocked on QA |
 
 All three support **Render** (formats new marks and smart-refreshes existing views), **Unrender**, and **Copy plain text** (canonical `說㆒㆑者`). Word and ONLYOFFICE expose a single **Render** button; LibreOffice menu **Refresh rendering** is an alias for **Format kaeriten**.
@@ -40,9 +40,9 @@ All three support **Render** (formats new marks and smart-refreshes existing vie
 | **Dev workflow** | `npm run serve` + `./install-mac.sh` (localhost) — developers only |
 | **End users / testers** | GitHub Pages: `https://marinamoji.github.io/plugin/word/` — use `./install-mac-production.sh` |
 
-**Pre-publish QA:** [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B, then [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
+**Pre-publish QA:** Mac passed (2026-08-26) — see [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B. Windows not yet run. Then [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
-Word is **pre-release**: hosting is live on GitHub Pages; **QA** is the remaining gate before public GitHub/website release.
+Word is **pre-release**: hosting is live on GitHub Pages; Mac QA passed. Remaining gates before public GitHub/website release: Windows QA (if supporting Windows users) and enabling `MARINAMOJI_INCLUDE_WORD=1` in the release build.
 
 ---
 

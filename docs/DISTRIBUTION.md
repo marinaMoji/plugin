@@ -70,7 +70,7 @@ Each release tag (e.g. `plugins-v0.3.7`) attaches:
 | `INSTALL.txt` | Plain-language install summary |
 | `SHA256SUMS.txt` | Checksums |
 
-Word assets (`word-dist.zip`, Word `.dmg`) are omitted from default release builds unless `MARINAMOJI_INCLUDE_WORD=1` — enable after pre-publish QA passes.
+Word assets (`word-dist.zip`, Word `.dmg`) are now included in default release builds (`MARINAMOJI_INCLUDE_WORD=1` is the default in `build-release.sh` as of 2026-08-26, after Mac pre-publish QA passed). Set `MARINAMOJI_INCLUDE_WORD=0` to exclude them.
 
 Build locally: `plugin/packaging/build-release.sh` (maintainers only).
 
