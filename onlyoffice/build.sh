@@ -105,19 +105,31 @@ PY
     rm -f "${tmp_png}"
   }
   mkdir -p "${ROOT}/resources/store/icons" "${ROOT}/resources/store/screenshots"
+  # Prefer assets committed in this repo. Sibling marinaMoji/marinaMozc trees are
+  # optional (present in a monorepo checkout, absent on GitHub Actions).
   if [[ -f "${ROOT}/icon.svg" ]]; then
     render_store_icon_set_from_svg "${ROOT}/icon.svg" "${ROOT}/resources/store/icons"
   elif [[ -f "${ROOT}/icon.png" ]]; then
     render_store_icon_set_from_png "${ROOT}/icon.png" "${ROOT}/resources/store/icons"
-  else
+  elif [[ -f "${MOZC}/logo_long_light.svg" ]]; then
     render_store_icon_set_from_svg "${MOZC}/logo_long_light.svg" "${ROOT}/resources/store/icons"
+  else
+    echo "WARNING: no store tile source (icon.svg / icon.png); keeping committed store icons"
   fi
-  rsvg-convert -w 1020 -h 228 \
-    "${MOZC}/logo_long_light.svg" \
-    -o "${ROOT}/resources/store/screenshots/logo_long_light.png"
-  rsvg-convert -w 1020 -h 228 \
-    "${MOZC}/logo_long_dark.svg" \
-    -o "${ROOT}/resources/store/screenshots/logo_long_dark.png"
+  if [[ -f "${MOZC}/logo_long_light.svg" ]]; then
+    rsvg-convert -w 1020 -h 228 \
+      "${MOZC}/logo_long_light.svg" \
+      -o "${ROOT}/resources/store/screenshots/logo_long_light.png"
+  elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_light.png" ]]; then
+    echo "WARNING: missing logo_long_light screenshot source and committed PNG"
+  fi
+  if [[ -f "${MOZC}/logo_long_dark.svg" ]]; then
+    rsvg-convert -w 1020 -h 228 \
+      "${MOZC}/logo_long_dark.svg" \
+      -o "${ROOT}/resources/store/screenshots/logo_long_dark.png"
+  elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_dark.png" ]]; then
+    echo "WARNING: missing logo_long_dark screenshot source and committed PNG"
+  fi
   if [[ -f "${ROOT}/icon.png" ]]; then
     cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/install.png"
     cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/uninstall.png"
@@ -127,13 +139,15 @@ PY
       -o "${ROOT}/resources/store/screenshots/install.png"
     cp "${ROOT}/resources/store/screenshots/install.png" \
       "${ROOT}/resources/store/screenshots/uninstall.png"
-  else
+  elif [[ -f "${ROOT}/resources/store/screenshots/install.svg" ]]; then
     rsvg-convert -w 1280 -h 720 \
       "${ROOT}/resources/store/screenshots/install.svg" \
       -o "${ROOT}/resources/store/screenshots/install.png"
     rsvg-convert -w 1280 -h 720 \
       "${ROOT}/resources/store/screenshots/uninstall.svg" \
       -o "${ROOT}/resources/store/screenshots/uninstall.png"
+  else
+    echo "WARNING: keeping committed install/uninstall screenshots"
   fi
   echo "Updated ONLYOFFICE plugin icons (light + dark, multi-scale)"
 fi

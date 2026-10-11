@@ -54,6 +54,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
         # Tag push checks out that tag. Manual "Run workflow" checks out the selected branch.
 
       - name: Setup Node
@@ -76,6 +78,27 @@ jobs:
         run: |
           chmod +x packaging/*.sh packaging/mac/*.sh libreoffice/*.sh onlyoffice/*.sh word/*.sh 2>/dev/null || true
           ./packaging/build-release.sh
+
+      - name: Push synced version channel to main
+        # build-release.sh rewrites pages/; Pages hosts from main, so commit the sync there.
+        run: |
+          set -euo pipefail
+          WT="${RUNNER_TEMP}/mm-main"
+          rm -rf "${WT}"
+          git fetch origin main
+          git worktree add "${WT}" origin/main
+          cp pages/version.json "${WT}/pages/version.json"
+          cp pages/MarinaMojiKaeriten.update.xml "${WT}/pages/MarinaMojiKaeriten.update.xml"
+          git -C "${WT}" config user.name "github-actions[bot]"
+          git -C "${WT}" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "${WT}" add pages/version.json pages/MarinaMojiKaeriten.update.xml
+          if git -C "${WT}" diff --cached --quiet; then
+            echo "Version channel already in sync on main"
+          else
+            git -C "${WT}" commit -m "Sync version channel for ${{ steps.meta.outputs.tag }}"
+            git -C "${WT}" push origin HEAD:main
+          fi
+          git worktree remove "${WT}" --force
 
       - name: Publish GitHub Release
         env:

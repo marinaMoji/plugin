@@ -9,6 +9,10 @@ VERSION="${MARINAMOJI_RELEASE_VERSION:-0.0.2}"
 rm -rf "${RELEASE}"
 mkdir -p "${RELEASE}"
 
+echo "== Sync version channel (pages/version.json + LO update feed)"
+chmod +x "${PACKAGING}/sync-version-channel.sh"
+MARINAMOJI_RELEASE_VERSION="${VERSION}" "${PACKAGING}/sync-version-channel.sh"
+
 echo "== LibreOffice .oxt"
 (cd "${PLUGIN}/libreoffice" && ./build.sh)
 cp "${PLUGIN}/libreoffice/dist/MarinaMojiKaeriten.oxt" "${RELEASE}/"

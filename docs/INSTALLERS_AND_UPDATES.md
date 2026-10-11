@@ -38,11 +38,11 @@ Before every public release, bump versions in the places users and tools actuall
 | **ONLYOFFICE** | `onlyoffice/config.json` | `"version"` (+ cache-bust `?v=` in `index.html` url) |
 | **Word manifest** | `word/manifest.xml` and `word/manifest.production.xml` | `<Version>…</Version>` |
 | **Word npm package** | `word/package.json` | `"version"` (baked into task pane for update notice) |
-| **Shared channel** | `pages/version.json` | `plugins`, `word`, `word_manifest`, `libreoffice`, `onlyoffice` |
-| **LO update feed** | `pages/MarinaMojiKaeriten.update.xml` | `<version>` (must match LibreOffice) |
-| **Release label** | `MARINAMOJI_RELEASE_VERSION` env var | e.g. `0.4.0` → `plugins-v0.4.0` tag |
+| **Shared channel** | `pages/version.json` | Written by `packaging/sync-version-channel.sh` from host versions + release label |
+| **LO update feed** | `pages/MarinaMojiKaeriten.update.xml` | Same sync script (LibreOffice `<version>`) |
+| **Release label** | `MARINAMOJI_RELEASE_VERSION` env var / tag `plugins-v*` | e.g. `0.4.0` → `plugins-v0.4.0` |
 
-Word **add-in JavaScript** does not carry a separate store version once hosted: users load whatever is on GitHub Pages. The manifest `<Version>` mainly helps Word **drop cached add-in metadata** when you change ribbon or manifest URLs. Keep `pages/version.json` in sync so the task-pane notice and LO feed stay honest.
+Word **add-in JavaScript** does not carry a separate store version once hosted: users load whatever is on GitHub Pages. The manifest `<Version>` mainly helps Word **drop cached add-in metadata** when you change ribbon or manifest URLs. `build-release.sh` (and the Release CI job) regenerates the channel files; you do not edit them by hand.
 
 ### 1.2 One-shot release build (macOS maintainer machine)
 
@@ -285,11 +285,11 @@ For a small scholarly community, a short post when you tag a release is often en
 ### 4.2 Semi-automated maintainer workflow (recommended)
 
 ```text
-1. Bump versions (description.xml, config.json, manifest Version, pages/version.json, LO update XML, …)
+1. Bump host versions (description.xml, config.json, Word package.json + manifest Version, …)
 2. Run tests / QA on each host you ship
-3. Commit + push to main (Pages deploys Word + version channel)
+3. Commit + push to main (Pages deploys Word)
 4. git tag plugins-vX.Y.Z && git push origin plugins-vX.Y.Z
-5. Confirm Actions → "Release plugins" green; open the new GitHub Release
+5. Confirm Actions → "Release plugins" green (syncs version.json + LO feed onto main, builds, publishes)
 6. Announce release
 ```
 
@@ -299,8 +299,7 @@ Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and opt
 
 | Idea | Effort | Benefit |
 |------|--------|---------|
-| **Bump `version.json` / LO feed from `build-release.sh`** | Low | Fewer missed version bumps |
-| **ONLYOFFICE sidebar “Check for updates”** | Low | Reuse `version.json` |
+| **ONLYOFFICE sidebar “Check for updates”** | Low | Reuse `version.json` ([plugin#1](https://github.com/marinaMoji/plugin/issues/1)) |
 | **Mac-safe LO online update** | Medium | Toolbar still works after Extension Manager update |
 | **ONLYOFFICE Marketplace** | High | In-app install + updates for OO users |
 | **Apple notarization** | Medium ($99/yr) | Smoother Mac installs; still not auto-update |
