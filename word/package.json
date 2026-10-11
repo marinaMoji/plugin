@@ -19,7 +19,7 @@
     "sideload": "office-addin-debugging start manifest.xml desktop",
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-addin-manifest validate manifest.xml",
-    "test": "node tests/test_export.mjs && node tests/test_ooxml.mjs"
+    "test": "node tests/test_export.mjs && node tests/test_ooxml.mjs && node tests/test_update_check.mjs"
   },
   "devDependencies": {
     "@microsoft/office-js": "^1.1.110",

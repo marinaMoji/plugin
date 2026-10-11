@@ -4,6 +4,8 @@ Single source of truth for **where the three office plugins are** before self-ho
 
 **Next gate:** pre-publish QA on each host (see checklists below). **Not yet:** public GitHub/website release.
 
+**Update channel (Oct 2026):** shared `version.json` + LibreOffice update feed on GitHub Pages; Word task-pane notice. Leftovers (ONLYOFFICE, Mac LO online-update verify, Windows Word QA): [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
+
 ---
 
 ## Summary
@@ -39,10 +41,11 @@ All three support **Render** (formats new marks and smart-refreshes existing vie
 | **Mac renderer** | Inline PNG (canvas), not content controls / OOXML boxes |
 | **Dev workflow** | `npm run serve` + `./install-mac.sh` (localhost) — developers only |
 | **End users / testers** | GitHub Pages: `https://marinamoji.github.io/plugin/word/` — use `./install-mac-production.sh` |
+| **Update notice** | Task pane fetches `https://marinamoji.github.io/plugin/version.json` after Ready |
 
 **Pre-publish QA:** Mac passed (2026-08-26) — see [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B. Windows not yet run. Then [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
-Word is **pre-release**: hosting is live on GitHub Pages; Mac QA passed. Remaining gates before public GitHub/website release: Windows QA (if supporting Windows users) and enabling `MARINAMOJI_INCLUDE_WORD=1` in the release build.
+Word is **pre-release**: hosting is live on GitHub Pages; Mac QA passed; update notice shipped. Remaining gates before public “finalised” announce: Windows QA (if supporting Windows users). `MARINAMOJI_INCLUDE_WORD=1` is already the release default.
 
 ---
 

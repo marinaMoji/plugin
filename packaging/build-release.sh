@@ -4,7 +4,7 @@ set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN="$(cd "${PACKAGING}/.." && pwd)"
 RELEASE="${PACKAGING}/release"
-VERSION="${MARINAMOJI_RELEASE_VERSION:-0.3.7}"
+VERSION="${MARINAMOJI_RELEASE_VERSION:-0.0.1}"
 
 rm -rf "${RELEASE}"
 mkdir -p "${RELEASE}"

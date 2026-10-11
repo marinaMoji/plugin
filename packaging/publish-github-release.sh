@@ -4,8 +4,8 @@
 set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 RELEASE="${PACKAGING}/release"
-TAG="${MARINAMOJI_RELEASE_TAG:-plugins-v0.3.7}"
-REPO="${MARINAMOJI_GITHUB_REPO:-marinaMoji/marinaMoji}"
+TAG="${MARINAMOJI_RELEASE_TAG:-plugins-v0.0.1}"
+REPO="${MARINAMOJI_GITHUB_REPO:-marinaMoji/plugin}"
 
 if ! command -v gh >/dev/null 2>&1; then
   echo "Install GitHub CLI: brew install gh && gh auth login"
@@ -23,7 +23,7 @@ cat > "${NOTES}" <<EOF
 
 **Recommended:** LibreOffice (alpha) — daily driver  
 **Experimental:** ONLYOFFICE (alpha)  
-**Word:** included when built with \`./build-word-release.sh\`
+**Word:** included by default (Mac pre-publish QA passed; Windows QA pending)
 
 ## Downloads
 
@@ -33,9 +33,9 @@ cat > "${NOTES}" <<EOF
 | \`marinamoji-kaeriten-libreoffice-mac.dmg\` | LibreOffice — Mac GUI installer (no Terminal) |
 | \`marinamoji-kaeriten-onlyoffice.zip\` | ONLYOFFICE — manual install |
 | \`marinamoji-kaeriten-onlyoffice-mac.dmg\` | ONLYOFFICE — Mac GUI installer |
-| \`word-dist.zip\` | Word — upload to your website (when built) |
-| \`marinamoji-kaeriten-word-mac.dmg\` | Word — Mac GUI installer (when built) |
-| \`marinamoji-kaeriten-word.xml\` | Word — Windows manifest upload (when built) |
+| \`word-dist.zip\` | Word — hosted add-in files (already live on GitHub Pages) |
+| \`marinamoji-kaeriten-word-mac.dmg\` | Word — Mac GUI installer |
+| \`marinamoji-kaeriten-word.xml\` | Word — Windows manifest upload |
 | \`INSTALL.txt\` | Plain-language install steps |
 | \`SHA256SUMS.txt\` | Checksums |
 

@@ -14,9 +14,11 @@ marinaMoji ships **three separate office plugins** plus the **IME** (input metho
 
 | Host | What users install once | What must stay online | Updates to *code* |
 |------|-------------------------|------------------------|-------------------|
-| **LibreOffice** | `.oxt` or Mac `.dmg` | Nothing | Re-install `.oxt` / run Mac installer again |
-| **Word** | Mac `.dmg` or Windows manifest `.xml` | **GitHub Pages** (`/word/`) | **Mostly automatic** — Word reloads JS from the web |
-| **ONLYOFFICE** | `.plugin` / zip or Mac `.dmg` | Nothing (Desktop) | Re-install plugin folder |
+| **LibreOffice** | `.oxt` or Mac `.dmg` | Update feed on **GitHub Pages** (optional check) | Extension Manager can offer update; or re-install `.oxt` / Mac `.dmg` |
+| **Word** | Mac `.dmg` or Windows manifest `.xml` | **GitHub Pages** (`/word/` + `version.json`) | **Mostly automatic** — Word reloads JS from the web; pane may show a notice |
+| **ONLYOFFICE** | `.plugin` / zip or Mac `.dmg` | Nothing (Desktop) | Re-install plugin folder (no auto-check yet) |
+
+**Done vs leftovers:** [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
 
 The IME is updated separately from [github.com/marinaMoji/marinaMoji](https://github.com/marinaMoji/marinaMoji). Office plugins only **format** text the IME already typed.
 
@@ -35,10 +37,12 @@ Before every public release, bump versions in the places users and tools actuall
 | **LibreOffice** | `libreoffice/marinamoji_kaeriten/description.xml` | `<version value="…"/>` |
 | **ONLYOFFICE** | `onlyoffice/config.json` | `"version"` (+ cache-bust `?v=` in `index.html` url) |
 | **Word manifest** | `word/manifest.xml` and `word/manifest.production.xml` | `<Version>…</Version>` |
-| **Word npm package** | `word/package.json` | `"version"` (informational) |
+| **Word npm package** | `word/package.json` | `"version"` (baked into task pane for update notice) |
+| **Shared channel** | `pages/version.json` | `plugins`, `word`, `word_manifest`, `libreoffice`, `onlyoffice` |
+| **LO update feed** | `pages/MarinaMojiKaeriten.update.xml` | `<version>` (must match LibreOffice) |
 | **Release label** | `MARINAMOJI_RELEASE_VERSION` env var | e.g. `0.4.0` → `plugins-v0.4.0` tag |
 
-Word **add-in JavaScript** does not carry a separate store version once hosted: users load whatever is on GitHub Pages. The manifest `<Version>` mainly helps Word **drop cached add-in metadata** when you change ribbon or manifest URLs.
+Word **add-in JavaScript** does not carry a separate store version once hosted: users load whatever is on GitHub Pages. The manifest `<Version>` mainly helps Word **drop cached add-in metadata** when you change ribbon or manifest URLs. Keep `pages/version.json` in sync so the task-pane notice and LO feed stay honest.
 
 ### 1.2 One-shot release build (macOS maintainer machine)
 
@@ -170,17 +174,25 @@ After the one-time manifest install:
 - Word or WebView cached old JS — quit Word (Cmd+Q), reopen, or bump manifest `<Version>`.
 - They still have the **dev** manifest (`127.0.0.1`) — run `install-mac-production.sh`.
 
-### 2.2 LibreOffice — **manual** reinstall
+### 2.2 LibreOffice — Extension Manager feed + manual reinstall
 
-The extension lives **inside** the user profile after install. There is no phone-home updater in v1.
+The extension lives **inside** the user profile after install. Builds that include `update-information` in `description.xml` point at:
+
+```text
+https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml
+```
+
+That file lists the latest version and downloads `MarinaMojiKaeriten.oxt` from GitHub Releases `/latest/download/`.
 
 **Update path for users:**
 
-1. Download new `.oxt` or Mac `.dmg` from GitHub Releases / website.
-2. Extension Manager → **remove** old marinaMoji Kaeriten (optional but avoids version confusion).
-3. Quit Writer → install new `.oxt` or run Mac installer → restart Writer.
+1. **Preferred (after one bootstrap install):** Tools → Extension Manager → Check for Updates (wording varies by LO version / language).
+2. Or download new `.oxt` or Mac `.dmg` from GitHub Releases / website.
+3. Quit Writer → install → restart Writer. Removing the old extension first avoids version confusion.
 
-**Future option (not implemented):** LibreOffice supports an **`updateURL`** in `description.xml` pointing at an extension update feed (XML). You could host a small update descriptor on your website or GitHub Pages that lists the latest `.oxt` URL and version. Extension Manager would then show “update available” like other LO extensions. This requires setting up that feed and testing on your target LO version.
+**Bootstrap:** users on an older `.oxt` without `update-information` must install once from a release that includes the hook before Check for Updates works.
+
+**Mac caveat:** online update installs the `.oxt` only. On LibreOffice 26.x Mac, if the toolbar dies after an online update, run the Mac `.dmg` installer (macro copy). See [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
 
 ### 2.3 ONLYOFFICE — **manual** reinstall
 
@@ -222,31 +234,13 @@ Latest office plugins: v0.4.0 (June 2026) — [Download on GitHub]
 
 Update manually when you tag, or generate from GitHub API in your site CMS (Grav) if you want automation later.
 
-### 3.3 In-plugin “new version available” (recommended next step)
+### 3.3 In-plugin “new version available”
 
-**Word (easy):** the task pane already loads from the network. On open, fetch a small JSON file from GitHub Pages, e.g.:
+**Word (shipped):** the task pane fetches `https://marinamoji.github.io/plugin/version.json` after Ready. If remote `word` or `word_manifest` is newer than the build-time constants, a dismissible banner appears with a link to `release_url`. **Word code updates still apply automatically** on reopen; the banner covers stale cache and required **manifest** reinstalls.
 
-```text
-https://marinamoji.github.io/plugin/version.json
-```
+**LibreOffice (shipped feed):** Extension Manager uses `MarinaMojiKaeriten.update.xml` on GitHub Pages (see §2.2). No in-Writer dialog beyond LO’s own update UI.
 
-Example content:
-
-```json
-{
-  "plugins": "0.4.0",
-  "word": "0.1.3",
-  "libreoffice": "0.3.9",
-  "onlyoffice": "0.1.11",
-  "release_url": "https://github.com/marinaMoji/plugin/releases/latest"
-}
-```
-
-Compare to constants baked into the task pane at build time (or read current from `mapping.json`). If remote is newer, show a non-blocking banner: “Plugin v0.4.0 available — [Release notes]”. **Word code updates still apply automatically**; the banner mainly matters for LO/OO users who also use Word, or when a **manifest** bump is required.
-
-**LibreOffice / ONLYOFFICE:** same `version.json` could be checked from a startup dialog or a “About / Check for updates” menu item if you add one later. Until then, LO/OO users rely on website + GitHub Watch.
-
-**Implementation status:** not in v1 code yet — this section describes the intended pattern.
+**ONLYOFFICE:** still website + GitHub Watch only. Same `version.json` can power a future sidebar “Check for updates” — see [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
 
 ### 3.4 Email / newsletter / Mastodon
 
@@ -270,6 +264,7 @@ For a small scholarly community, a short post when you tag a release is often en
 | Step | How |
 |------|-----|
 | **Word hosted files** | Push to `main` → `.github/workflows/word-pages.yml` → GitHub Pages |
+| **`version.json` + LO update XML** | Copied from `pages/` by the same Pages workflow |
 | **Production Word manifest URL** | Workflow writes `marinamoji-kaeriten-word.xml` with correct base URL |
 | **Checksums** | `build-release.sh` / `build-word-release.sh` write `SHA256SUMS.txt` |
 | **GitHub Release upload** | `./publish-github-release.sh` (one command after build) |
@@ -293,13 +288,13 @@ Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to
 
 | Idea                              | Effort               | Benefit                                                                      |
 | --------------------------------- | -------------------- | ---------------------------------------------------------------------------- |
-| **`version.json` on Pages**       | Low                  | One URL for all hosts to check                                               |
-| **Task pane update banner**       | Low                  | Word users see “new release” when manifest reinstall needed                  |
-| **LO `updateURL` feed**           | Medium               | Native “update extension” in Extension Manager                               |
-| **GitHub Action: release on tag** | Medium               | Tag push builds + publishes without local Mac (DMG still needs macOS runner) |
-| **ONLYOFFICE Marketplace**        | High                 | In-app install + updates for OO users                                        |
-| **Apple notarization**            | Medium ($99/yr)      | Smoother Mac installs; still not auto-update                                 |
-| **M365 Centralized Deployment**   | High (institutional) | IT pushes Word manifest to lab machines                                      |
+| **Bump `version.json` / LO feed from `build-release.sh`** | Low | Fewer missed version bumps |
+| **ONLYOFFICE sidebar “Check for updates”** | Low | Reuse `version.json` |
+| **Mac-safe LO online update** | Medium | Toolbar still works after Extension Manager update |
+| **GitHub Action: release on tag** | Medium | Tag push builds + publishes without local Mac (DMG still needs macOS runner) |
+| **ONLYOFFICE Marketplace** | High | In-app install + updates for OO users |
+| **Apple notarization** | Medium ($99/yr) | Smoother Mac installs; still not auto-update |
+| **M365 Centralized Deployment** | High (institutional) | IT pushes Word manifest to lab machines |
 
 ---
 
@@ -307,11 +302,11 @@ Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to
 
 ### LibreOffice
 
-> A new version is available on [GitHub Releases](https://github.com/marinaMoji/plugin/releases). Download the latest `.oxt` or Mac `.dmg`. Quit Writer, install, restart. You may remove the old extension first in Extension Manager.
+> In Writer: **Tools → Extension Manager → Check for Updates** (after you have installed a build that includes the marinaMoji update feed). Or download the latest `.oxt` or Mac `.dmg` from [GitHub Releases](https://github.com/marinaMoji/plugin/releases). Quit Writer, install, restart. On Mac, if the toolbar stops working after an online update, run the Mac `.dmg` installer once.
 
 ### Word
 
-> **Formatting code** updates automatically when you are online (we host the add-in on GitHub Pages). Quit and reopen Word if you do not see a fix.  
+> **Formatting code** updates automatically when you are online (we host the add-in on GitHub Pages). Quit and reopen Word if you do not see a fix. The Kaeriten pane may show a short notice when a newer build or manifest is available.  
 > If we announce a **manifest update**, download the new Mac installer or `marinamoji-kaeriten-word.xml` and install again, then restart Word.
 
 ### ONLYOFFICE
@@ -347,7 +342,8 @@ Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to
 
 ## Summary
 
-- **Build installers** with `packaging/build-release.sh` (and `build-word-release.sh` for Word-only), bump per-host version fields, publish via `publish-github-release.sh`.
-- **Word** is special: host code on **GitHub Pages** updates automatically; users reinstall the manifest only when you change registration URLs or `<Version>`.
-- **LibreOffice and ONLYOFFICE** need **manual reinstall** for v1; tell users via **GitHub Releases**, your **website**, and (recommended next) a small **`version.json`** plus an in-pane notice.
-- **Full auto-update** like an app store is out of scope until you adopt LO update feeds, ONLYOFFICE Marketplace, or Microsoft centralized deployment.
+- **Build installers** with `packaging/build-release.sh` (and `build-word-release.sh` for Word-only), bump per-host version fields **and** `pages/version.json` / LO update XML, publish via `publish-github-release.sh`.
+- **Word:** hosted code on **GitHub Pages** updates automatically; task pane can show a notice from `version.json`; reinstall the manifest when `word_manifest` advances.
+- **LibreOffice:** Extension Manager feed on GitHub Pages; bootstrap install once; Mac `.dmg` still the safe path if the toolbar breaks after online update.
+- **ONLYOFFICE:** still **manual reinstall**; leftovers in [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
+- **Full silent auto-install** (no user click) remains out of scope.

@@ -14,6 +14,7 @@ Handoff notes for **marinaMoji Kaeriten** in Microsoft Word (`plugin/word/`). Fo
 | **Mac dev workflow** | ✅ HTTPS + mkcert + `./install-mac.sh` + task pane |
 | **Pre-publish QA** | ⏳ Required before GitHub/website release |
 | **End-user hosting** | ✅ GitHub Pages — `https://marinamoji.github.io/plugin/word/` ([GITHUB_PAGES.md](GITHUB_PAGES.md)) |
+| **Update notice** | ✅ Task pane fetches `version.json` after Ready ([UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md)) |
 
 The add-in loads HTML from a **local HTTPS server** (`https://127.0.0.1:3000`) during development. Testers and end users load from **GitHub Pages** — use `./install-mac-production.sh`, not `./install-mac.sh`.
 

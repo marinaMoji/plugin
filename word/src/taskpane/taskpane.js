@@ -10,6 +10,7 @@ import {
   getCompoundTouch,
   setCompoundTouch,
 } from "../wordRuntimeOpts.js";
+import { fetchUpdateInfo, showUpdateBanner } from "../updateCheck.js";
 
 function setStatus(text, kind) {
   const el = document.getElementById("status");
@@ -81,6 +82,15 @@ function wireCompoundTouch() {
   });
 }
 
+function checkUpdatesQuietly() {
+  fetchUpdateInfo()
+    .then((info) => {
+      if (!info || !info.show) return;
+      showUpdateBanner(document.getElementById("app"), info);
+    })
+    .catch(() => {});
+}
+
 function initUi() {
   showApp();
   wireCompoundTouch();
@@ -115,11 +125,17 @@ function initUi() {
   whenOfficeReady(45000, {
     onSlow: (hint) => setStatus(hint, "err"),
   })
-    .then(() => setStatus("Ready — select text and click Render.", "ok"))
+    .then(() => {
+      setStatus("Ready — select text and click Render.", "ok");
+      checkUpdatesQuietly();
+    })
     .catch((err) => setStatus(String(err.message || err), "err"));
   window.addEventListener("mm-office-ready", () => {
     whenOfficeReady(5000)
-      .then(() => setStatus("Ready — select text and click Render.", "ok"))
+      .then(() => {
+        setStatus("Ready — select text and click Render.", "ok");
+        checkUpdatesQuietly();
+      })
       .catch(() => {});
   });
 }

@@ -1,5 +1,15 @@
 const path = require("path");
+const fs = require("fs");
+const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+
+const pkg = require("./package.json");
+const manifestXml = fs.readFileSync(
+  path.join(__dirname, "manifest.xml"),
+  "utf8"
+);
+const manifestMatch = manifestXml.match(/<Version>([^<]+)<\/Version>/);
+const wordManifest = manifestMatch ? manifestMatch[1] : "0.0.0.0";
 
 module.exports = {
   entry: {
@@ -13,6 +23,13 @@ module.exports = {
   },
   devtool: "source-map",
   plugins: [
+    new webpack.DefinePlugin({
+      __MM_WORD_VERSION__: JSON.stringify(pkg.version),
+      __MM_WORD_MANIFEST__: JSON.stringify(wordManifest),
+      __MM_VERSION_JSON_URL__: JSON.stringify(
+        "https://marinamoji.github.io/plugin/version.json"
+      ),
+    }),
     new CopyWebpackPlugin({
       patterns: [
         { from: "src/commands/commands.html", to: "commands.html" },

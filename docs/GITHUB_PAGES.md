@@ -33,6 +33,8 @@ Verify in a browser:
 
 - `https://marinamoji.github.io/plugin/word/taskpane.html`
 - `https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml`
+- `https://marinamoji.github.io/plugin/version.json`
+- `https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml`
 
 ---
 

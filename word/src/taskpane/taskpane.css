@@ -141,6 +141,52 @@ button:disabled {
   margin-top: 10px;
 }
 
+.update-banner {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #c5d4e0;
+  background: #f0f6fb;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.update-banner-text {
+  margin: 0 0 6px;
+}
+
+.update-banner-meta {
+  margin: 0 0 8px;
+  color: #555;
+  font-size: 11px;
+}
+
+.update-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.update-banner-actions a {
+  color: #203758;
+  font-weight: 600;
+}
+
+.update-banner-dismiss {
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid #8aa4b8;
+  border-radius: 6px;
+  background: #fff;
+  color: #203758;
+  cursor: pointer;
+}
+
+.update-banner-dismiss:hover {
+  background: #eef3f7;
+}
+
 footer {
   margin-top: 20px;
   padding-top: 12px;
