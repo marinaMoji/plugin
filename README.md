@@ -77,6 +77,7 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/DISTRIBUTION.md](docs/DISTRIBUTION.md) | GitHub/website releases, GUI installers, no App Store |
 | [docs/INSTALLERS_AND_UPDATES.md](docs/INSTALLERS_AND_UPDATES.md) | Build installers, publish releases, notify users, automate updates |
 | [docs/UPDATE_LEFTOVERS.md](docs/UPDATE_LEFTOVERS.md) | Update channel: shipped pieces vs leftovers |
+| [.github/workflows/release.yml](.github/workflows/release.yml) | Tag `plugins-v*` → build installers + GitHub Release |
 | [docs/SELF_HOSTED_PUBLISHING_PLAN.md](docs/SELF_HOSTED_PUBLISHING_PLAN.md) | Step-by-step publish plan (LO, Word, ONLYOFFICE) |
 | [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) | Host Word add-in on GitHub Pages |
 | [docs/INSTALL-MAC-GATEKEEPER.md](docs/INSTALL-MAC-GATEKEEPER.md) | macOS Right-click → Open (unsigned downloads) |

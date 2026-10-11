@@ -132,14 +132,27 @@ Bump `description.xml` `<version>`. The Mac GUI installer bundles this `.oxt` pl
 
 ### 1.7 Publishing to GitHub Releases
 
+**Preferred (CI):** after version bumps are on `main`, create and push a tag:
+
+```bash
+git tag plugins-v0.0.2
+git push origin plugins-v0.0.2
+```
+
+Or: GitHub → Actions → **Release plugins** → **Run workflow** → enter `plugins-v0.0.2`.
+
+The [release workflow](../.github/workflows/release.yml) runs on **macOS** (needed for `.dmg` / `.app`), builds with `packaging/build-release.sh`, and uploads assets via `publish-github-release.sh`.
+
+**Local fallback** (same scripts CI uses):
+
 ```bash
 cd plugin/packaging
+export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"
+./build-release.sh
 ./publish-github-release.sh
 ```
 
-Requires `gh auth login`. Creates or updates a release and uploads all files from `packaging/release/`.
-
-Mirror download links on your **website** (`/install/libreoffice/`, etc.) pointing at the latest GitHub Release assets or at “latest” redirect URLs.
+Requires `gh auth login` locally. Mirror download links on your **website** (`/install/libreoffice/`, etc.) pointing at the latest GitHub Release assets.
 
 ---
 
@@ -267,31 +280,28 @@ For a small scholarly community, a short post when you tag a release is often en
 | **`version.json` + LO update XML** | Copied from `pages/` by the same Pages workflow |
 | **Production Word manifest URL** | Workflow writes `marinamoji-kaeriten-word.xml` with correct base URL |
 | **Checksums** | `build-release.sh` / `build-word-release.sh` write `SHA256SUMS.txt` |
-| **GitHub Release upload** | `./publish-github-release.sh` (one command after build) |
+| **GitHub Release (installers)** | Tag `plugins-v*` → `.github/workflows/release.yml` (macOS) → build + upload |
 
 ### 4.2 Semi-automated maintainer workflow (recommended)
 
 ```text
-1. Bump versions (description.xml, config.json, manifest Version, …)
+1. Bump versions (description.xml, config.json, manifest Version, pages/version.json, LO update XML, …)
 2. Run tests / QA on each host you ship
-3. cd plugin/packaging && ./build-release.sh
+3. Commit + push to main (Pages deploys Word + version channel)
 4. git tag plugins-vX.Y.Z && git push origin plugins-vX.Y.Z
-5. ./publish-github-release.sh
-6. Confirm GitHub Pages workflow green (Word)
-7. Update website install pages + version.json (when added)
-8. Announce release
+5. Confirm Actions → "Release plugins" green; open the new GitHub Release
+6. Announce release
 ```
 
-Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to `main`** and optionally announce.
+Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and optionally announce — no new tag required.
 
 ### 4.3 Future automation (optional backlog)
 
-| Idea                              | Effort               | Benefit                                                                      |
-| --------------------------------- | -------------------- | ---------------------------------------------------------------------------- |
+| Idea | Effort | Benefit |
+|------|--------|---------|
 | **Bump `version.json` / LO feed from `build-release.sh`** | Low | Fewer missed version bumps |
 | **ONLYOFFICE sidebar “Check for updates”** | Low | Reuse `version.json` |
 | **Mac-safe LO online update** | Medium | Toolbar still works after Extension Manager update |
-| **GitHub Action: release on tag** | Medium | Tag push builds + publishes without local Mac (DMG still needs macOS runner) |
 | **ONLYOFFICE Marketplace** | High | In-app install + updates for OO users |
 | **Apple notarization** | Medium ($99/yr) | Smoother Mac installs; still not auto-update |
 | **M365 Centralized Deployment** | High (institutional) | IT pushes Word manifest to lab machines |
@@ -342,7 +352,7 @@ Word-only JS/CSS fix without manifest changes: steps 4–6 collapse to **push to
 
 ## Summary
 
-- **Build installers** with `packaging/build-release.sh` (and `build-word-release.sh` for Word-only), bump per-host version fields **and** `pages/version.json` / LO update XML, publish via `publish-github-release.sh`.
+- **Build installers** by tagging `plugins-vX.Y.Z` (CI on macOS) or locally with `packaging/build-release.sh` + `publish-github-release.sh`. Bump per-host version fields **and** `pages/version.json` / LO update XML before you tag.
 - **Word:** hosted code on **GitHub Pages** updates automatically; task pane can show a notice from `version.json`; reinstall the manifest when `word_manifest` advances.
 - **LibreOffice:** Extension Manager feed on GitHub Pages; bootstrap install once; Mac `.dmg` still the safe path if the toolbar breaks after online update.
 - **ONLYOFFICE:** still **manual reinstall**; leftovers in [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).

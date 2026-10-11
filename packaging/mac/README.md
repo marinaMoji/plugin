@@ -6,9 +6,14 @@ See [../../docs/DISTRIBUTION.md](../../docs/DISTRIBUTION.md) for the overview an
 
 ## One-shot release build (macOS)
 
+**Usual path:** push a `plugins-v*` tag — GitHub Actions (macOS) runs `build-release.sh` and publishes the Release. See [../../docs/INSTALLERS_AND_UPDATES.md](../../docs/INSTALLERS_AND_UPDATES.md) §1.7.
+
+**Local:**
+
 ```bash
 cd plugin/packaging
-export MARINAMOJI_RELEASE_VERSION="0.3.7"   # optional label
+export MARINAMOJI_RELEASE_VERSION="0.0.2"   # optional; defaults in the script
+export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"
 ./build-release.sh
 ```
 

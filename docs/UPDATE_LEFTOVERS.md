@@ -20,6 +20,7 @@ Live URLs (GitHub Pages for `marinaMoji/plugin`):
 | **LO `update-information` hook** | [`libreoffice/marinamoji_kaeriten/description.xml`](../libreoffice/marinamoji_kaeriten/description.xml) |
 | **Word in-pane notice** | [`word/src/updateCheck.js`](../word/src/updateCheck.js) — fetches `version.json` after Ready; session-dismissible banner |
 | **Maintainer bump list** | See [INSTALLERS_AND_UPDATES.md](INSTALLERS_AND_UPDATES.md) §1.1 and §2 |
+| **CI GitHub Release** | [`.github/workflows/release.yml`](../.github/workflows/release.yml) — tag `plugins-v*` (or Run workflow) builds on macOS and publishes assets |
 
 **Bootstrap note (LibreOffice):** installs that pre-date the `update-information` line cannot discover updates until the user installs **once** from a build that includes that line. After that, Tools → Extension Manager → Check for Updates can use the feed.
 
@@ -35,7 +36,7 @@ Live URLs (GitHub Pages for `marinaMoji/plugin`):
 | **LibreOffice Mac after online update** | Extension Manager installs `.oxt` only; LO 26.x Mac sometimes needs the Mac `.dmg` macro copy for a working toolbar | Verify online update on Mac LO 26.x; if toolbar dies, fold macro install into `.oxt` or document “use `.dmg` on Mac” |
 | **Word Windows QA** | Never run; blocks “finalised” announce | Run [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B checklist on Windows (upload production manifest) |
 | **LO / OO in-plugin About** | No menu item yet | Optional “Check for updates” that reads `version.json` |
-| **Maintainer automation** | Version files are bumped by hand | Have `packaging/build-release.sh` rewrite `pages/version.json` + `MarinaMojiKaeriten.update.xml` from env / host version files |
+| **Bump `version.json` from build script** | Still hand-edited with host versions | Have `build-release.sh` rewrite `pages/version.json` + LO update XML from host version files |
 | **AppSource / Marketplace** | Deferred on purpose | Partner Center (Word) or ONLYOFFICE Marketplace when public discovery matters |
 
 ---
@@ -45,8 +46,8 @@ Live URLs (GitHub Pages for `marinaMoji/plugin`):
 1. Bump host version fields (`description.xml`, `onlyoffice/config.json`, Word `package.json` + manifest `<Version>`).
 2. Update `pages/version.json` (`plugins`, `word`, `word_manifest`, `libreoffice`, `onlyoffice`).
 3. Update `pages/MarinaMojiKaeriten.update.xml` `<version>` to match LibreOffice.
-4. Build and publish GitHub Release (keep asset name `MarinaMojiKaeriten.oxt` so `/latest/download/` works).
-5. Push `pages/` (and Word if needed) so the Pages workflow deploys the new JSON/XML.
+4. Commit and push to `main` (Pages workflow deploys `version.json` / LO feed / Word).
+5. Push a tag `plugins-vX.Y.Z` (or Actions → **Release plugins** → Run workflow with that tag). CI builds installers on macOS and creates the GitHub Release. Keep asset name `MarinaMojiKaeriten.oxt` so `/latest/download/` works.
 
 ---
 

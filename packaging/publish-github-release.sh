@@ -4,8 +4,9 @@
 set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 RELEASE="${PACKAGING}/release"
-TAG="${MARINAMOJI_RELEASE_TAG:-plugins-v0.0.1}"
-REPO="${MARINAMOJI_GITHUB_REPO:-marinaMoji/plugin}"
+TAG="${MARINAMOJI_RELEASE_TAG:-plugins-v0.0.2}"
+# Prefer explicit repo, then Actions GITHUB_REPOSITORY, then the public default.
+REPO="${MARINAMOJI_GITHUB_REPO:-${GITHUB_REPOSITORY:-marinaMoji/plugin}}"
 
 if ! command -v gh >/dev/null 2>&1; then
   echo "Install GitHub CLI: brew install gh && gh auth login"
@@ -13,7 +14,7 @@ if ! command -v gh >/dev/null 2>&1; then
 fi
 
 if [[ ! -f "${RELEASE}/MarinaMojiKaeriten.oxt" ]]; then
-  echo "Run ./build-release.sh first."
+  echo "Run ./build-release.sh first (or the Release plugins GitHub Action)."
   exit 1
 fi
 
@@ -44,21 +45,35 @@ Install the [marinaMoji IME](https://github.com/marinaMoji/marinaMoji) first, th
 See \`plugin/docs/DISTRIBUTION.md\` in the source tree for full documentation.
 EOF
 
-ASSETS=(
+REQUIRED=(
   "${RELEASE}/MarinaMojiKaeriten.oxt"
-  "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg"
-  "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg"
   "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip"
   "${RELEASE}/INSTALL.txt"
   "${RELEASE}/SHA256SUMS.txt"
   "${RELEASE}/VERSION.txt"
 )
-for optional in \
-  "${RELEASE}/word-dist.zip" \
-  "${RELEASE}/marinamoji-kaeriten-word-mac.dmg" \
-  "${RELEASE}/marinamoji-kaeriten-word.xml"; do
-  if [[ -f "${optional}" ]]; then
-    ASSETS+=("${optional}")
+OPTIONAL=(
+  "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg"
+  "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg"
+  "${RELEASE}/marinamoji-kaeriten.plugin"
+  "${RELEASE}/word-dist.zip"
+  "${RELEASE}/marinamoji-kaeriten-word-mac.dmg"
+  "${RELEASE}/marinamoji-kaeriten-word.xml"
+)
+
+ASSETS=()
+for f in "${REQUIRED[@]}"; do
+  if [[ ! -f "${f}" ]]; then
+    echo "Missing required release asset: ${f}"
+    exit 1
+  fi
+  ASSETS+=("${f}")
+done
+for f in "${OPTIONAL[@]}"; do
+  if [[ -f "${f}" ]]; then
+    ASSETS+=("${f}")
+  else
+    echo "Note: optional asset not present (skipped): $(basename "${f}")"
   fi
 done
 
@@ -66,6 +81,8 @@ if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
   echo "Release ${TAG} exists — uploading assets"
   gh release upload "${TAG}" --repo "${REPO}" --clobber "${ASSETS[@]}"
 else
+  # Creates the git tag from the current commit when the tag does not exist yet
+  # (useful for workflow_dispatch on main).
   gh release create "${TAG}" --repo "${REPO}" \
     --title "marinaMoji Kaeriten office plugins ${TAG#plugins-v}" \
     --notes-file "${NOTES}" \
