@@ -32,14 +32,25 @@ else
   echo "== Skip Word (parked — set MARINAMOJI_INCLUDE_WORD=1 to build Word assets)"
 fi
 
-echo "== ONLYOFFICE .plugin + zip"
+echo "== ONLYOFFICE .plugin + zip + marketplace export"
+chmod +x "${PLUGIN}/onlyoffice/"*.sh
 (cd "${PLUGIN}/onlyoffice" && ./build.sh)
 cp "${PLUGIN}/onlyoffice/dist/marinamoji-kaeriten.plugin" "${RELEASE}/"
 (
   cd "${PLUGIN}/onlyoffice"
   zip -r -q "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip" \
-    config.json index.html styles.css mapping.json scripts resources
+    config.json index.html styles.css mapping.json CHANGELOG.md scripts resources
 )
+# Marketplace folder/zip for a future manual PR to onlyoffice.github.io.
+# Local tooling only — never opens an upstream PR. Soft-fail so a packaging
+# hiccup here does not block LibreOffice/Word release assets.
+if MARINAMOJI_MARKETPLACE_SKIP_BUILD=1 \
+   MARINAMOJI_MARKETPLACE_OUT="${RELEASE}" \
+   "${PLUGIN}/onlyoffice/export-marketplace.sh"; then
+  echo "Marketplace export OK"
+else
+  echo "WARNING: marketplace export failed; continuing release without it" >&2
+fi
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
   echo "== macOS GUI installers"

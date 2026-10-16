@@ -39,4 +39,27 @@ render_lo_icon export_xml.svg export_tei.png
 render_lo_icon export_tex.svg export_latex.png
 render_lo_icon toggle_page_writing_mode.svg toggle_page_writing_mode.png
 
+# Extension Manager icon (recommended 42×42 PNG in description.xml)
+IMG_DST="${ROOT}/marinamoji_kaeriten/images"
+mkdir -p "${IMG_DST}"
+LOGO_CANDIDATES=(
+  "${IMG_DST}/logo_square_light.svg"
+  "${ROOT}/../onlyoffice/resources/img/logo_square_light.svg"
+  "${ROOT}/../onlyoffice/resources/light/logo_square_light.svg"
+)
+LOGO=""
+for candidate in "${LOGO_CANDIDATES[@]}"; do
+  if [[ -f "${candidate}" ]]; then
+    LOGO="${candidate}"
+    break
+  fi
+done
+if [[ -n "${LOGO}" ]]; then
+  cp "${LOGO}" "${IMG_DST}/logo_square_light.svg"
+  rsvg-convert -w 42 -h 42 "${LOGO}" -o "${IMG_DST}/extension_icon.png"
+  echo "Extension Manager icon → ${IMG_DST}/extension_icon.png (42×42)"
+else
+  echo "WARNING: no logo_square_light.svg found for Extension Manager icon" >&2
+fi
+
 echo "LibreOffice toolbar icons → ${ICON_DST} (32px + 26px PNG, SVG sources copied)"

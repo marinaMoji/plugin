@@ -1,0 +1,51 @@
+# Validate ONLYOFFICE marketplace readiness and export a copy-ready tree.
+# Does not open PRs against ONLYOFFICE/onlyoffice.github.io.
+name: ONLYOFFICE marketplace
+
+on:
+  push:
+    paths:
+      - "onlyoffice/**"
+      - ".github/workflows/onlyoffice-marketplace.yml"
+  pull_request:
+    paths:
+      - "onlyoffice/**"
+      - ".github/workflows/onlyoffice-marketplace.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: onlyoffice-marketplace-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install librsvg (icon rebuild)
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
+
+      - name: Install Pillow (screenshot size check)
+        run: pip3 install --user pillow
+
+      - name: Validate + export marketplace tree
+        run: |
+          chmod +x onlyoffice/*.sh
+          ./onlyoffice/export-marketplace.sh
+        env:
+          MARINAMOJI_MARKETPLACE_OUT: packaging/release
+
+      - name: Upload marketplace artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marinamoji-onlyoffice-marketplace
+          path: |
+            packaging/release/marinamoji-onlyoffice-marketplace.zip
+            packaging/release/marketplace/SUBMIT.txt
+            packaging/release/marketplace/store-config-snippet.json
+          if-no-files-found: error

@@ -11,6 +11,16 @@
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="marinamoji_kaeriten_dispatch.py"/>
   <manifest:file-entry manifest:media-type="text/plain" manifest:full-path="README.txt"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="registration/license_en.txt"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="description/desc_en.txt"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="description/desc_fr.txt"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="description/desc_ja.txt"/>
+  <manifest:file-entry manifest:media-type="image/png"
+                       manifest:full-path="images/extension_icon.png"/>
   <manifest:file-entry manifest:media-type="application/binary" manifest:full-path="Scripts/"/>
   <manifest:file-entry manifest:media-type="application/binary" manifest:full-path="Scripts/python/"/>
   <manifest:file-entry manifest:media-type="text/plain"

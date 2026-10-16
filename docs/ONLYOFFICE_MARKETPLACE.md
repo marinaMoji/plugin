@@ -98,13 +98,19 @@ Host version (`onlyoffice/config.json` → `version`) is **independent** of the 
 | **Upstream PR** | Explicit authorization; ONLYOFFICE reviews | — |
 | **License comfort** | Plugin repo is GPL-3.0; marketplace host repo is AGPL-3.0 | — |
 
-Validate locally anytime:
+Validate / export locally anytime:
 
 ```bash
 cd plugin/onlyoffice
 ./validate-marketplace.sh
 ./build.sh
+./export-marketplace.sh
+# → packaging/release/marketplace/marinamoji/
+# → packaging/release/marinamoji-onlyoffice-marketplace.zip
+# → packaging/release/marketplace/SUBMIT.txt
 ```
+
+CI: [`.github/workflows/onlyoffice-marketplace.yml`](../.github/workflows/onlyoffice-marketplace.yml) runs on `onlyoffice/**` changes and uploads the zip as an Actions artifact. Tag releases (`plugins-v*`) also attach the zip via `build-release.sh` when export succeeds.
 
 ---
 
@@ -120,25 +126,18 @@ Always increment `version` when submitting a marketplace update. Same version �
 
 ## Initial marketplace submission
 
-1. Finish compliance checklist; run `./validate-marketplace.sh` and `./build.sh`.
-2. Smoke-test the `.plugin` in ONLYOFFICE Desktop (Plugin Manager → My plugins → Install manually).
-3. Replace placeholder screenshots with approved UI captures under `resources/store/screenshots/`.
-4. Fork [ONLYOFFICE/onlyoffice.github.io](https://github.com/ONLYOFFICE/onlyoffice.github.io); enable GitHub Pages on the fork if you want web testing.
-5. Copy the **built** plugin tree (same files as the `.plugin` zip, plus `CHANGELOG.md`) to:
+1. Finish compliance checklist; run `./export-marketplace.sh` (builds + validates + stages).
+2. Smoke-test the `.plugin` in ONLYOFFICE Desktop (Plugin Manager → My plugins → Install manually). See [plugin#6](https://github.com/marinaMoji/plugin/issues/6).
+3. Replace placeholder screenshots with approved UI captures ([plugin#5](https://github.com/marinaMoji/plugin/issues/5)).
+4. Fork [ONLYOFFICE/onlyoffice.github.io](https://github.com/ONLYOFFICE/onlyoffice.github.io) when authorized; enable GitHub Pages on the fork if you want web testing.
+5. Copy `packaging/release/marketplace/marinamoji/` (or unzip `marinamoji-onlyoffice-marketplace.zip`) to:
 
    ```text
    sdkjs-plugins/content/marinamoji/
    ```
 
-6. Append to the marketplace root `store/config.json`:
-
-   ```json
-   { "name": "marinamoji", "discussion": "" }
-   ```
-
-   (`discussion` may stay empty; ONLYOFFICE often fills it.)
-
-7. Open a PR to `ONLYOFFICE/onlyoffice.github.io`. Mention: no API keys required; Desktop + Writer only; contact for questions.
+6. Append the object from `marketplace/store-config-snippet.json` to the marketplace root `store/config.json` array (`discussion` may stay empty).
+7. Follow `marketplace/SUBMIT.txt`. Open a PR to `ONLYOFFICE/onlyoffice.github.io` only with explicit authorization. Mention: no API keys required; Desktop + Writer only.
 8. After merge, confirm the plugin appears in Plugin Manager and installs cleanly.
 
 **Review time:** ONLYOFFICE says they review “as soon as possible.” There is **no** documented SLA.
@@ -166,13 +165,14 @@ Marketplace version **may lag** a GitHub Release by days while the PR waits. Tha
 | Step | Automated today? |
 |------|------------------|
 | Build `.plugin` / zip / Mac DMG on `plugins-v*` | Yes — [release.yml](../.github/workflows/release.yml) |
-| Validate manifest + marketplace assets | Yes — `onlyoffice/validate-marketplace.sh` (run in CI or locally) |
-| Attach marketplace folder to Releases | Planned / optional — do not block main release if marketplace tooling fails |
-| Open PR against ONLYOFFICE | **Manual** (or future opt-in workflow with human approval) |
+| Validate manifest + marketplace assets | Yes — `validate-marketplace.sh` (end of `build.sh`; CI workflow) |
+| Export `marinamoji/` tree + zip | Yes — `export-marketplace.sh` (CI artifact + soft-fail in `build-release.sh`) |
+| Attach marketplace zip to GitHub Releases | Yes when export succeeds — optional asset |
+| Open PR against ONLYOFFICE | **Manual** — never automated without authorization |
 | ONLYOFFICE review + merge | **Manual** (them) |
 | User clicks Update in Plugin Manager | **Manual** (them) |
 
-Do **not** auto-submit upstream PRs without authorization. Do **not** fail the whole plugins release because the marketplace repo is unreachable.
+Do **not** auto-submit upstream PRs without authorization. Marketplace export failure is a **warning** in `build-release.sh` so LibreOffice/Word assets still publish.
 
 ---
 

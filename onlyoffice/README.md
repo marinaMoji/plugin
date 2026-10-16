@@ -99,6 +99,7 @@ Official Plugin Marketplace listing (separate from GitHub Releases): see [../doc
 ```bash
 ./validate-marketplace.sh   # manifest + assets check
 ./build.sh                  # icons + dist/marinamoji-kaeriten.plugin
+./export-marketplace.sh     # copy-ready tree + zip for a future marketplace PR
 ```
 
 ## Development

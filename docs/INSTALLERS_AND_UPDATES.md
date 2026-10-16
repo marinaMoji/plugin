@@ -281,6 +281,7 @@ For a small scholarly community, a short post when you tag a release is often en
 | **Production Word manifest URL** | Workflow writes `marinamoji-kaeriten-word.xml` with correct base URL |
 | **Checksums** | `build-release.sh` / `build-word-release.sh` write `SHA256SUMS.txt` |
 | **GitHub Release (installers)** | Tag `plugins-v*` → `.github/workflows/release.yml` (macOS) → build + upload |
+| **ONLYOFFICE marketplace export** | `onlyoffice/export-marketplace.sh` + [onlyoffice-marketplace.yml](../.github/workflows/onlyoffice-marketplace.yml) → zip artifact (no upstream PR) |
 
 ### 4.2 Semi-automated maintainer workflow (recommended)
 

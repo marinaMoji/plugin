@@ -1,0 +1,5 @@
+marinaMoji — Make room for character
+
+LibreOffice Writer で Unicode の返り点（漢文訓点、U+3190–U+319F）を小さな字形として整形します。說㆒㆑者 のようなソースを入力し、marinaMoji ツールバーで「レンダー」「アンレンダー」「プレーンテキストをコピー」「縦書きページ切替」を使います。
+
+オフラインで動作します。テレメトリはありません。実行時に marinaMoji IME は不要です（Unicode 記号を入力できればよい）。LibreOffice 6.4 以降。

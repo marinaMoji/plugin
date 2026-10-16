@@ -33,6 +33,8 @@ cat > "${NOTES}" <<EOF
 | \`MarinaMojiKaeriten.oxt\` | LibreOffice — all platforms |
 | \`marinamoji-kaeriten-libreoffice-mac.dmg\` | LibreOffice — Mac GUI installer (no Terminal) |
 | \`marinamoji-kaeriten-onlyoffice.zip\` | ONLYOFFICE — manual install |
+| \`marinamoji-kaeriten.plugin\` | ONLYOFFICE — Plugin Manager sideload |
+| \`marinamoji-onlyoffice-marketplace.zip\` | ONLYOFFICE — files for marketplace PR (maintainers) |
 | \`marinamoji-kaeriten-onlyoffice-mac.dmg\` | ONLYOFFICE — Mac GUI installer |
 | \`word-dist.zip\` | Word — hosted add-in files (already live on GitHub Pages) |
 | \`marinamoji-kaeriten-word-mac.dmg\` | Word — Mac GUI installer |
@@ -56,6 +58,7 @@ OPTIONAL=(
   "${RELEASE}/marinamoji-kaeriten-libreoffice-mac.dmg"
   "${RELEASE}/marinamoji-kaeriten-onlyoffice-mac.dmg"
   "${RELEASE}/marinamoji-kaeriten.plugin"
+  "${RELEASE}/marinamoji-onlyoffice-marketplace.zip"
   "${RELEASE}/word-dist.zip"
   "${RELEASE}/marinamoji-kaeriten-word-mac.dmg"
   "${RELEASE}/marinamoji-kaeriten-word.xml"

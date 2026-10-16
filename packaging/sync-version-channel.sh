@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 # Rewrite pages/version.json and pages/MarinaMojiKaeriten.update.xml from host
 # version fields + MARINAMOJI_RELEASE_VERSION (bundle label).
+#
+# LibreOffice update-download URL prefers a versioned GitHub Release asset
+# (not /latest/) so the feed stays reproducible. Set MARINAMOJI_RELEASE_TAG
+# (e.g. plugins-v0.0.3 or libreoffice-v0.3.10) when publishing.
 set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN="$(cd "${PACKAGING}/.." && pwd)"
 PAGES="${PLUGIN}/pages"
 VERSION="${MARINAMOJI_RELEASE_VERSION:-}"
+REPO="${MARINAMOJI_GITHUB_REPO:-${GITHUB_REPOSITORY:-marinaMoji/plugin}}"
+TAG="${MARINAMOJI_RELEASE_TAG:-}"
 
 if [[ -z "${VERSION}" ]]; then
   if [[ -f "${PACKAGING}/build-release.sh" ]]; then
@@ -34,8 +40,17 @@ if [[ -z "${LO_VER}" || -z "${OO_VER}" || -z "${WORD_VER}" || -z "${WORD_MANIFES
   exit 1
 fi
 
+if [[ -n "${MARINAMOJI_OXT_DOWNLOAD_URL:-}" ]]; then
+  OXT_URL="${MARINAMOJI_OXT_DOWNLOAD_URL}"
+elif [[ -n "${TAG}" ]]; then
+  OXT_URL="https://github.com/${REPO}/releases/download/${TAG}/MarinaMojiKaeriten.oxt"
+else
+  # Default convention for LibreOffice-only releases
+  OXT_URL="https://github.com/${REPO}/releases/download/libreoffice-v${LO_VER}/MarinaMojiKaeriten.oxt"
+fi
+
 mkdir -p "${PAGES}"
-RELEASE_URL="${MARINAMOJI_RELEASE_URL:-https://github.com/marinaMoji/plugin/releases/latest}"
+RELEASE_URL="${MARINAMOJI_RELEASE_URL:-https://github.com/${REPO}/releases/latest}"
 
 python3 - "${PAGES}/version.json" <<PY
 import json, sys
@@ -66,11 +81,15 @@ cat > "${UPDATE_XML}" <<EOF
   <identifier value="org.marinaMoji.kaeriten"/>
   <version value="${LO_VER}"/>
   <update-download>
-    <src xlink:href="https://github.com/marinaMoji/plugin/releases/latest/download/MarinaMojiKaeriten.oxt"/>
+    <src xlink:href="${OXT_URL}"/>
   </update-download>
+  <publisher>
+    <name xlink:href="https://github.com/${REPO}" lang="en">marinaMoji</name>
+  </publisher>
   <dependencies>
     <lo:LibreOffice-minimal-version value="6.4" d:name="LibreOffice 6.4"/>
   </dependencies>
 </description>
 EOF
 echo "Wrote ${UPDATE_XML} (libreoffice ${LO_VER})"
+echo "  update-download: ${OXT_URL}"
