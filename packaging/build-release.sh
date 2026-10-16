@@ -11,7 +11,13 @@ mkdir -p "${RELEASE}"
 
 echo "== Sync version channel (pages/version.json + LO update feed)"
 chmod +x "${PACKAGING}/sync-version-channel.sh"
-MARINAMOJI_RELEASE_VERSION="${VERSION}" "${PACKAGING}/sync-version-channel.sh"
+# Prefer an explicit release tag so the LO feed points at a versioned .oxt URL
+# (not GitHub /latest/). CI sets MARINAMOJI_RELEASE_TAG=plugins-vX.Y.Z.
+export MARINAMOJI_RELEASE_VERSION="${VERSION}"
+if [[ -z "${MARINAMOJI_RELEASE_TAG:-}" ]]; then
+  export MARINAMOJI_RELEASE_TAG="plugins-v${VERSION}"
+fi
+"${PACKAGING}/sync-version-channel.sh"
 
 echo "== LibreOffice .oxt"
 (cd "${PLUGIN}/libreoffice" && ./build.sh)

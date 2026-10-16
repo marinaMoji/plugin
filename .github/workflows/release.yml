@@ -75,12 +75,26 @@ jobs:
       - name: Build release artifacts
         env:
           MARINAMOJI_RELEASE_VERSION: ${{ steps.meta.outputs.version }}
+          MARINAMOJI_RELEASE_TAG: ${{ steps.meta.outputs.tag }}
+          MARINAMOJI_GITHUB_REPO: ${{ github.repository }}
         run: |
           chmod +x packaging/*.sh packaging/mac/*.sh libreoffice/*.sh onlyoffice/*.sh word/*.sh 2>/dev/null || true
           ./packaging/build-release.sh
+          ./libreoffice/validate-extension.sh packaging/release/MarinaMojiKaeriten.oxt
+
+      - name: Publish GitHub Release
+        # Publish assets before updating the LO feed so versioned download URLs resolve.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARINAMOJI_RELEASE_TAG: ${{ steps.meta.outputs.tag }}
+          MARINAMOJI_GITHUB_REPO: ${{ github.repository }}
+        run: |
+          chmod +x packaging/publish-github-release.sh
+          ./packaging/publish-github-release.sh
 
       - name: Push synced version channel to main
         # build-release.sh rewrites pages/; Pages hosts from main, so commit the sync there.
+        # Runs after the Release so MarinaMojiKaeriten.update.xml versioned URLs work.
         run: |
           set -euo pipefail
           WT="${RUNNER_TEMP}/mm-main"
@@ -99,12 +113,3 @@ jobs:
             git -C "${WT}" push origin HEAD:main
           fi
           git worktree remove "${WT}" --force
-
-      - name: Publish GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          MARINAMOJI_RELEASE_TAG: ${{ steps.meta.outputs.tag }}
-          MARINAMOJI_GITHUB_REPO: ${{ github.repository }}
-        run: |
-          chmod +x packaging/publish-github-release.sh
-          ./packaging/publish-github-release.sh

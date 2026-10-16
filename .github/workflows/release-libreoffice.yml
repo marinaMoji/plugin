@@ -1,0 +1,155 @@
+# Build, validate, and publish a LibreOffice-only extension release.
+# Trigger: push tag libreoffice-v0.3.10  OR  Actions → Run workflow.
+#
+# Does not rebuild Word or ONLYOFFICE.
+# Does not deploy the update feed to GitHub Pages unless publish_update_feed=true
+# (tag pushes default to publishing the feed after the Release asset exists).
+name: Release LibreOffice extension
+
+on:
+  push:
+    tags:
+      - "libreoffice-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. libreoffice-v0.3.10). Empty = derive from description.xml"
+        required: false
+        type: string
+        default: ""
+      publish_update_feed:
+        description: "After publishing the GitHub Release, commit update XML to main (live Pages)"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-libreoffice-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - name: Resolve tag and version
+        id: meta
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "tag_in=${TAG}" >> "${GITHUB_OUTPUT}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install librsvg
+        run: brew install librsvg
+
+      - name: Derive tag from description.xml if needed
+        id: ver
+        run: |
+          set -euo pipefail
+          LO_VER="$(sed -n 's/.*<version value="\([^"]*\)".*/\1/p' \
+            libreoffice/marinamoji_kaeriten/description.xml | head -1)"
+          TAG="${{ steps.meta.outputs.tag_in }}"
+          if [[ -z "${TAG}" ]]; then
+            TAG="libreoffice-v${LO_VER}"
+          fi
+          case "${TAG}" in
+            libreoffice-v*)
+              TAG_VER="${TAG#libreoffice-v}"
+              ;;
+            *)
+              echo "Tag must look like libreoffice-v0.3.10 (got: ${TAG})"
+              exit 1
+              ;;
+          esac
+          if [[ "${TAG_VER}" != "${LO_VER}" ]]; then
+            echo "ERROR: tag version ${TAG_VER} != description.xml ${LO_VER}"
+            echo "Bump description.xml or retag so they match."
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "${GITHUB_OUTPUT}"
+          echo "version=${LO_VER}" >> "${GITHUB_OUTPUT}"
+          echo "Publishing ${TAG} (LibreOffice ${LO_VER})"
+
+      - name: Build and validate
+        env:
+          MARINAMOJI_RELEASE_TAG: ${{ steps.ver.outputs.tag }}
+          MARINAMOJI_GITHUB_REPO: ${{ github.repository }}
+          MARINAMOJI_BUILD_LO_DMG: "1"
+        run: |
+          chmod +x packaging/*.sh packaging/mac/*.sh libreoffice/*.sh 2>/dev/null || true
+          ./packaging/build-libreoffice-release.sh
+
+      - name: Upload review artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: libreoffice-extension-${{ steps.ver.outputs.version }}
+          path: packaging/release-libreoffice/
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARINAMOJI_RELEASE_TAG: ${{ steps.ver.outputs.tag }}
+          MARINAMOJI_GITHUB_REPO: ${{ github.repository }}
+        run: |
+          chmod +x packaging/publish-libreoffice-release.sh
+          ./packaging/publish-libreoffice-release.sh
+
+      - name: Decide whether to publish update feed
+        id: feed
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "publish=true" >> "${GITHUB_OUTPUT}"
+          elif [[ "${{ inputs.publish_update_feed }}" == "true" ]]; then
+            echo "publish=true" >> "${GITHUB_OUTPUT}"
+          else
+            echo "publish=false" >> "${GITHUB_OUTPUT}"
+            echo "Skipping live Pages update (review the workflow artifact first)."
+          fi
+
+      - name: Publish update feed to main (GitHub Pages)
+        if: steps.feed.outputs.publish == 'true'
+        run: |
+          set -euo pipefail
+          WT="${RUNNER_TEMP}/mm-main"
+          rm -rf "${WT}"
+          git fetch origin main
+          git worktree add "${WT}" origin/main
+          cp packaging/release-libreoffice/MarinaMojiKaeriten.update.xml \
+            "${WT}/pages/MarinaMojiKaeriten.update.xml"
+          # Update only the libreoffice field in version.json; leave other hosts alone
+          python3 - "${WT}/pages/version.json" "${{ steps.ver.outputs.version }}" \
+            "https://github.com/${{ github.repository }}/releases/tag/${{ steps.ver.outputs.tag }}" <<'PY'
+          import json, sys
+          from pathlib import Path
+          path, lo_ver, release_url = Path(sys.argv[1]), sys.argv[2], sys.argv[3]
+          data = {}
+          if path.is_file():
+              data = json.loads(path.read_text(encoding="utf-8"))
+          data["libreoffice"] = lo_ver
+          data["release_url"] = release_url
+          path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+          print(json.dumps(data, indent=2))
+          PY
+          git -C "${WT}" config user.name "github-actions[bot]"
+          git -C "${WT}" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "${WT}" add pages/MarinaMojiKaeriten.update.xml pages/version.json
+          if git -C "${WT}" diff --cached --quiet; then
+            echo "Update feed already current on main"
+          else
+            git -C "${WT}" commit -m "Publish LibreOffice update feed for ${{ steps.ver.outputs.tag }}"
+            git -C "${WT}" push origin HEAD:main
+          fi
+          git worktree remove "${WT}" --force
+          echo "Live feed: https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml"

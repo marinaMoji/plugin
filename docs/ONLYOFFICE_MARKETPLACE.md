@@ -130,14 +130,17 @@ Always increment `version` when submitting a marketplace update. Same version �
 2. Smoke-test the `.plugin` in ONLYOFFICE Desktop (Plugin Manager → My plugins → Install manually). See [plugin#6](https://github.com/marinaMoji/plugin/issues/6).
 3. Replace placeholder screenshots with approved UI captures ([plugin#5](https://github.com/marinaMoji/plugin/issues/5)).
 4. Fork [ONLYOFFICE/onlyoffice.github.io](https://github.com/ONLYOFFICE/onlyoffice.github.io) when authorized; enable GitHub Pages on the fork if you want web testing.
-5. Copy `packaging/release/marketplace/marinamoji/` (or unzip `marinamoji-onlyoffice-marketplace.zip`) to:
+5. After forking/cloning the marketplace repo locally, apply the export (no commit/push):
 
-   ```text
-   sdkjs-plugins/content/marinamoji/
+   ```bash
+   cd plugin/onlyoffice
+   ./apply-marketplace-export.sh /path/to/onlyoffice.github.io
    ```
 
-6. Append the object from `marketplace/store-config-snippet.json` to the marketplace root `store/config.json` array (`discussion` may stay empty).
-7. Follow `marketplace/SUBMIT.txt`. Open a PR to `ONLYOFFICE/onlyoffice.github.io` only with explicit authorization. Mention: no API keys required; Desktop + Writer only.
+   Or copy `packaging/release/marketplace/marinamoji/` by hand to `sdkjs-plugins/content/marinamoji/` and append `store-config-snippet.json` to `store/config.json`.
+
+6. Follow `marketplace/SUBMIT.txt`. Review `git status` in the fork.
+7. Open a PR to `ONLYOFFICE/onlyoffice.github.io` only with explicit authorization. Mention: no API keys required; Desktop + Writer only.
 8. After merge, confirm the plugin appears in Plugin Manager and installs cleanly.
 
 **Review time:** ONLYOFFICE says they review “as soon as possible.” There is **no** documented SLA.
@@ -167,6 +170,7 @@ Marketplace version **may lag** a GitHub Release by days while the PR waits. Tha
 | Build `.plugin` / zip / Mac DMG on `plugins-v*` | Yes — [release.yml](../.github/workflows/release.yml) |
 | Validate manifest + marketplace assets | Yes — `validate-marketplace.sh` (end of `build.sh`; CI workflow) |
 | Export `marinamoji/` tree + zip | Yes — `export-marketplace.sh` (CI artifact + soft-fail in `build-release.sh`) |
+| Copy export into a local marketplace clone | Yes — `apply-marketplace-export.sh` (still no push/PR) |
 | Attach marketplace zip to GitHub Releases | Yes when export succeeds — optional asset |
 | Open PR against ONLYOFFICE | **Manual** — never automated without authorization |
 | ONLYOFFICE review + merge | **Manual** (them) |

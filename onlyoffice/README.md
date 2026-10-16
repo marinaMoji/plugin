@@ -100,6 +100,7 @@ Official Plugin Marketplace listing (separate from GitHub Releases): see [../doc
 ./validate-marketplace.sh   # manifest + assets check
 ./build.sh                  # icons + dist/marinamoji-kaeriten.plugin
 ./export-marketplace.sh     # copy-ready tree + zip for a future marketplace PR
+./apply-marketplace-export.sh /path/to/onlyoffice.github.io   # local fork only; no push
 ```
 
 ## Development
