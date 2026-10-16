@@ -7,12 +7,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN="$(cd "${ROOT}/.." && pwd)"
 OUT_ROOT="${MARINAMOJI_MARKETPLACE_OUT:-${PLUGIN}/packaging/release}"
+# CI may pass a relative path; absolutize before any cd so the zip target stays valid.
+mkdir -p "${OUT_ROOT}"
+OUT_ROOT="$(cd "${OUT_ROOT}" && pwd)"
 STAGE="${OUT_ROOT}/marketplace/marinamoji"
 ZIP="${OUT_ROOT}/marinamoji-onlyoffice-marketplace.zip"
 SKIP_BUILD="${MARINAMOJI_MARKETPLACE_SKIP_BUILD:-0}"
 FOLDER_NAME="marinamoji"
-
-mkdir -p "${OUT_ROOT}"
 
 if [[ "${SKIP_BUILD}" != "1" ]]; then
   echo "== Build ONLYOFFICE plugin"
