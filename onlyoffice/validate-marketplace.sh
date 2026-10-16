@@ -24,10 +24,15 @@ echo "Validating ONLYOFFICE marketplace readiness in ${ROOT}"
 need_file "${CONFIG}"
 need_file "${ROOT}/index.html"
 need_file "${ROOT}/CHANGELOG.md"
+need_file "${ROOT}/README.md"
+need_file "${ROOT}/LICENSE"
+need_file "${ROOT}/translations/langs.json"
 need_file "${ROOT}/scripts/kaeriten.js"
 need_file "${ROOT}/scripts/exportCore.js"
 need_file "${ROOT}/resources/light/icon.png"
+need_file "${ROOT}/resources/light/icon-sidebar.png"
 need_file "${ROOT}/resources/dark/icon.png"
+need_file "${ROOT}/resources/dark/icon-sidebar.png"
 need_file "${ROOT}/resources/store/icons/icon.png"
 need_file "${ROOT}/resources/store/icons/icon@2x.png"
 need_file "${ROOT}/resources/store/screenshots/screen_1.png"
@@ -52,7 +57,14 @@ need(name == "marinaMoji", f'name must be "marinaMoji" (got {name!r})')
 need(re.fullmatch(r"asc\.\{[0-9A-Fa-f-]{36}\}", guid), f"guid must be asc.{{UUID}} (got {guid!r})")
 need(re.fullmatch(r"\d+\.\d+\.\d+", version), f"version must be x.y.z (got {version!r})")
 need(bool(offered), 'missing "offered" (publisher name for Plugin Manager)')
-need(cfg.get("minVersion"), 'missing "minVersion"')
+min_ver = cfg.get("minVersion") or ""
+need(min_ver, 'missing "minVersion"')
+need(not cfg.get("group"), 'remove "group" — marketplace plugins must not use it')
+# ApiDrawing.SetName/GetName need 9.3+
+need(
+    tuple(int(x) for x in min_ver.split(".")[:3]) >= (9, 3, 0),
+    f'minVersion should be >= 9.3.0 for SetName/GetName (got {min_ver!r})',
+)
 
 vars_ = cfg.get("variations") or []
 need(vars_, "missing variations[]")
@@ -74,6 +86,11 @@ if vars_:
 
 changelog = changelog_path.read_text(encoding="utf-8")
 need(version in changelog, f"CHANGELOG.md must mention version {version}")
+langs = json.loads((config_path.parent / "translations" / "langs.json").read_text(encoding="utf-8"))
+need("en-EN" in langs, 'translations/langs.json must include "en-EN"')
+readme = (config_path.parent / "README.md").read_text(encoding="utf-8")
+need("Render" in readme and "Unrender" in readme and "Plain text" in readme,
+     "README.md must document Render / Unrender / Plain text")
 
 root = config_path.parent
 for scale in ("", "@1.25x", "@1.5x", "@1.75x", "@2x"):

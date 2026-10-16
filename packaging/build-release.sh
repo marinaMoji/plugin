@@ -45,7 +45,8 @@ cp "${PLUGIN}/onlyoffice/dist/marinamoji-kaeriten.plugin" "${RELEASE}/"
 (
   cd "${PLUGIN}/onlyoffice"
   zip -r -q "${RELEASE}/marinamoji-kaeriten-onlyoffice.zip" \
-    config.json index.html styles.css mapping.json CHANGELOG.md scripts resources
+    config.json index.html styles.css mapping.json CHANGELOG.md README.md LICENSE \
+    scripts resources translations
 )
 # Marketplace folder/zip for a future manual PR to onlyoffice.github.io.
 # Local tooling only — never opens an upstream PR. Soft-fail so a packaging

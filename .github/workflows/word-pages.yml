@@ -1,5 +1,5 @@
 # Build the Word add-in and publish static files to GitHub Pages.
-# Live URL: https://marinaMoji.github.io/plugin/word/
+# Live URL: https://marinamoji.github.io/plugin/word/
 name: Word add-in — GitHub Pages
 
 on:
@@ -56,6 +56,10 @@ jobs:
         run: |
           chmod +x packaging/build-word-manifest.sh
           packaging/build-word-manifest.sh _site/marinamoji-kaeriten-word.xml
+
+      - name: Validate production manifest
+        working-directory: word
+        run: npx office-addin-manifest validate ../_site/marinamoji-kaeriten-word.xml
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

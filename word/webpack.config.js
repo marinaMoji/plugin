@@ -36,10 +36,7 @@ module.exports = {
         { from: "src/taskpane/taskpane.html", to: "taskpane.html" },
         { from: "src/taskpane/taskpane.css", to: "taskpane.css" },
         { from: "src/hello.html", to: "hello.html" },
-        {
-          from: "node_modules/@microsoft/office-js/dist/office.js",
-          to: "office.js",
-        },
+        /* Office.js must come from Microsoft CDN in production (Marketplace FAQ). */
         { from: "../mapping.json", to: "mapping.json" },
         { from: "assets", to: "assets" },
       ],

@@ -13,7 +13,7 @@ Single source of truth for **where the three office plugins are** before self-ho
 | Host | Implementation | Default renderer | User export | Publish |
 |------|----------------|------------------|-------------|---------|
 | **LibreOffice** | ✅ feature-complete | SVG **inline image** (`libreoffice_primary: inline_image`) | **Copy plain** Unicode only | Package + update feed ready for `libreoffice-v0.3.10`; Extensions site listing optional later ([LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md)) |
-| **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Mac QA passed; Windows QA + release-flag flip remain |
+| **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Mac QA passed; Windows / Word-on-the-web QA remain. Marketplace prep: [WORD_APPSOURCE.md](WORD_APPSOURCE.md) |
 | **ONLYOFFICE** | ✅ feature-complete | **Inline image** (`onlyoffice_primary: inline_image`) | **Copy plain** only | Blocked on QA; marketplace prep started ([ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md)) |
 
 All three support **Render** (formats new marks and smart-refreshes existing views), **Unrender**, and **Copy plain text** (canonical `說㆒㆑者`). Word and ONLYOFFICE expose a single **Render** button; LibreOffice menu **Refresh rendering** is an alias for **Format kaeriten**.
@@ -45,7 +45,7 @@ All three support **Render** (formats new marks and smart-refreshes existing vie
 
 **Pre-publish QA:** Mac passed (2026-08-26) — see [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B. Windows not yet run. Then [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
-Word is **pre-release**: hosting is live on GitHub Pages; Mac QA passed; update notice shipped. Remaining gates before public “finalised” announce: Windows QA (if supporting Windows users). `MARINAMOJI_INCLUDE_WORD=1` is already the release default.
+Word is **pre-release**: hosting is live on GitHub Pages; Mac QA passed; update notice shipped. Remaining gates before public “finalised” announce: Windows QA and Word-on-the-web QA. Microsoft Marketplace (AppSource) prep is under [WORD_APPSOURCE.md](WORD_APPSOURCE.md) and `packaging/release/marketplace-word/` (site support/privacy pages + screenshot + Partner Center enrollment still required). `MARINAMOJI_INCLUDE_WORD=1` is already the release default.
 
 ---
 

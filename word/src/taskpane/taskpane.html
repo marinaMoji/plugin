@@ -30,23 +30,7 @@
       Office.initialize = function () {
         mmSignalReady();
       };
-      function loadLocalOfficeJs() {
-        if (window.__mmLocalOfficeLoading) return;
-        window.__mmLocalOfficeLoading = true;
-        var s = document.createElement("script");
-        s.src = "office.js";
-        s.onload = function () {
-          setTimeout(mmSignalReady, 0);
-        };
-        s.onerror = function () {
-          window.__mmBoot &&
-            window.__mmBoot(
-              "office.js failed to load. Run npm run build && npm run serve.",
-              true
-            );
-        };
-        document.head.appendChild(s);
-      }
+      /* Marketplace rule: reference Microsoft CDN Office.js only (no local copy). */
       var hosted = document.createElement("script");
       hosted.src =
         "https://appsforoffice.microsoft.com/lib/1/hosted/office.js";
@@ -58,11 +42,23 @@
           }
         }, 0);
       };
-      hosted.onerror = loadLocalOfficeJs;
+      hosted.onerror = function () {
+        window.__mmBoot &&
+          window.__mmBoot(
+            "Could not load Office.js from Microsoft CDN. Check network access.",
+            true
+          );
+      };
       document.head.appendChild(hosted);
       setTimeout(function () {
-        if (typeof Office === "undefined" || !Office.onReady) loadLocalOfficeJs();
-      }, 5000);
+        if (typeof Office === "undefined" || !Office.onReady) {
+          window.__mmBoot &&
+            window.__mmBoot(
+              "Office.js did not become ready. Open this pane from Word (Home → Kaeriten).",
+              true
+            );
+        }
+      }, 8000);
     })();
   </script>
 </head>

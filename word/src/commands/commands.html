@@ -16,16 +16,7 @@
       Office.initialize = function () {
         mmSignalReady();
       };
-      function loadLocalOfficeJs() {
-        if (window.__mmLocalOfficeLoading) return;
-        window.__mmLocalOfficeLoading = true;
-        var s = document.createElement("script");
-        s.src = "office.js";
-        s.onload = function () {
-          setTimeout(mmSignalReady, 0);
-        };
-        document.head.appendChild(s);
-      }
+      /* Marketplace rule: reference Microsoft CDN Office.js only (no local copy). */
       var hosted = document.createElement("script");
       hosted.src =
         "https://appsforoffice.microsoft.com/lib/1/hosted/office.js";
@@ -37,11 +28,7 @@
           }
         }, 0);
       };
-      hosted.onerror = loadLocalOfficeJs;
       document.head.appendChild(hosted);
-      setTimeout(function () {
-        if (typeof Office === "undefined" || !Office.onReady) loadLocalOfficeJs();
-      }, 5000);
     })();
   </script>
   <script src="commands.js" type="text/javascript"></script>

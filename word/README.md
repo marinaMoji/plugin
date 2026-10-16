@@ -6,7 +6,7 @@ Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice e
 - **View:** inline PNG pictures (canvas-drawn glyphs; default `word_primary: inline_picture`)
 - **Commands:** **Render** (includes smart refresh), Unrender, Copy plain text
 
-**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and production hosting required before distribution. **Testers:** GitHub Pages + `./install-mac-production.sh` ([../docs/GITHUB_PAGES.md](../docs/GITHUB_PAGES.md)). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). Project status: [../docs/STATUS.md](../docs/STATUS.md).
+**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and production hosting required before distribution. **Testers:** GitHub Pages + `./install-mac-production.sh` ([../docs/GITHUB_PAGES.md](../docs/GITHUB_PAGES.md)). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
 
 **End-user distribution (no Terminal):** GitHub Pages hosts `dist/` at `https://marinamoji.github.io/plugin/word/`; Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
 

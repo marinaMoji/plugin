@@ -31,8 +31,8 @@ echo "== Stage marketplace tree → ${STAGE}"
 rm -rf "${STAGE}"
 mkdir -p "${STAGE}"
 
-# Same payload as the .plugin zip, plus CHANGELOG (required by marketplace README).
-for item in config.json index.html styles.css mapping.json CHANGELOG.md scripts resources; do
+# Same payload as the .plugin zip (incl. user README + translations for Plugin Manager).
+for item in config.json index.html styles.css mapping.json CHANGELOG.md README.md LICENSE scripts resources translations; do
   if [[ -e "${ROOT}/${item}" ]]; then
     cp -R "${ROOT}/${item}" "${STAGE}/"
   else
@@ -41,10 +41,13 @@ for item in config.json index.html styles.css mapping.json CHANGELOG.md scripts 
   fi
 done
 
-# Drop build-only / source-only assets that are not needed in the store copy.
+# Drop build-only / unused promotional duplicates (keep screen_1.png only).
 find "${STAGE}" -name '.DS_Store' -delete 2>/dev/null || true
 find "${STAGE}/resources" -name 'logo_square_*.svg' -delete 2>/dev/null || true
-find "${STAGE}/resources/store/screenshots" \( -name '*.svg' -o -name 'logo_long_*.png' -o -name 'icon.svg' \) -delete 2>/dev/null || true
+SS_STAGE="${STAGE}/resources/store/screenshots"
+if [[ -d "${SS_STAGE}" ]]; then
+  find "${SS_STAGE}" -type f ! -name 'screen_1.png' -delete 2>/dev/null || true
+fi
 
 STORE_SNIPPET="${OUT_ROOT}/marketplace/store-config-snippet.json"
 cat > "${STORE_SNIPPET}" <<EOF

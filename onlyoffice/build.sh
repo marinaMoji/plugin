@@ -43,6 +43,10 @@ else
 
   render_icon_set "${LIGHT_SVG}" "${ROOT}/resources/light"
   render_icon_set "${DARK_SVG}" "${ROOT}/resources/dark"
+  # Sidebar logos for theme switching (keep light + dark copies under theme folders).
+  if [[ -f "${ROOT}/resources/light/icon-sidebar.png" ]]; then
+    cp "${ROOT}/resources/light/icon-sidebar.png" "${IMG}/icon-sidebar.png"
+  fi
   # Plugin Manager tile art: master icon.svg / icon.png at 240×120 (@2x).
   # ONLYOFFICE paints store.background behind a centered 120×60 logo overlay.
   # Strip the #203758 backdrop from tile icons so the header fills edge-to-edge.
@@ -116,20 +120,6 @@ PY
   else
     echo "WARNING: no store tile source (icon.svg / icon.png); keeping committed store icons"
   fi
-  if [[ -f "${MOZC}/logo_long_light.svg" ]]; then
-    rsvg-convert -w 1020 -h 228 \
-      "${MOZC}/logo_long_light.svg" \
-      -o "${ROOT}/resources/store/screenshots/logo_long_light.png"
-  elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_light.png" ]]; then
-    echo "WARNING: missing logo_long_light screenshot source and committed PNG"
-  fi
-  if [[ -f "${MOZC}/logo_long_dark.svg" ]]; then
-    rsvg-convert -w 1020 -h 228 \
-      "${MOZC}/logo_long_dark.svg" \
-      -o "${ROOT}/resources/store/screenshots/logo_long_dark.png"
-  elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_dark.png" ]]; then
-    echo "WARNING: missing logo_long_dark screenshot source and committed PNG"
-  fi
   # Marketplace screenshots: real Desktop captures win over SVG mockups.
   # Canonical drop folder: plugin/screenshots/marinaMoji_onlyoffice.png
   SS="${ROOT}/resources/store/screenshots"
@@ -150,7 +140,8 @@ rm -f "${PLUGIN}"
 (
   cd "${ROOT}"
   zip -r -q "${PLUGIN}" \
-    config.json index.html styles.css mapping.json CHANGELOG.md scripts resources
+    config.json index.html styles.css mapping.json CHANGELOG.md README.md LICENSE \
+    scripts resources translations
 )
 
 echo "Built ${PLUGIN}"
