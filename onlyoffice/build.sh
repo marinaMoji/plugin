@@ -130,24 +130,22 @@ PY
   elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_dark.png" ]]; then
     echo "WARNING: missing logo_long_dark screenshot source and committed PNG"
   fi
-  if [[ -f "${ROOT}/icon.png" ]]; then
-    cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/install.png"
-    cp "${ROOT}/icon.png" "${ROOT}/resources/store/screenshots/uninstall.png"
-  elif [[ -f "${ROOT}/icon.svg" ]]; then
-    rsvg-convert -w 240 -h 120 \
-      "${ROOT}/icon.svg" \
-      -o "${ROOT}/resources/store/screenshots/install.png"
-    cp "${ROOT}/resources/store/screenshots/install.png" \
-      "${ROOT}/resources/store/screenshots/uninstall.png"
-  elif [[ -f "${ROOT}/resources/store/screenshots/install.svg" ]]; then
+  # Marketplace screenshots: prefer dedicated UI mockups / captures.
+  # Do not overwrite with the 240×120 store tile (icon.svg) — Plugin Manager
+  # peers use large widescreen shots (~1280×720 or larger).
+  SS="${ROOT}/resources/store/screenshots"
+  if [[ -f "${SS}/install.svg" ]]; then
     rsvg-convert -w 1280 -h 720 \
-      "${ROOT}/resources/store/screenshots/install.svg" \
-      -o "${ROOT}/resources/store/screenshots/install.png"
+      "${SS}/install.svg" \
+      -o "${SS}/install.png"
+  fi
+  if [[ -f "${SS}/uninstall.svg" ]]; then
     rsvg-convert -w 1280 -h 720 \
-      "${ROOT}/resources/store/screenshots/uninstall.svg" \
-      -o "${ROOT}/resources/store/screenshots/uninstall.png"
-  else
-    echo "WARNING: keeping committed install/uninstall screenshots"
+      "${SS}/uninstall.svg" \
+      -o "${SS}/uninstall.png"
+  fi
+  if [[ ! -f "${SS}/install.png" ]] || [[ ! -f "${SS}/uninstall.png" ]]; then
+    echo "WARNING: missing store screenshots (install.png / uninstall.png); add UI captures before marketplace submission"
   fi
   echo "Updated ONLYOFFICE plugin icons (light + dark, multi-scale)"
 fi
@@ -159,8 +157,11 @@ rm -f "${PLUGIN}"
 (
   cd "${ROOT}"
   zip -r -q "${PLUGIN}" \
-    config.json index.html styles.css mapping.json scripts resources
+    config.json index.html styles.css mapping.json CHANGELOG.md scripts resources
 )
 
 echo "Built ${PLUGIN}"
+if [[ -x "${ROOT}/validate-marketplace.sh" ]]; then
+  "${ROOT}/validate-marketplace.sh"
+fi
 echo "Install: ONLYOFFICE Writer → Plugins → Plugin Manager → My plugins → Install plugin manually"

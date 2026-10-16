@@ -92,6 +92,15 @@ Then enable plugins in editor config (`plugins: true`).
 | `scripts/kaeriten.js` | `callCommand` render / unrender |
 | `mapping.json` | Shared mark definitions (from `../mapping.json`) |
 
+## Marketplace
+
+Official Plugin Marketplace listing (separate from GitHub Releases): see [../docs/ONLYOFFICE_MARKETPLACE.md](../docs/ONLYOFFICE_MARKETPLACE.md).
+
+```bash
+./validate-marketplace.sh   # manifest + assets check
+./build.sh                  # icons + dist/marinamoji-kaeriten.plugin
+```
+
 ## Development
 
 - Official plugin API: [ONLYOFFICE Plugins](https://api.onlyoffice.com/docs/plugin-and-macros/get-started/overview/)

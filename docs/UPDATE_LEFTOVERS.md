@@ -37,7 +37,7 @@ Live URLs (GitHub Pages for `marinaMoji/plugin`):
 | **LibreOffice Mac after online update** | Extension Manager installs `.oxt` only; LO 26.x Mac sometimes needs the Mac `.dmg` macro copy | [plugin#2](https://github.com/marinaMoji/plugin/issues/2) · calendar `lo-mac-online-update` |
 | **Word Windows QA** | Never run; blocks “finalised” announce | calendar `windows-word-plugin` · [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) §B |
 | **LO / OO in-plugin About** | No menu item yet (Word banner ships) | [plugin#3](https://github.com/marinaMoji/plugin/issues/3) · calendar `lo-oo-update-menu` |
-| **AppSource / Marketplace** | Deferred on purpose (not a hard gate) | [plugin#4](https://github.com/marinaMoji/plugin/issues/4) · calendar `plugin-store-listings` |
+| **AppSource / Marketplace** | Word AppSource still deferred; ONLYOFFICE Marketplace prep started — see [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md) | [plugin#4](https://github.com/marinaMoji/plugin/issues/4) · calendar `plugin-store-listings` |
 
 ---
 

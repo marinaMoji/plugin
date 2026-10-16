@@ -40,6 +40,13 @@ h2 {
   color: #555;
 }
 
+.slogan {
+  margin: 4px 0 6px;
+  color: #203758;
+  font-size: 12px;
+  font-style: italic;
+}
+
 .lead {
   margin: 0 0 8px;
   color: #444;

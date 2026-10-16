@@ -3,6 +3,7 @@
 A practical guide to **ONLYOFFICE** in the marinaMoji stack: how it fits the architecture, what works today, limits, and how it compares to LibreOffice and Word.
 
 **Plugin code:** [onlyoffice/](../onlyoffice/)  
+**Marketplace listing:** [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md)  
 **Research / Word planning:** [WORD_PLUGIN_RESEARCH.md](WORD_PLUGIN_RESEARCH.md)
 
 ---
@@ -216,3 +217,4 @@ From [ROADMAP.md](ROADMAP.md):
 - [ARCHITECTURE.md](ARCHITECTURE.md) — source vs view
 - [WORD_FINDINGS.md](WORD_FINDINGS.md) — paste / interoperability
 - [onlyoffice/README.md](../onlyoffice/README.md) — install commands
+- [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md) — Plugin Marketplace submission and updates

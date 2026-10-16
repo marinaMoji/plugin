@@ -217,7 +217,7 @@ Desktop loads the plugin from a **local folder** (`sdkjs-plugins/{GUID}/`). Upda
 2. Remove old plugin (Plugin Manager → Supprimer, or delete the GUID folder).
 3. Install the new build → restart ONLYOFFICE Writer.
 
-**Future option:** ONLYOFFICE Plugin Marketplace supports versioning and in-app updates for listed plugins. That is a separate publication process (like Microsoft AppSource for Word).
+**Marketplace path:** listing on the official ONLYOFFICE Plugin Marketplace gives in-app install + versioned updates via Plugin Manager. That is a **separate** publication process (copy into `onlyoffice.github.io` + PR). Maintainer guide: [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md).
 
 ### 2.4 marinaMoji IME
 
@@ -301,7 +301,7 @@ Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and opt
 |------|--------|---------|
 | **ONLYOFFICE sidebar “Check for updates”** | Low | Reuse `version.json` ([plugin#1](https://github.com/marinaMoji/plugin/issues/1)) |
 | **Mac-safe LO online update** | Medium | Toolbar still works after Extension Manager update |
-| **ONLYOFFICE Marketplace** | High | In-app install + updates for OO users |
+| **ONLYOFFICE Marketplace** | Medium (docs + validation ready; PR + screenshots remain) | In-app install + updates — [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md) |
 | **Apple notarization** | Medium ($99/yr) | Smoother Mac installs; still not auto-update |
 | **M365 Centralized Deployment** | High (institutional) | IT pushes Word manifest to lab machines |
 
@@ -346,6 +346,7 @@ Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and opt
 | [INSTALL-MAC-GATEKEEPER.md](INSTALL-MAC-GATEKEEPER.md) | Unsigned Mac installers |
 | [packaging/mac/README.md](../packaging/mac/README.md) | Build `.app` / `.dmg` |
 | [STATUS.md](STATUS.md) | Current QA gates |
+| [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md) | Official Plugin Marketplace listing + updates |
 
 ---
 
@@ -354,5 +355,5 @@ Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and opt
 - **Build installers** by tagging `plugins-vX.Y.Z` (CI on macOS) or locally with `packaging/build-release.sh` + `publish-github-release.sh`. Bump per-host version fields **and** `pages/version.json` / LO update XML before you tag.
 - **Word:** hosted code on **GitHub Pages** updates automatically; task pane can show a notice from `version.json`; reinstall the manifest when `word_manifest` advances.
 - **LibreOffice:** Extension Manager feed on GitHub Pages; bootstrap install once; Mac `.dmg` still the safe path if the toolbar breaks after online update.
-- **ONLYOFFICE:** still **manual reinstall**; leftovers in [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
+- **ONLYOFFICE:** still **manual reinstall** via Releases until listed; marketplace path in [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md). Leftovers in [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
 - **Full silent auto-install** (no user click) remains out of scope.
