@@ -30,8 +30,7 @@ need_file "${ROOT}/resources/light/icon.png"
 need_file "${ROOT}/resources/dark/icon.png"
 need_file "${ROOT}/resources/store/icons/icon.png"
 need_file "${ROOT}/resources/store/icons/icon@2x.png"
-need_file "${ROOT}/resources/store/screenshots/install.png"
-need_file "${ROOT}/resources/store/screenshots/uninstall.png"
+need_file "${ROOT}/resources/store/screenshots/screen_1.png"
 
 python3 - "${CONFIG}" "${ROOT}/CHANGELOG.md" <<'PY' || ERR=1
 import json, re, sys

@@ -130,22 +130,15 @@ PY
   elif [[ ! -f "${ROOT}/resources/store/screenshots/logo_long_dark.png" ]]; then
     echo "WARNING: missing logo_long_dark screenshot source and committed PNG"
   fi
-  # Marketplace screenshots: prefer dedicated UI mockups / captures.
-  # Do not overwrite with the 240×120 store tile (icon.svg) — Plugin Manager
-  # peers use large widescreen shots (~1280×720 or larger).
+  # Marketplace screenshots: real Desktop captures win over SVG mockups.
+  # Canonical drop folder: plugin/screenshots/marinaMoji_onlyoffice.png
   SS="${ROOT}/resources/store/screenshots"
-  if [[ -f "${SS}/install.svg" ]]; then
-    rsvg-convert -w 1280 -h 720 \
-      "${SS}/install.svg" \
-      -o "${SS}/install.png"
+  CANON_OO="${ROOT}/../screenshots/marinaMoji_onlyoffice.png"
+  if [[ -f "${CANON_OO}" ]]; then
+    cp "${CANON_OO}" "${SS}/screen_1.png"
   fi
-  if [[ -f "${SS}/uninstall.svg" ]]; then
-    rsvg-convert -w 1280 -h 720 \
-      "${SS}/uninstall.svg" \
-      -o "${SS}/uninstall.png"
-  fi
-  if [[ ! -f "${SS}/install.png" ]] || [[ ! -f "${SS}/uninstall.png" ]]; then
-    echo "WARNING: missing store screenshots (install.png / uninstall.png); add UI captures before marketplace submission"
+  if [[ ! -f "${SS}/screen_1.png" ]]; then
+    echo "WARNING: missing ${SS}/screen_1.png — add plugin/screenshots/marinaMoji_onlyoffice.png"
   fi
   echo "Updated ONLYOFFICE plugin icons (light + dark, multi-scale)"
 fi

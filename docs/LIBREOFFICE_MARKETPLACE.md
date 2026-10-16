@@ -6,7 +6,7 @@ How to list **marinaMoji** on the official [LibreOffice Extensions](https://exte
 **Extension code:** [libreoffice/](../libreoffice/)  
 **GitHub Releases + self-hosted feed:** [INSTALLERS_AND_UPDATES.md](INSTALLERS_AND_UPDATES.md)
 
-**Extensions website** listing can wait (screenshots optional). A **GitHub Release + update feed** does not require the store.
+**Extensions website** listing can wait until you want store visibility (screenshot is ready). A **GitHub Release + update feed** does not require the store.
 
 ---
 
@@ -124,7 +124,7 @@ Host version (`description.xml` → `<version>`) is **independent** of the IME, 
 | Item | Why |
 |------|-----|
 | **TDF SSO account** | Create at https://user.documentfoundation.org — you log in at https://extensions.libreoffice.org/admin |
-| **Marketplace screenshots** | Optional but strongly recommended; capture Writer + marinaMoji toolbar + a rendered paragraph (EN, optionally FR/JA UI) |
+| **Marketplace screenshots** | Capture ready: [`screenshots/marinaMoji_libreoffice.png`](../screenshots/marinaMoji_libreoffice.png) — upload when creating the extensions.libreoffice.org entry |
 | **Project logo upload** | Same square logo as Extension Manager icon is fine; approve which file |
 | **Moderator review** | Initial listing waits for a moderator after you save a publishable entry (`.oxt` present). You may **not** get an email — check the admin UI |
 | **Subsequent site releases** | Manual “Add Extension Release” in the admin UI (no supported public upload API for automation) |
@@ -231,7 +231,7 @@ Do **not** automate the Extensions website via scraping or stored browser passwo
 
 5. Save/create the entry, then **Add Extension Release** and upload `MarinaMojiKaeriten.oxt` (or link the GitHub Release asset if the form allows a download URL — prefer uploading the exact bytes you validated).
 6. Add FR/JA translations of title/summary/description when ready (language dropdown in admin).
-7. Optional: logo + screenshots.
+7. Upload logo + screenshot (`screenshots/marinaMoji_libreoffice.png` — Writer + marinaMoji toolbar + rendered kaeriten).
 8. Leave the entry in a publishable state (`.oxt` present). Wait for moderator publication; check the admin UI rather than email.
 9. Confirm the listed package’s `description.xml` still contains our `update-information` URL (so Check for Updates keeps using our feed).
 

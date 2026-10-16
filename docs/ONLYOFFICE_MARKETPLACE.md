@@ -93,10 +93,11 @@ Host version (`onlyoffice/config.json` → `version`) is **independent** of the 
 
 | Item | Why | Tracking |
 |------|-----|----------|
-| **Real screenshots** | Capture Writer + marinaMoji sidebar + a rendered paragraph; approve before packaging | [plugin#5](https://github.com/marinaMoji/plugin/issues/5) |
-| **Desktop QA** | Install via Plugin Manager, activate/deactivate, uninstall, update path | [plugin#6](https://github.com/marinaMoji/plugin/issues/6) |
+| **Desktop QA** | Maintainer reported Plugin Manager testing OK | [plugin#6](https://github.com/marinaMoji/plugin/issues/6) |
 | **Upstream PR** | Explicit authorization; ONLYOFFICE reviews | — |
 | **License comfort** | Plugin repo is GPL-3.0; marketplace host repo is AGPL-3.0 | — |
+
+**Screenshots (done):** `screenshots/marinaMoji_onlyoffice.png` → `onlyoffice/resources/store/screenshots/screen_1.png` (listed in `config.json`). Also mirrored as `writer.png` and 1280×720 `install.png` / `uninstall.png`.
 
 Validate / export locally anytime:
 
@@ -128,7 +129,7 @@ Always increment `version` when submitting a marketplace update. Same version �
 
 1. Finish compliance checklist; run `./export-marketplace.sh` (builds + validates + stages).
 2. Smoke-test the `.plugin` in ONLYOFFICE Desktop (Plugin Manager → My plugins → Install manually). See [plugin#6](https://github.com/marinaMoji/plugin/issues/6).
-3. Replace placeholder screenshots with approved UI captures ([plugin#5](https://github.com/marinaMoji/plugin/issues/5)).
+3. Confirm store screenshots look right (`resources/store/screenshots/screen_1.png` — from `screenshots/marinaMoji_onlyoffice.png`).
 4. Fork [ONLYOFFICE/onlyoffice.github.io](https://github.com/ONLYOFFICE/onlyoffice.github.io) when authorized; enable GitHub Pages on the fork if you want web testing.
 5. After forking/cloning the marketplace repo locally, apply the export (no commit/push):
 
