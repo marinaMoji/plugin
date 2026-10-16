@@ -7,7 +7,7 @@ Live URLs (GitHub Pages for `marinaMoji/plugin`):
 | URL | Role |
 |-----|------|
 | `https://marinamoji.github.io/plugin/version.json` | Shared version metadata for all hosts |
-| `https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml` | LibreOffice Extension Manager update feed |
+| `https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml` | LibreOffice Extension Manager update feed (versioned GitHub Release `.oxt` URL; see [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md)) |
 
 ---
 

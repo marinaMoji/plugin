@@ -6,6 +6,7 @@ onlyoffice/dist/
 
 # Release artifacts (built by packaging/build-release.sh)
 packaging/release/
+packaging/release-libreoffice/
 
 # Python
 __pycache__/

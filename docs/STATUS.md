@@ -12,7 +12,7 @@ Single source of truth for **where the three office plugins are** before self-ho
 
 | Host | Implementation | Default renderer | User export | Publish |
 |------|----------------|------------------|-------------|---------|
-| **LibreOffice** | ✅ feature-complete | SVG **inline image** (`libreoffice_primary: inline_image`) | **Copy plain** Unicode only | Blocked on QA |
+| **LibreOffice** | ✅ feature-complete | SVG **inline image** (`libreoffice_primary: inline_image`) | **Copy plain** Unicode only | Package + update feed ready for `libreoffice-v0.3.10`; Extensions site listing optional later ([LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md)) |
 | **Word** | ✅ feature-complete | **Inline picture** (`word_primary: inline_picture`) | **Copy plain** only | Mac QA passed; Windows QA + release-flag flip remain |
 | **ONLYOFFICE** | ✅ feature-complete | **Inline image** (`onlyoffice_primary: inline_image`) | **Copy plain** only | Blocked on QA; marketplace prep started ([ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md)) |
 

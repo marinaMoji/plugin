@@ -55,7 +55,10 @@ for candidate in "${LOGO_CANDIDATES[@]}"; do
   fi
 done
 if [[ -n "${LOGO}" ]]; then
-  cp "${LOGO}" "${IMG_DST}/logo_square_light.svg"
+  if [[ "$(cd "$(dirname "${LOGO}")" && pwd)/$(basename "${LOGO}")" != \
+        "$(cd "${IMG_DST}" && pwd)/logo_square_light.svg" ]]; then
+    cp "${LOGO}" "${IMG_DST}/logo_square_light.svg"
+  fi
   rsvg-convert -w 42 -h 42 "${LOGO}" -o "${IMG_DST}/extension_icon.png"
   echo "Extension Manager icon → ${IMG_DST}/extension_icon.png (42×42)"
 else

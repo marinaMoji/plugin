@@ -55,7 +55,8 @@ import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-desc_path, update_path, oxt_path, expected_id = map(Path, sys.argv[1:5])
+desc_path, update_path, oxt_path = map(Path, sys.argv[1:4])
+expected_id = sys.argv[4]
 errors = []
 warnings = []
 

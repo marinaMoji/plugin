@@ -34,7 +34,7 @@ Before every public release, bump versions in the places users and tools actuall
 
 | Product | File | Field |
 |---------|------|--------|
-| **LibreOffice** | `libreoffice/marinamoji_kaeriten/description.xml` | `<version value="…"/>` |
+| **LibreOffice** | `libreoffice/marinamoji_kaeriten/description.xml` | `<version value="…"/>` (independent of IME / Word / ONLYOFFICE) |
 | **ONLYOFFICE** | `onlyoffice/config.json` | `"version"` (+ cache-bust `?v=` in `index.html` url) |
 | **Word manifest** | `word/manifest.xml` and `word/manifest.production.xml` | `<Version>…</Version>` |
 | **Word npm package** | `word/package.json` | `"version"` (baked into task pane for update notice) |
@@ -115,10 +115,26 @@ Bump `config.json` `version` and the `?v=` query on `index.html` so Desktop clie
 ```bash
 cd plugin/libreoffice
 ./build.sh
+./validate-extension.sh
 # → dist/MarinaMojiKaeriten.oxt
 ```
 
 Bump `description.xml` `<version>`. The Mac GUI installer bundles this `.oxt` plus Python macros (required on LO 26.x).
+
+### 1.5a LibreOffice-only release (no Word / ONLYOFFICE rebuild)
+
+```bash
+# bump libreoffice/marinamoji_kaeriten/description.xml <version> first
+cd plugin/packaging
+export MARINAMOJI_RELEASE_TAG="libreoffice-v0.3.10"   # must match description.xml
+./build-libreoffice-release.sh
+# Review packaging/release-libreoffice/MarinaMojiKaeriten.update.xml
+./publish-libreoffice-release.sh
+# Only then authorize copying the update XML to pages/ on main (or use the
+# "Release LibreOffice extension" workflow with publish_update_feed).
+```
+
+Prefer tagging `libreoffice-v*` so CI does the build, Release upload, and (on tag push) feed publish. Marketplace steps: [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md).
 
 ### 1.6 Quality checklist before you publish
 
@@ -195,7 +211,8 @@ The extension lives **inside** the user profile after install. Builds that inclu
 https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml
 ```
 
-That file lists the latest version and downloads `MarinaMojiKaeriten.oxt` from GitHub Releases `/latest/download/`.
+That file lists the latest LibreOffice host version and downloads `MarinaMojiKaeriten.oxt` from a **versioned** GitHub Release asset  
+(`…/releases/download/<tag>/MarinaMojiKaeriten.oxt`), not `/latest/`.
 
 **Update path for users:**
 
@@ -206,6 +223,8 @@ That file lists the latest version and downloads `MarinaMojiKaeriten.oxt` from G
 **Bootstrap:** users on an older `.oxt` without `update-information` must install once from a release that includes the hook before Check for Updates works.
 
 **Mac caveat:** online update installs the `.oxt` only. On LibreOffice 26.x Mac, if the toolbar dies after an online update, run the Mac `.dmg` installer (macro copy). See [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
+
+**Official Extensions website:** listing and native updates are separate. Maintainer guide → [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md).
 
 ### 2.3 ONLYOFFICE — **manual** reinstall
 
@@ -281,6 +300,8 @@ For a small scholarly community, a short post when you tag a release is often en
 | **Production Word manifest URL** | Workflow writes `marinamoji-kaeriten-word.xml` with correct base URL |
 | **Checksums** | `build-release.sh` / `build-word-release.sh` write `SHA256SUMS.txt` |
 | **GitHub Release (installers)** | Tag `plugins-v*` → `.github/workflows/release.yml` (macOS) → build + upload |
+| **LibreOffice-only Release** | Tag `libreoffice-v*` → `.github/workflows/release-libreoffice.yml` → `.oxt` + feed |
+| **LO package validation** | `libreoffice/validate-extension.sh` (also run from release workflows) |
 | **ONLYOFFICE marketplace export** | `onlyoffice/export-marketplace.sh` + [onlyoffice-marketplace.yml](../.github/workflows/onlyoffice-marketplace.yml) → zip artifact (no upstream PR) |
 
 ### 4.2 Semi-automated maintainer workflow (recommended)
@@ -348,6 +369,7 @@ Word-only JS/CSS fix without a new installer: **push to `main`** (Pages) and opt
 | [packaging/mac/README.md](../packaging/mac/README.md) | Build `.app` / `.dmg` |
 | [STATUS.md](STATUS.md) | Current QA gates |
 | [ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md) | Official Plugin Marketplace listing + updates |
+| [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md) | Official Extensions website + native update feed |
 
 ---
 

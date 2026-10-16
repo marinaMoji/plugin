@@ -8,7 +8,8 @@ How we ship marinaMoji **office plugins** without Microsoft Marketplace, Apple D
 
 **Maintainers:** step-by-step publishing plan for all three plugins (LO, Word, ONLYOFFICE) → **[SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md)**.  
 **Installers + updates:** **[INSTALLERS_AND_UPDATES.md](INSTALLERS_AND_UPDATES.md)**.  
-**ONLYOFFICE Plugin Marketplace:** **[ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md)** (separate from GitHub Releases).
+**ONLYOFFICE Plugin Marketplace:** **[ONLYOFFICE_MARKETPLACE.md](ONLYOFFICE_MARKETPLACE.md)** (separate from GitHub Releases).  
+**LibreOffice Extensions website:** **[LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md)** (listing ≠ native update feed).
 
 ---
 
