@@ -37,14 +37,14 @@
       "font_bottom_line_em": {
         "Songti SC": 0.156
       },
-      "vertical_left_em": 0.36,
+      "vertical_left_em": 0.328,
       "vertical_font_left_em": {
-        "Hiragino Mincho ProN": 0.357,
-        "Hiragino Sans GB": 0.371,
-        "Hiragino Sans": 0.364,
-        "Yu Mincho": 0.357,
-        "Yu Gothic": 0.389,
-        "Songti SC": 0.356
+        "Hiragino Mincho ProN": 0.325,
+        "Hiragino Sans GB": 0.339,
+        "Hiragino Sans": 0.332,
+        "Yu Mincho": 0.325,
+        "Yu Gothic": 0.357,
+        "Songti SC": 0.317
       }
     },
     "fallback": "subscript",

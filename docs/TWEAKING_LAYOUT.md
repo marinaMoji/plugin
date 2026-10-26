@@ -82,8 +82,8 @@ In 縦書き the marks stay in the column like small characters: each sits in it
 
 | Key (`rendering.libreoffice_image`) | Meaning |
 |---|---|
-| `vertical_left_em` | Sideways shift, in em, from the unadjusted position to the characters' left edge (default `0.36`) |
-| `vertical_font_left_em` | Per-font overrides by family-name prefix (Songti SC `0.356`, Yu Gothic `0.389`, …) |
+| `vertical_left_em` | Sideways shift, in em, from the unadjusted position to the characters' left edge (default `0.328`) |
+| `vertical_font_left_em` | Per-font overrides by family-name prefix (Songti SC `0.317`, Yu Gothic `0.357`, …) |
 | `vertical_orient_position_hmm` | Extra sideways nudge in 1/100 mm (positive = right) |
 
 The per-font values come from measuring renders (the mark box's left edge against the typical left edge of the characters' ink). A font whose ink starts further left or right than the others needs its own entry. LibreOffice anchors the in-line image by its right edge, so the offset also subtracts the difference between a single mark's width and the picture's.

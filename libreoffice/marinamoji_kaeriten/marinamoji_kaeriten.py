@@ -265,7 +265,7 @@ class _MarkMapper(object):
         # margin). `vertical_left_em` is the sideways shift (em) from the unadjusted
         # position to that edge; it depends slightly on where each font's ink starts,
         # hence the per-font table (family-name prefix, case-insensitive).
-        self._image_vertical_left_em = float(lo_img.get("vertical_left_em", 0.36))
+        self._image_vertical_left_em = float(lo_img.get("vertical_left_em", 0.328))
         self._image_vertical_font_left_em = {
             str(k).lower(): float(v)
             for k, v in (lo_img.get("vertical_font_left_em") or {}).items()
