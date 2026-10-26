@@ -130,14 +130,20 @@ export function orderedGlyphs(marks, byChar) {
  * Single column of glyphs (stack) by default; a single row when `row` is true.
  */
 /** Merge render opts with 横書き / 縦書き layout flags for inline pictures. */
-export function imageOptsForFlow(opts, vertical, markCount) {
+export function imageOptsForFlow(opts, vertical, markCount, hostFontName = "") {
   const row = kaeritenImageUseRowLayout(vertical, markCount, opts);
   const nudgeKey = vertical ? "imageVerticalGlyphNudgeEm" : "imageGlyphNudgeEm";
   const nudge =
     opts[nudgeKey] != null && opts[nudgeKey] !== ""
       ? Number(opts[nudgeKey])
       : Number(opts.imageGlyphNudgeEm ?? 0.02);
-  return { ...opts, vertical: !!vertical, row, imageGlyphNudgeEm: nudge };
+  return {
+    ...opts,
+    vertical: !!vertical,
+    row,
+    imageGlyphNudgeEm: nudge,
+    hostFontName: String(hostFontName || ""),
+  };
 }
 
 export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
@@ -296,11 +302,39 @@ function applyPictureGeometry(pic, widthPt, heightPt) {
 }
 
 /**
+ * Distance (em) from the baseline down to the host characters' bottom line: the
+ * default, or the entry for the host font (family-name prefix, case-insensitive).
+ */
+export function bottomLineEm(opts = {}) {
+  const font = String(opts.hostFontName || "").toLowerCase();
+  const table = opts.imageFontBottomLineEm || {};
+  const names = Object.keys(table).sort((a, b) => b.length - a.length);
+  for (const name of names) {
+    if (font && font.startsWith(name.toLowerCase())) return Number(table[name]);
+  }
+  return Number(opts.imageBottomLineEm);
+}
+
+/**
  * Run position (pt) for the inline picture via Font.position.
- * 横書き: negative ≈ lower (toward baseline). 縦書き: tune separately (often small positive).
+ * 横書き: the mark's glyph ink sits on the characters' bottom line. The picture's
+ * bottom edge rests on the baseline at position 0, and the glyph ink is
+ * `imageInkInsetEm` above that edge, so the picture is lowered by bottom line + inset.
+ * 縦書き: the picture's left edge on the characters' left edge (same margin).
  */
 export function inlinePictureBaselineShiftPt(hostPt, opts = {}) {
   const vertical = !!opts.vertical;
+  if (!vertical && opts.imageBottomLineEm != null && Number.isFinite(opts.imageBottomLineEm)) {
+    const host = hostPt > 0 ? hostPt : 12;
+    return -(bottomLineEm(opts) + Number(opts.imageInkInsetEm ?? 0.066)) * host;
+  }
+  if (vertical && opts.imageVerticalLeftEm != null && Number.isFinite(opts.imageVerticalLeftEm)) {
+    // 縦書き: position moves the picture sideways in the column (+ = right). At position 0
+    // its box sits `imageVerticalLeftEm` right of the characters' left edge; shift it back
+    // so the two edges meet (the same margin).
+    const host = hostPt > 0 ? hostPt : 12;
+    return -Number(opts.imageVerticalLeftEm) * host;
+  }
   let pt;
   if (vertical) {
     pt = Number(

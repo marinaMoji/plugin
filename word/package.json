@@ -20,7 +20,7 @@
     "stop": "office-addin-debugging stop manifest.xml",
     "validate": "office-addin-manifest validate manifest.xml",
     "validate:production": "office-addin-manifest validate marinamoji-kaeriten-word.xml",
-    "test": "node tests/test_export.mjs && node tests/test_ooxml.mjs && node tests/test_update_check.mjs"
+    "test": "node tests/test_export.mjs && node tests/test_ooxml.mjs && node tests/test_update_check.mjs && node tests/test_baseline.mjs"
   },
   "devDependencies": {
     "@microsoft/office-js": "^1.1.110",

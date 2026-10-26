@@ -25,6 +25,7 @@ except ImportError:
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
+    from com.sun.star.text.VertOrientation import NONE as _VERT_NONE
     from com.sun.star.text.VertOrientation import CHAR_BOTTOM as _VERT_CHAR_BOTTOM
     from com.sun.star.text.VertOrientation import CHAR_TOP as _VERT_CHAR_TOP
     from com.sun.star.text.VertOrientation import CHAR_CENTER as _VERT_CHAR_CENTER
@@ -35,6 +36,7 @@ try:
     from com.sun.star.drawing.TextHorizontalAdjust import CENTER as _TEXT_HORIZ_CENTER
 except ImportError:
     AS_CHARACTER = 1
+    _VERT_NONE = 0
     _VERT_CHAR_BOTTOM = 6
     _VERT_CHAR_TOP = 4
     _VERT_CHAR_CENTER = 5
@@ -249,6 +251,26 @@ class _MarkMapper(object):
         self._image_vertical_orient_position_hmm = int(
             lo_img.get("vertical_orient_position_hmm", self._vertical_orient_position_hmm)
         )
+        # Horizontal text: the mark's bottom edge sits on the bottom line of the CJK
+        # characters, `bottom_line_em` below the baseline. Typical kanji bottoms are
+        # ~0.067 em below the baseline in Hiragino/Yu fonts; Songti sits lower, so
+        # `font_bottom_line_em` overrides it per font family (case-insensitive prefix).
+        self._image_bottom_line_em = float(lo_img.get("bottom_line_em", 0.067))
+        self._image_font_bottom_line_em = {
+            str(k).lower(): float(v)
+            for k, v in (lo_img.get("font_bottom_line_em") or {}).items()
+        }
+        # Vertical text: the mark stays an in-line image in the column, like a small
+        # character, with its box's left edge on the characters' left edge (the same
+        # margin). `vertical_left_em` is the sideways shift (em) from the unadjusted
+        # position to that edge; it depends slightly on where each font's ink starts,
+        # hence the per-font table (family-name prefix, case-insensitive).
+        self._image_vertical_left_em = float(lo_img.get("vertical_left_em", 0.36))
+        self._image_vertical_font_left_em = {
+            str(k).lower(): float(v)
+            for k, v in (lo_img.get("vertical_font_left_em") or {}).items()
+        }
+        self._runtime_font = ""
         self._by_char = {}
         for entry in data.get("marks", []):
             ch = entry.get("char")
@@ -282,6 +304,40 @@ class _MarkMapper(object):
     def clear_runtime_size(self):
         self._runtime_char_height = None
         self._host_pt_for_width = None
+        self._runtime_font = ""
+
+    def apply_host_font(self, font_name):
+        self._runtime_font = str(font_name or "")
+
+    def bottom_line_em(self):
+        """Distance (em) from the baseline down to the host characters' bottom line."""
+        font = self._runtime_font.lower()
+        for name, value in sorted(self._image_font_bottom_line_em.items(), key=lambda kv: -len(kv[0])):
+            if font.startswith(name):
+                return value
+        return self._image_bottom_line_em
+
+    def vertical_left_em(self):
+        font = self._runtime_font.lower()
+        for name, value in sorted(self._image_vertical_font_left_em.items(), key=lambda kv: -len(kv[0])):
+            if font.startswith(name):
+                return value
+        return self._image_vertical_left_em
+
+    def vertical_position_hmm(self, metrics):
+        """VertOrientPosition (1/100 mm) of an in-line mark in 縦書き. For an in-line
+        image the position moves it sideways in the column with + = left; 0 puts its
+        box left of the characters, so shift it right (negative) until its left edge
+        meets theirs. `vertical_orient_position_hmm` is an extra nudge, + = right."""
+        shift = int(round(self.vertical_left_em() * metrics["host_pt"] * _PT_TO_HMM))
+        return -(shift + self._image_vertical_orient_position_hmm)
+
+    def horizontal_position_hmm(self, metrics):
+        """VertOrientPosition (1/100 mm, from the baseline) that puts the image's bottom
+        edge on the characters' bottom line. With VertOrient NONE the position is that of
+        the image's top edge relative to the baseline, positive = lower."""
+        top_pt = self.bottom_line_em() * metrics["host_pt"] - metrics["height_pt"]
+        return int(round(top_pt * _PT_TO_HMM)) + self._image_horizontal_vert_orient_position_hmm
 
     def glyphs_for_marks(self, marks):
         chars = list(marks)
@@ -803,6 +859,7 @@ def _image_metrics_from_host(mapper, glyph_count):
     width_pt = cell_pt
     height_pt = max(cell_pt * 0.5, cell_pt * n + gap_pt * (n - 1))
     return {
+        "host_pt": host_pt,
         "cell_pt": cell_pt,
         "gap_pt": gap_pt,
         "width_pt": width_pt,
@@ -945,15 +1002,14 @@ def _configure_graphic(graphic, mapper, metrics, vertical=False):
     except Exception:
         pass
     try:
+        graphic.setPropertyValue("VertOrient", _VERT_NONE)
         if vertical:
-            graphic.setPropertyValue("VertOrient", mapper.vertical_vert_orient)
             graphic.setPropertyValue(
-                "VertOrientPosition", mapper._image_vertical_orient_position_hmm
+                "VertOrientPosition", mapper.vertical_position_hmm(metrics)
             )
         else:
-            graphic.setPropertyValue("VertOrient", _VERT_CHAR_BOTTOM)
             graphic.setPropertyValue(
-                "VertOrientPosition", mapper._image_horizontal_vert_orient_position_hmm
+                "VertOrientPosition", mapper.horizontal_position_hmm(metrics)
             )
     except Exception:
         pass
@@ -1117,6 +1173,7 @@ def _format_clusters(text, work_range, mapper, doc):
             continue  # orphan marks with no kanji to attach to
         host_pt = _host_char_height(doc, text, start)
         mapper.apply_host_size(host_pt)
+        mapper.apply_host_font(_host_char_font(doc, text, start))
         vertical = _is_vertical_writing(doc, start)
         fingerprint = _render_fingerprint(
             doc, text, start, marks, mapper, vertical=vertical, host_pt=host_pt
@@ -1201,6 +1258,7 @@ def _refresh_graphics_in_place(doc, work_range, mapper):
             continue
         host_pt = _host_char_height_at_anchor(doc, text, anchor)
         mapper.apply_host_size(host_pt)
+        mapper.apply_host_font(_host_char_font_at_anchor(doc, text, anchor))
         vertical = _is_vertical_writing(
             doc, text.createTextCursorByRange(anchor)
         )
@@ -1365,15 +1423,16 @@ def _canonical_text_in_range(doc, work_range):
         inserts.append((_char_index_in_range(work_range, anchor), marks))
     if not inserts:
         return plain
-    inserts.sort()
+    # An in-line view leaves no placeholder in getString(): the marks simply go in at
+    # the index of the text before them.
+    inserts.sort(key=lambda item: item[0])
     out = []
     pos = 0
     for idx, marks in inserts:
-        if idx > len(plain):
-            idx = len(plain)
+        idx = max(pos, min(idx, len(plain)))
         out.append(plain[pos:idx])
         out.append(marks)
-        pos = idx + (1 if idx < len(plain) else 0)
+        pos = idx
     out.append(plain[pos:])
     return "".join(out)
 

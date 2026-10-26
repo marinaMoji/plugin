@@ -32,7 +32,20 @@
       "color": "#000000",
       "font_family": "\"Hiragino Mincho ProN\",\"YuMincho\",\"Yu Mincho\",\"MS Mincho\",\"Songti SC\",\"SimSun\",serif",
       "vert_orient_position_hmm": 0,
-      "vertical_orient_position_hmm": 0
+      "vertical_orient_position_hmm": 0,
+      "bottom_line_em": 0.067,
+      "font_bottom_line_em": {
+        "Songti SC": 0.156
+      },
+      "vertical_left_em": 0.36,
+      "vertical_font_left_em": {
+        "Hiragino Mincho ProN": 0.357,
+        "Hiragino Sans GB": 0.371,
+        "Hiragino Sans": 0.364,
+        "Yu Mincho": 0.357,
+        "Yu Gothic": 0.389,
+        "Songti SC": 0.356
+      }
     },
     "fallback": "subscript",
     "word_assume_vertical": false,
@@ -50,6 +63,12 @@
       "supersample": 4,
       "box_height_em": 0,
       "baseline_shift_pt": -5,
+      "bottom_line_em": 0.06,
+      "font_bottom_line_em": {
+        "Songti SC": 0.122
+      },
+      "ink_inset_em": 0.066,
+      "vertical_left_em": 0.248,
       "baseline_anchor": "bottom",
       "below_baseline_em": 0.42,
       "descent_em": 0,

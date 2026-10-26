@@ -60,13 +60,37 @@ On Word, small transparent PNGs can look **medium gray** even when the file asks
 
 ## Position (horizontal text)
 
-In 横書き the mark sits after the kanji, slightly **below the baseline**. That is intentional; it should not look like furigana (above the character).
+In 横書き the mark sits after the kanji with its bottom edge on the **bottom line of the characters** (about 0.067 em below the baseline for Hiragino and Yu fonts), not hanging below them. It should not look like furigana (above the character).
 
-Word’s image renderer also has `below_baseline_em` (default `0.42`). That is the empty slot under the line that the glyph sits in. If you change `glyph_ratio` a lot, set `below_baseline_em` to the **same number** so the mark does not float in leftover space or get clipped.
+**LibreOffice** anchors the image to the baseline and computes its offset from the cell, so it works the same at any font size. Two keys in `rendering.libreoffice_image`:
 
-LibreOffice and ONLYOFFICE pin the image as a character at the bottom of the line; they do not use `below_baseline_em`.
+- `bottom_line_em` — distance from the baseline down to the characters' bottom line (default `0.067`).
+- `font_bottom_line_em` — per-font overrides by family-name prefix (`"Songti SC": 0.156`). Songti sets its characters lower than the other fonts; add an entry for any font whose marks sit too high or low.
+- `vert_orient_position_hmm` — extra nudge in 1/100 mm.
 
-縦書き uses a different side of the column (traditionally the **left**). See [LIBREOFFICE_FRAMES.md](LIBREOFFICE_FRAMES.md) for `vertical_vert_orient` and related nudges.
+**Word** draws each mark as an inline picture and lowers it with a run position. Keys in `rendering.word_inline_picture`:
+
+- `bottom_line_em` — distance from the baseline down to the characters' bottom line (default `0.06`).
+- `font_bottom_line_em` — per-font overrides (`"Songti SC": 0.122`). The add-in reads the host font from the base character.
+- `ink_inset_em` — how far the mark's ink sits above the bottom of its picture (`0.066`, from the ㆑ glyph).
+
+The shift is `-(bottom_line_em + ink_inset_em) × font size`; `baseline_shift_pt` is only the fallback when `bottom_line_em` is absent. Word stores the position in half-points, so at 12 pt the mark can be off by up to 0.02 em.
+
+## Position (vertical text, LibreOffice)
+
+In 縦書き the marks stay in the column like small characters: each sits in its own slot right after its base character, and its box's **left edge is on the characters' left edge** (the same margin), not beside the column.
+
+| Key (`rendering.libreoffice_image`) | Meaning |
+|---|---|
+| `vertical_left_em` | Sideways shift, in em, from the unadjusted position to the characters' left edge (default `0.36`) |
+| `vertical_font_left_em` | Per-font overrides by family-name prefix (Songti SC `0.356`, Yu Gothic `0.389`, …) |
+| `vertical_orient_position_hmm` | Extra sideways nudge in 1/100 mm (positive = right) |
+
+The per-font values come from measuring renders (the mark box's left edge against the typical left edge of the characters' ink). A font whose ink starts further left or right than the others needs its own entry.
+
+## Position (vertical text, Word)
+
+The marks stay in the column as inline pictures, with their box's left edge on the characters' left edge. `rendering.word_inline_picture.vertical_left_em` (`0.248`) is how far right of that edge Word puts an unshifted picture; the add-in shifts it back by that amount. It is the same for the fonts tested (Hiragino, Yu, Songti).
 
 ## Apply the change
 

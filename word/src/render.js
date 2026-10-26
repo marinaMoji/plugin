@@ -188,6 +188,19 @@ function wordRenderOptions(mappingData) {
         : null,
     imageBaselineAnchor: img.baseline_anchor ?? "bottom",
     imageBelowBaselineEm: Number(img.below_baseline_em ?? 0.42),
+    imageBottomLineEm:
+      img.bottom_line_em != null && img.bottom_line_em !== ""
+        ? Number(img.bottom_line_em)
+        : null,
+    imageFontBottomLineEm: img.font_bottom_line_em || {},
+    imageVerticalLeftEm:
+      img.vertical_left_em != null && img.vertical_left_em !== ""
+        ? Number(img.vertical_left_em)
+        : null,
+    imageInkInsetEm:
+      img.ink_inset_em != null && img.ink_inset_em !== ""
+        ? Number(img.ink_inset_em)
+        : 0.066,
     imageBaselineShiftPt:
       img.baseline_shift_pt != null && img.baseline_shift_pt !== ""
         ? Number(img.baseline_shift_pt)
@@ -325,12 +338,33 @@ function renderSettingsHash(mappingData) {
   );
 }
 
+/** Font family of a range (East Asian family when Word reports one), "" if unknown. */
+async function loadHostFontName(context, range) {
+  let name = "";
+  try {
+    range.font.load("name");
+    await context.sync();
+    name = range.font.name || "";
+  } catch {
+    /* optional */
+  }
+  try {
+    range.font.load("nameFarEast");
+    await context.sync();
+    if (range.font.nameFarEast) name = range.font.nameFarEast;
+  } catch {
+    /* nameFarEast needs WordApiDesktop; ignore when absent */
+  }
+  return name;
+}
+
 function pictureRenderFingerprint(mappingData, hostPt, vertical, opts) {
   return [
     "v1",
     "renderer=inline_picture",
     `pt=${Number(hostPt || 12).toFixed(1)}`,
     `vert=${vertical ? 1 : 0}`,
+    `font=${String(opts?.hostFontName || "").replace(/[|;=]/g, "")}`,
     `rh=${renderSettingsHash(mappingData)}`,
     `row=${opts?.row ? 1 : 0}`,
   ].join("|");
@@ -996,7 +1030,8 @@ async function renderClusterWithInlinePicture(
   }
 
   const viewId = nextKaeritenViewId();
-  const imageOpts = imageOptsForFlow(opts, vertical, marks.length);
+  const hostFontName = await loadHostFontName(context, baseRange);
+  const imageOpts = imageOptsForFlow(opts, vertical, marks.length, hostFontName);
   imageOpts.renderFingerprint = pictureRenderFingerprint(
     mappingData,
     hostPt,
@@ -1774,13 +1809,15 @@ export async function refreshKaeritenDocument(context, mappingData) {
     );
     let hostPt = 12;
     let vertical = false;
+    let hostFontName = "";
     if (baseRange) {
       baseRange.font.load("size");
       await context.sync();
       hostPt = baseRange.font.size || 12;
       vertical = await isVerticalFlow(context, baseRange, opts.wordAssumeVertical);
+      hostFontName = await loadHostFontName(context, baseRange);
     }
-    const imageOpts = imageOptsForFlow(opts, vertical, marks.length);
+    const imageOpts = imageOptsForFlow(opts, vertical, marks.length, hostFontName);
     imageOpts.renderFingerprint = pictureRenderFingerprint(
       mappingData,
       hostPt,
