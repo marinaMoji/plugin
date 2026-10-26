@@ -75,3 +75,13 @@ CI signs (Developer ID) and notarizes the dmgs via `sign-and-notarize.sh` when t
 ```bash
 codesign --force --deep --sign - "Install marinaMoji Kaeriten (LibreOffice).app"
 ```
+
+## Windows Word installer (sign after the release)
+
+CI builds `marinamoji-kaeriten-word-setup.exe` (Inno Setup, `packaging/windows/`) and attaches it to the Release **unsigned**. Sign it from the maintainer machine with Certum SimplySign running and logged in:
+
+```bash
+node packaging/sign-windows-release.mjs plugins-vX.Y.Z --upload
+```
+
+Without `--upload` it only stages the signed file for review. The script verifies the signature, rewrites the exe line in `SHA256SUMS.txt`, re-uploads both and re-checks them. Needs `gh`, `osslsigncode` and `sign-windows` on `PATH` (same setup as marinaMoji's `scripts/sign-windows-release.mjs`).
