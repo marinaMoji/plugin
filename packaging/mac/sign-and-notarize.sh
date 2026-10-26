@@ -22,7 +22,8 @@ dmg_scripts=("${MAC}"/build-*-dmg.sh)
 
 echo "== Developer ID signing (apps)"
 for app in "${apps[@]}"; do
-  codesign --force --deep --options runtime --timestamp --sign "${APP_IDENTITY}" "${app}"
+  codesign --force --deep --options runtime --timestamp \
+    --entitlements "${MAC}/installer.entitlements" --sign "${APP_IDENTITY}" "${app}"
   codesign --verify --deep --strict "${app}"
 done
 

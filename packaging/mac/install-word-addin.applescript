@@ -47,11 +47,20 @@ on run
 end run
 
 on manualFallback(bundledManifest, wefPosix, manifestName, errMsg)
-	display alert "macOS blocked the automatic install." message "Word's add-in folder is protected. Finish by hand: drag the file shown in the first Finder window into the second one, and rename it to " & manifestName & "." & return & return & "Alternatively allow this installer under System Settings → Privacy & Security → Full Disk Access, then run it again." & return & return & errMsg as critical
+	-- Stage a correctly named copy where the user can reach it, then show both folders.
+	set stagedPosix to (POSIX path of (path to desktop folder)) & manifestName
 	try
-		do shell script "open -R " & quoted form of bundledManifest
+		do shell script "cp " & quoted form of bundledManifest & " " & quoted form of stagedPosix
+		do shell script "open -R " & quoted form of stagedPosix
 		do shell script "open " & quoted form of wefPosix
 	end try
+	set answer to button returned of (display alert "macOS blocked the automatic install." message ¬
+		"Word's add-in folder is protected, so finish by hand: drag " & manifestName & " (shown selected on your Desktop) into the Finder window for Word's add-in folder." & return & return & ¬
+		"To let this installer do it itself next time, allow it under Full Disk Access, then run it again." ¬
+		as critical buttons {"Open Full Disk Access", "OK"} default button "OK")
+	if answer is "Open Full Disk Access" then
+		do shell script "open 'x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles'"
+	end if
 end manualFallback
 
 on resourcePath(fileName)

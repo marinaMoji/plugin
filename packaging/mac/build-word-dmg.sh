@@ -23,8 +23,10 @@ marinaMoji Kaeriten — Word (Mac)
      faites défiler jusqu'au message sur l'installeur, cliquez sur « Ouvrir quand même »,
      puis confirmez. (Le clic droit → Ouvrir ne fonctionne plus depuis macOS 15.)
 
-3. Si macOS demande d'autoriser l'installeur à accéder aux données d'autres apps
-   (Word), cliquez sur « Autoriser ». Sans cela, rien ne peut être installé.
+3. macOS protège le dossier des compléments de Word. Si l'installation automatique est
+   bloquée, l'installeur affiche le fichier marinamoji-kaeriten.xml (sur le Bureau) et le
+   dossier de Word : faites glisser le fichier dans ce dossier. (Ou accordez l'« Accès
+   complet au disque » à l'installeur et relancez-le.)
 
 4. Rouvrez Word avec un document (connexion internet requise : le complément
    est chargé depuis marinamoji.github.io).
@@ -41,7 +43,8 @@ marinaMoji Kaeriten — Word (Mac)
 2. Double-click "Install marinaMoji Kaeriten". It is signed and notarized, so it opens
    directly. On an older unsigned build: System Settings → Privacy & Security → Open
    Anyway (right-click → Open no longer works on macOS 15+).
-3. If macOS asks to let the installer access data from other apps (Word), choose Allow.
+3. If macOS blocks the automatic install, drag marinamoji-kaeriten.xml (shown on your Desktop)
+   into the Word add-in folder the installer opens, or grant the installer Full Disk Access.
 4. Reopen Word with a document (internet required).
 5. Home → Kaeriten → Kaeriten pane, or Insert → Add-ins → My Add-ins → Developer Add-ins.
 EOF
