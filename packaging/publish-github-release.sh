@@ -38,6 +38,7 @@ cat > "${NOTES}" <<EOF
 | \`marinamoji-kaeriten-onlyoffice-mac.dmg\` | ONLYOFFICE — Mac GUI installer |
 | \`word-dist.zip\` | Word — hosted add-in files (already live on GitHub Pages) |
 | \`marinamoji-kaeriten-word-mac.dmg\` | Word — Mac GUI installer |
+| \`marinamoji-kaeriten-word-setup.exe\` | Word — Windows installer (per-user, no admin; added by CI after the other files) |
 | \`marinamoji-kaeriten-word.xml\` | Word — Windows manifest upload |
 | \`INSTALL.txt\` | Plain-language install steps |
 | \`SHA256SUMS.txt\` | Checksums |

@@ -25,6 +25,9 @@ permissions:
 jobs:
   release:
     runs-on: macos-latest
+    outputs:
+      tag: ${{ steps.meta.outputs.tag }}
+      version: ${{ steps.meta.outputs.version }}
     env:
       MARINAMOJI_PLUGIN_BASE: https://marinamoji.github.io/plugin/word
       MARINAMOJI_INCLUDE_WORD: "1"
@@ -148,3 +151,40 @@ jobs:
             git -C "${WT}" push origin HEAD:main
           fi
           git worktree remove "${WT}" --force
+
+  windows-installer:
+    # Per-user Word add-in installer (Inno Setup). Attached to the Release made above.
+    needs: release
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.release.outputs.tag }}"
+          VERSION="${{ needs.release.outputs.version }}"
+          gh release download "${TAG}" -R "${GITHUB_REPOSITORY}" \
+            -p marinamoji-kaeriten-word.xml -D "${RUNNER_TEMP}"
+          choco install innosetup --no-progress -y
+          mkdir -p out
+          "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" \
+            "/DAppVersion=${VERSION}" \
+            "/DManifestFile=$(cygpath -w "${RUNNER_TEMP}/marinamoji-kaeriten-word.xml")" \
+            "/DOutDir=$(cygpath -w "$PWD/out")" \
+            packaging/windows/marinamoji-kaeriten-word.iss
+
+      - name: Attach to Release and refresh checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ needs.release.outputs.tag }}"
+          gh release upload "${TAG}" out/marinamoji-kaeriten-word-setup.exe \
+            -R "${GITHUB_REPOSITORY}" --clobber
+          gh release download "${TAG}" -R "${GITHUB_REPOSITORY}" -p SHA256SUMS.txt -D out --clobber
+          (cd out && sha256sum marinamoji-kaeriten-word-setup.exe >> SHA256SUMS.txt)
+          gh release upload "${TAG}" out/SHA256SUMS.txt -R "${GITHUB_REPOSITORY}" --clobber

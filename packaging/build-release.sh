@@ -127,7 +127,8 @@ Download marinamoji-kaeriten-word-mac.dmg (Mac) or marinamoji-kaeriten-word.xml 
 Mac: Cmd+Q Word → run installer (allow access to Word data if asked) → reopen Word
      (unsigned build blocked? System Settings → Privacy & Security → Open Anyway)
      Accueil → Kaeriten → Kaeriten pane
-Windows: Insertion → Compléments → Téléverser mon complément → select manifest XML
+Windows: run marinamoji-kaeriten-word-setup.exe (per-user, no admin), restart Word
+     Manual alternative: Insertion → Compléments → Téléverser mon complément → select manifest XML
 Requires internet: Word loads the add-in from ${MARINAMOJI_PLUGIN_BASE}
 
 EOF
