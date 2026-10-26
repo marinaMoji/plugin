@@ -38,7 +38,7 @@ your-domain.example
 |--------|------|-------------------|---------------------|----------------------------|
 | **LibreOffice** | ✅ feature-complete | ✅ `.oxt`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on target LO version |
 | **ONLYOFFICE** | ✅ feature-complete | ✅ `.zip`, Mac `.dmg` | ✅ yes | **Pre-publish QA** on ONLYOFFICE Desktop |
-| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | ✅ yes (default since 2026-08-26) | Windows QA still open (Mac QA passed) |
+| **Word** | ✅ feature-complete | ✅ `word-dist.zip`, manifest, Mac `.dmg` | ✅ yes (default since 2026-08-26) | Windows QA still open (Mac QA passed: Apple Silicon + Intel) |
 
 See [STATUS.md](STATUS.md) for the current gate: implementation is done; **testing** blocks publish.
 
@@ -195,7 +195,7 @@ Do **not** publish until these pass from **Accueil → Kaeriten pane** (not Comp
 - [ ] Test once on Windows (upload manifest) if you support Windows users
 - [x] Production install: `./install-mac-production.sh` loads pane from GitHub Pages (no local server)
 
-**Mac QA passed (2026-08-26).** Windows still open — run before shipping to Windows users.
+**Mac QA passed** — Apple Silicon (2026-08-26) and Intel (2026-10-19). Windows still open — run before shipping to Windows users.
 
 Checklist: [WORD_ADDIN_DEV.md](WORD_ADDIN_DEV.md) section B.
 

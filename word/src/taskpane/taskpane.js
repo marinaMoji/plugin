@@ -4,6 +4,8 @@ import {
   runRenderKaeriten,
   runUnrenderKaeriten,
   runCopyPlainText,
+  runComposedInsert,
+  runSvgSpike,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
 import {
@@ -121,6 +123,8 @@ function initUi() {
     null
   );
   wire("btn-plain", runCopyPlainText, "Copied plain text.");
+  wire("btn-composed-insert", runComposedInsert, null);
+  wire("btn-svg-spike", runSvgSpike, null);
   setStatus("Connecting to Word…");
   whenOfficeReady(45000, {
     onSlow: (hint) => setStatus(hint, "err"),

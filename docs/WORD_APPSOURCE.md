@@ -109,7 +109,7 @@ plugin/packaging/release/marketplace-word/
 1. **Deploy site** so `https://marinamoji.crcao.fr/en/support` and `…/en/privacy` return 200 (pages drafted under `site/user/pages/`).  
 2. **Deploy GitHub Pages** so production icons and CDN-only HTML match this branch.  
 3. **Capture** one genuine Word screenshot at **1366×768**.  
-4. **Manual QA** on Word Windows and Word on the web (Mac QA previously passed; iPad may be tested by Microsoft because the manifest activates there).  
+4. **Manual QA** on Word Windows and Word on the web (Mac QA passed on Apple Silicon and Intel; iPad may be tested by Microsoft because the manifest activates there).  
 5. **Partner Center** enrollment in Microsoft 365 and Copilot (manual).  
 6. Confirm **ProviderName** `marinaMoji` matches the publisher display name you register.
 

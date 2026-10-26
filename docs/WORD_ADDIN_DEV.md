@@ -54,7 +54,9 @@ npm run doctor
 
 Run these on **your target Word version** (Mac first; Windows separately).
 
-**Mac: passed (2026-08-26).** Windows not yet tested.
+**Mac (Apple Silicon): passed (2026-08-26).**  
+**Mac (Intel): passed (2026-10-19)** — reported fully functional.  
+Windows not yet tested.
 
 1. [x] **Connect:** task pane shows **Ready**.
 2. [x] **Simple mark, selection scope:** type `說` + レ with marinaMoji → select → **Render** → **Unrender** restores `說㆒`.
@@ -67,7 +69,7 @@ Run these on **your target Word version** (Mac first; Windows separately).
 9. [x] **Production manifest:** `./install-mac-production.sh` (or build with `MARINAMOJI_PLUGIN_BASE=https://marinamoji.github.io/plugin/word ./build-word-manifest.sh`); confirm pane loads from GitHub Pages (not localhost).
 10. [ ] **Windows:** test once (upload manifest) if you support Windows users — not yet run.
 
-Mac QA passed. Before shipping to Windows users, run this checklist there too. To enable Word in the release build now (`MARINAMOJI_INCLUDE_WORD=1`), follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
+Mac QA passed on both Apple Silicon and Intel. Before shipping to Windows users, run this checklist there too. To enable Word in the release build now (`MARINAMOJI_INCLUDE_WORD=1`), follow [SELF_HOSTED_PUBLISHING_PLAN.md](SELF_HOSTED_PUBLISHING_PLAN.md) Phase 3.
 
 **Export note:** v1 ships **Copy plain Unicode only**. TEI and LaTeX buttons were removed — no single standard for kanbun in those formats.
 

@@ -1,16 +1,14 @@
 -- Install marinaMoji Kaeriten manifest for Word on macOS (no Terminal).
 -- Bundle this script as .app with manifest.production.xml in Contents/Resources/
+--
+-- macOS blocks other apps from writing into Word's container (Operation not permitted),
+-- and no script-based route (shell, Finder, System Events) gets around it. So: try the
+-- copy; if macOS refuses, stage the file on the Desktop and have the user drag it into
+-- Word's folder (a few seconds).
 
 on run
 	set manifestName to "marinamoji-kaeriten.xml"
 	set wefPosix to (POSIX path of (path to home folder)) & "Library/Containers/com.microsoft.Word/Data/Documents/wef/"
-
-	try
-		do shell script "mkdir -p " & quoted form of wefPosix
-	on error errMsg
-		display alert "Could not create Word add-in folder." message errMsg as critical
-		return
-	end try
 
 	set bundledManifest to my resourcePath("manifest.production.xml")
 	if bundledManifest is "" then
@@ -23,19 +21,10 @@ on run
 
 	set destPosix to wefPosix & manifestName
 	try
-		do shell script "rm -f " & quoted form of destPosix
-		do shell script "cp " & quoted form of bundledManifest & " " & quoted form of destPosix
-	on error shellError
-		-- macOS can refuse writes into another app's container; Finder is allowed to.
-		try
-			tell application "Finder"
-				duplicate (POSIX file bundledManifest as alias) to (POSIX file wefPosix as alias) with replacing
-				set name of (POSIX file (wefPosix & "manifest.production.xml") as alias) to manifestName
-			end tell
-		on error
-			my manualFallback(bundledManifest, wefPosix, manifestName, shellError)
-			return
-		end try
+		do shell script "mkdir -p " & quoted form of wefPosix & " && cp -f " & quoted form of bundledManifest & " " & quoted form of destPosix
+	on error errMsg
+		my blocked(bundledManifest, wefPosix, manifestName, errMsg)
+		return
 	end try
 
 	display dialog "marinaMoji Kaeriten is registered for Word." & return & return & ¬
@@ -46,22 +35,25 @@ on run
 		buttons {"OK"} default button "OK" with title "Install complete"
 end run
 
-on manualFallback(bundledManifest, wefPosix, manifestName, errMsg)
-	-- Stage a correctly named copy where the user can reach it, then show both folders.
+-- macOS refused the copy: do it by hand.
+on blocked(bundledManifest, wefPosix, manifestName, errMsg)
+	display alert "One quick step by hand." message ¬
+		"macOS protects Word's add-in folder, so this installer cannot copy the file itself." & return & return & ¬
+		"Click Continue: a Finder window shows the file, next to Word's add-in folder. Drag the file into the folder." ¬
+		buttons {"Continue", "Cancel"} default button "Continue" cancel button "Cancel"
+	my byHand(bundledManifest, wefPosix, manifestName)
+end blocked
+
+-- Stage a correctly named copy on the Desktop and show it next to Word's folder.
+on byHand(bundledManifest, wefPosix, manifestName)
 	set stagedPosix to (POSIX path of (path to desktop folder)) & manifestName
-	try
-		do shell script "cp " & quoted form of bundledManifest & " " & quoted form of stagedPosix
-		do shell script "open -R " & quoted form of stagedPosix
-		do shell script "open " & quoted form of wefPosix
-	end try
-	set answer to button returned of (display alert "macOS blocked the automatic install." message ¬
-		"Word's add-in folder is protected, so finish by hand: drag " & manifestName & " (shown selected on your Desktop) into the Finder window for Word's add-in folder." & return & return & ¬
-		"To let this installer do it itself next time, allow it under Full Disk Access, then run it again." ¬
-		as critical buttons {"Open Full Disk Access", "OK"} default button "OK")
-	if answer is "Open Full Disk Access" then
-		do shell script "open 'x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles'"
-	end if
-end manualFallback
+	do shell script "cp -f " & quoted form of bundledManifest & " " & quoted form of stagedPosix
+	do shell script "open -R " & quoted form of stagedPosix
+	do shell script "open " & quoted form of wefPosix
+	display dialog "Drag " & manifestName & " (selected on your Desktop) into the Finder window for Word's add-in folder." & return & return & ¬
+		"If it asks, choose Replace." & return & return & ¬
+		"Then quit Word completely (Cmd+Q) and reopen it with a document." buttons {"OK"} default button "OK" with title "Install by hand"
+end byHand
 
 on resourcePath(fileName)
 	try

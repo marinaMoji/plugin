@@ -76,6 +76,31 @@ button:disabled {
   cursor: wait;
 }
 
+button.secondary {
+  background: #fff;
+  color: #4a7c9b;
+}
+
+button.secondary:hover {
+  background: #eef4f8;
+}
+
+section.composed {
+  margin-top: 8px;
+  padding-top: 4px;
+  border-top: 1px dashed #ccc;
+}
+
+.spike-details {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.spike-details summary {
+  cursor: pointer;
+}
+
 .opt-row {
   display: flex;
   align-items: flex-start;

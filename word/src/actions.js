@@ -10,6 +10,8 @@ import {
   canonicalTextForExport,
 } from "./render.js";
 import { writeClipboardText } from "./clipboard.js";
+import { runInsertComposedCharacter } from "./wordComposedInsert.js";
+import { runInsertComposedSvgSpike } from "./wordSvgSpike.js";
 
 async function wordRun(fn) {
   if (!wordEnumsReady()) {
@@ -63,4 +65,14 @@ async function copyPayload(buildPayload) {
 
 export function runCopyPlainText() {
   return copyPayload((result) => exportPlainText(result.text));
+}
+
+/** Insert SVG left by marinaMoji's character composer (clipboard). */
+export function runComposedInsert() {
+  return runInsertComposedCharacter();
+}
+
+/** Dev spike: hard-coded ⿰言某 SVG (Api smoke test). */
+export function runSvgSpike() {
+  return runInsertComposedSvgSpike();
 }

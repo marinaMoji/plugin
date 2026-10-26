@@ -7,7 +7,7 @@ WEF="${HOME}/Library/Containers/com.microsoft.Word/Data/Documents/wef"
 MANIFEST="${ROOT}/manifest.xml"
 
 mkdir -p "${WEF}"
-rm -f "${WEF}"/*.xml "${WEF}"/*.manifest.xml 2>/dev/null || true
+rm -f "${WEF}/marinamoji-kaeriten.xml"
 cp "${MANIFEST}" "${WEF}/marinamoji-kaeriten.xml"
 echo "Copied DEV manifest (127.0.0.1:3000) to:"
 echo "  ${WEF}/marinamoji-kaeriten.xml"

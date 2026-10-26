@@ -262,16 +262,39 @@ in [mapping.json](../mapping.json). Implementation files:
 
 ---
 
+## Composed-character SVG via `XmlSvg` (2026-10)
+
+**Question:** Can Word desktop insert a **vector** SVG for IDS-composed “ghost” characters (no Unicode code point)?
+
+**API:** `Office.context.document.setSelectedDataAsync(svg, { coercionType: Office.CoercionType.XmlSvg })` — **ImageCoercion 1.2** (Word Mac / Windows desktop; **not** Word on the web).
+
+**Product flow (uses marinaMoji’s character composer, not an IDS box in Word):**
+
+1. In Word, open the **character composer** from the marinaMoji toolbar.
+2. Build a structure with no encoded match → **Insert** (SVG → clipboard + `character_composer_result.svg`).
+3. Kaeriten pane → **Insert composed character** (reads clipboard, inserts at caret ≈ selection font size, alt text `MARINAMOJI:ids=…`).
+
+| File | Role |
+|------|------|
+| [marinaMoji `composer_svg.*`](../../marinaMoji/src/gui/character_composer/composer_svg.cc) | IDS layout → SVG |
+| [plugin/word/src/wordComposedInsert.js](../word/src/wordComposedInsert.js) | Clipboard → XmlSvg |
+| [plugin/word/src/wordSvgSpike.js](../word/src/wordSvgSpike.js) | Hard-coded `⿰言某` smoke test (Dev spike) |
+
+**Spike result (Mac desktop QA):** XmlSvg insert works; picture found; alt text set. Dummy SVG sizing/look are not final — real drawings come from the composer.
+
+---
+
 ## What would be worth trying next
 
 Prioritized for future sessions:
 
-1. **Renderer C spike:** `insertTextBox` + `textWrap.type = inline` (see above) — best MS-documented path toward LO “as character” without raw OOXML.
-2. **Pragmatic v0.1:** Keep content controls; improve **Unrender/Refresh** + bookmarks when the CC wrapper vanishes on Mac.
-3. **Word for Windows:** Check whether content controls keep a visible bounding box more reliably than Mac.
-4. **OOXML:** Custom `wp:inline` via `insertOoxml` only if Renderer C fails (high effort; Renderer A showed `<w:p>` inside CC corrupts files).
-5. **Field codes** or **style-based** marks (no wrapper) with metadata in custom style names.
-6. **Do not prioritize:** More `relativeHorizontalPosition: Character` + `left`/`top` tuning on **floating** boxes — that fights the default `insertTextBox` model per Microsoft docs.
+1. **XmlSvg spike QA** (above) — decide if ghost composed characters can ship as SVG on Word desktop (PNG fallback elsewhere).
+2. **Renderer C spike:** `insertTextBox` + `textWrap.type = inline` (see above) — best MS-documented path toward LO “as character” without raw OOXML.
+3. **Pragmatic v0.1:** Keep content controls; improve **Unrender/Refresh** + bookmarks when the CC wrapper vanishes on Mac.
+4. **Word for Windows:** Check whether content controls keep a visible bounding box more reliably than Mac.
+5. **OOXML:** Custom `wp:inline` via `insertOoxml` only if Renderer C fails (high effort; Renderer A showed `<w:p>` inside CC corrupts files).
+6. **Field codes** or **style-based** marks (no wrapper) with metadata in custom style names.
+7. **Do not prioritize:** More `relativeHorizontalPosition: Character` + `left`/`top` tuning on **floating** boxes — that fights the default `insertTextBox` model per Microsoft docs.
 
 ---
 

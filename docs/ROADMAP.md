@@ -49,7 +49,7 @@
 - [x] GitHub Pages hosting for production `dist/` ([GITHUB_PAGES.md](GITHUB_PAGES.md))
 - [x] **Pre-publish QA (Mac):** Accueil pane connects; render/unrender; font-size re-render via **Render**; 縦書き; compound; copy plain
 - [ ] Pre-publish QA (Windows) — not yet run
-- [x] Include Word in default release build (`MARINAMOJI_INCLUDE_WORD=1` now the default in `build-release.sh`) — Mac QA passed 2026-08-26; Windows QA still open
+- [x] Include Word in default release build (`MARINAMOJI_INCLUDE_WORD=1` now the default in `build-release.sh`) — Mac QA passed Apple Silicon (2026-08-26) and Intel (2026-10-19); Windows QA still open
 
 ## Phase 4 — Rendering improvements
 
@@ -62,6 +62,7 @@ See [RENDERING_IMPROVEMENTS.md](RENDERING_IMPROVEMENTS.md) for design notes.
 
 ## Phase 5 — Optional
 
+- [ ] **Composed characters (SVG):** Word desktop path started (composer clipboard → `XmlSvg`); LibreOffice / ONLYOFFICE / polish sizing still open ([WORD_ADDIN_ATTEMPTS.md](WORD_ADDIN_ATTEMPTS.md))
 - [ ] Word Online QA (reuse Word add-in where Office.js allows)
 - [ ] OpenOffice smoke test (reuse LibreOffice `.oxt`)
 - [ ] Markdown → HTML preview/export from Unicode source ([MARKDOWN_AND_RTF.md](MARKDOWN_AND_RTF.md))

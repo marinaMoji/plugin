@@ -8,7 +8,7 @@ LOCAL_MANIFEST="${ROOT}/../packaging/release/marinamoji-kaeriten-word.xml"
 DEST="${WEF}/marinamoji-kaeriten.xml"
 
 mkdir -p "${WEF}"
-rm -f "${WEF}"/*.xml "${WEF}"/*.manifest.xml 2>/dev/null || true
+rm -f "${WEF}/marinamoji-kaeriten.xml"
 
 if [[ -f "${LOCAL_MANIFEST}" ]]; then
   cp "${LOCAL_MANIFEST}" "${DEST}"
