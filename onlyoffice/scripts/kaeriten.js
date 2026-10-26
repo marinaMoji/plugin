@@ -43,6 +43,12 @@
       imageHeadroomEm: Number(ooImg.headroom_em ?? 0),
       imageBaselinePadEm: Number(ooImg.baseline_pad_em ?? 0),
       imagePositionHps: Number(ooImg.position_hps ?? 0),
+      imageBottomLineEm:
+        ooImg.bottom_line_em != null && ooImg.bottom_line_em !== ""
+          ? Number(ooImg.bottom_line_em)
+          : null,
+      imageFontBottomLineEm: ooImg.font_bottom_line_em || {},
+      imageInkInsetEm: Number(ooImg.ink_inset_em ?? 0.056),
       imagePositionHpsPerPt:
         ooImg.position_hps_per_pt != null && ooImg.position_hps_per_pt !== ""
           ? Number(ooImg.position_hps_per_pt)
@@ -74,23 +80,29 @@
     );
   }
 
-  function renderFingerprint(opts, hostPt) {
+  function fingerprintFont(fontName) {
+    return String(fontName || "").replace(/[|;=]/g, "");
+  }
+
+  function renderFingerprint(opts, hostPt, fontName) {
     const pt = Number.isFinite(Number(hostPt))
       ? Number(hostPt)
       : Math.max(opts.minFontSizePt, 8);
     return [
-      "v1",
+      "v2",
       "renderer=" + (opts.useImages ? "image" : "control"),
       "pt=" + pt.toFixed(1),
+      "font=" + fingerprintFont(fontName),
       "rh=" + renderingHash(),
     ].join("|");
   }
 
   function renderFingerprintTemplate(opts) {
     return [
-      "v1",
+      "v2",
       "renderer=" + (opts.useImages ? "image" : "control"),
       "pt={pt}",
+      "font={font}",
       "rh=" + renderingHash(),
     ].join("|");
   }
@@ -335,9 +347,32 @@
             return fallback;
           }
 
-          function fingerprintForFontSize(fontSizePt) {
+          function textPrFontName(textPr) {
+            try {
+              return textPr && textPr.GetFontFamily ? textPr.GetFontFamily() || "" : "";
+            } catch (e) {
+              return "";
+            }
+          }
+
+          function paragraphFontName(para) {
+            var name = "";
+            var ec = para.GetElementsCount ? para.GetElementsCount() : 0;
+            for (var e = 0; e < ec && !name; e++) {
+              var child = para.GetElement(e);
+              if (!child || !child.GetText || !child.GetText()) continue;
+              if (child.GetTextPr) name = textPrFontName(child.GetTextPr());
+            }
+            if (!name && para.GetTextPr) name = textPrFontName(para.GetTextPr());
+            if (!name && doc.GetDefaultTextPr) name = textPrFontName(doc.GetDefaultTextPr());
+            return name;
+          }
+
+          function fingerprintForFontSize(fontSizePt, fontName) {
             if (!fpTemplate) return "";
-            return fpTemplate.replace("{pt}", Number(fontSizePt || defaultFontSizePt).toFixed(1));
+            return fpTemplate
+              .replace("{pt}", Number(fontSizePt || defaultFontSizePt).toFixed(1))
+              .replace("{font}", String(fontName || "").replace(/[|;=]/g, ""));
           }
 
           function elementTag(el) {
@@ -373,7 +408,8 @@
             var raw = para.GetText ? para.GetText() || "" : "";
             var hasRawMarks = /[\u3190-\u319f]/.test(raw);
             var fontSizePt = paragraphFontSizePt(para);
-            var currentFp = fingerprintForFontSize(fontSizePt);
+            var fontName = paragraphFontName(para);
+            var currentFp = fingerprintForFontSize(fontSizePt, fontName);
             var ec = para.GetElementsCount ? para.GetElementsCount() : 0;
             for (var e = 0; e < ec; e++) {
               appendElementCanonical(para.GetElement(e), currentFp, state);
@@ -383,6 +419,7 @@
               stale: state.stale,
               hasRawMarks: hasRawMarks,
               fontSizePt: fontSizePt,
+              fontName: fontName,
             };
           }
 
@@ -391,7 +428,12 @@
             if (el.GetClassType && el.GetClassType() === "paragraph") {
               var para = paragraphCanonical(el);
               if (para.hasRawMarks || para.stale) {
-                out.push({ index: i, text: para.text, fontSizePt: para.fontSizePt });
+                out.push({
+                  index: i,
+                  text: para.text,
+                  fontSizePt: para.fontSizePt,
+                  fontName: para.fontName,
+                });
               }
             }
           }
@@ -410,6 +452,31 @@
     });
   }
 
+  /**
+   * Run position (half-points) that puts the mark's ink on the characters' bottom line:
+   * the picture's bottom rests on the baseline at position 0 and the glyph ink is
+   * `imageInkInsetEm` above it, so lower it by bottom line + inset. Falls back to the
+   * fixed shift when `bottom_line_em` is not set.
+   */
+  function imagePositionHps(opts, hostPt, fontName) {
+    if (opts.imageBottomLineEm != null && Number.isFinite(opts.imageBottomLineEm)) {
+      const font = String(fontName || "").toLowerCase();
+      const table = opts.imageFontBottomLineEm || {};
+      const names = Object.keys(table).sort((a, b) => b.length - a.length);
+      let bottomLineEm = opts.imageBottomLineEm;
+      for (let i = 0; i < names.length; i++) {
+        if (font && font.indexOf(names[i].toLowerCase()) === 0) {
+          bottomLineEm = Number(table[names[i]]);
+          break;
+        }
+      }
+      return Math.round(-(bottomLineEm + opts.imageInkInsetEm) * hostPt * 2);
+    }
+    return opts.imagePositionHpsPerPt != null
+      ? Math.round(hostPt * opts.imagePositionHpsPerPt)
+      : opts.imagePositionHps;
+  }
+
   function buildRenderPlan(paragraphs, opts) {
     const plan = [];
     for (const para of paragraphs) {
@@ -417,17 +484,14 @@
         opts.minFontSizePt,
         Number.isFinite(Number(para.fontSizePt)) ? Number(para.fontSizePt) : 8
       );
-      const fp = renderFingerprint(opts, hostPt);
+      const fp = renderFingerprint(opts, hostPt, para.fontName);
       const segments = MarinaMojiExport.buildSegments(para.text, byChar).map((seg) => {
         if (seg.type !== "kaeriten") return seg;
         const glyphLines = MarinaMojiExport.glyphLinesForMarks(seg.marks, byChar);
         const view = { tag: encodeTag(seg.marks, fp) };
         if (opts.useImages) {
           view.image = drawKaeritenImage(glyphLines, opts, hostPt);
-          view.positionHps =
-            opts.imagePositionHpsPerPt != null
-              ? Math.round(hostPt * opts.imagePositionHpsPerPt)
-              : opts.imagePositionHps;
+          view.positionHps = imagePositionHps(opts, hostPt, para.fontName);
         }
         return {
           ...seg,

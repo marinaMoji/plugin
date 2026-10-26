@@ -76,6 +76,8 @@ In 横書き the mark sits after the kanji with its bottom edge on the **bottom 
 
 The shift is `-(bottom_line_em + ink_inset_em) × font size`; `baseline_shift_pt` is only the fallback when `bottom_line_em` is absent. Word stores the position in half-points, so at 12 pt the mark can be off by up to 0.02 em.
 
+**ONLYOFFICE** draws inline pictures like Word and lowers them with the run position (half-points). Keys in `rendering.onlyoffice_inline_image`: `bottom_line_em` (`0.06`), `font_bottom_line_em` (`"Songti SC": 0.122`, read from the paragraph's font) and `ink_inset_em` (`0.056`). The shift is `-(bottom_line_em + ink_inset_em) × font size`; `position_hps_per_pt` is the fallback. ONLYOFFICE enforces a minimum picture size of about 10 pt, so marks at font sizes below about 24 pt come out larger than the mapping asks for. ONLYOFFICE's Writer has no vertical page flow, so there is no vertical rule.
+
 ## Position (vertical text, LibreOffice)
 
 In 縦書き the marks stay in the column like small characters: each sits in its own slot right after its base character, and its box's **left edge is on the characters' left edge** (the same margin), not beside the column.

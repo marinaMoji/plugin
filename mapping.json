@@ -130,6 +130,11 @@
       "headroom_em": 0.16,
       "baseline_pad_em": 0,
       "position_hps_per_pt": -0.72,
+      "bottom_line_em": 0.06,
+      "font_bottom_line_em": {
+        "Songti SC": 0.122
+      },
+      "ink_inset_em": 0.056,
       "compound_touch": true,
       "compound_touch_overlap_ratio": 0.72,
       "color": "#000000",

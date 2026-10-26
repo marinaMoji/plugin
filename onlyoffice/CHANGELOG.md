@@ -2,6 +2,11 @@
 
 Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates require a new `config.json` `version` and an entry here.
 
+## Unreleased
+
+* Horizontal text: marks sit on the characters' bottom line instead of hanging below them. The picture is lowered by `(bottom line + ink inset) × font size` (`bottom_line_em`, `font_bottom_line_em`, `ink_inset_em` in `mapping.json`), with a per-font bottom line read from the paragraph's font. The old fixed `position_hps_per_pt` remains as the fallback.
+* Render fingerprint now includes the paragraph's font, so existing marks redraw when the font changes.
+
 ## 0.1.14 - 2026-10-16
 
 * Marketplace review: user `README.md`, `translations/langs.json`, remove `group`, `minVersion` 9.3.0.
