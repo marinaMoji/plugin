@@ -172,6 +172,8 @@ jobs:
             -p marinamoji-kaeriten-word.xml -D "${RUNNER_TEMP}"
           choco install innosetup --no-progress -y
           mkdir -p out
+          # Git Bash would rewrite the /D... switches as POSIX paths.
+          export MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*'
           "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" \
             "/DAppVersion=${VERSION}" \
             "/DManifestFile=$(cygpath -w "${RUNNER_TEMP}/marinamoji-kaeriten-word.xml")" \
