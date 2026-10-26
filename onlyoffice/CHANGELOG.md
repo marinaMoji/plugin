@@ -4,8 +4,10 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
-* Horizontal text: marks sit on the characters' bottom line instead of hanging below them. The picture is lowered by `(bottom line + ink inset) × font size` (`bottom_line_em`, `font_bottom_line_em`, `ink_inset_em` in `mapping.json`), with a per-font bottom line read from the paragraph's font. The old fixed `position_hps_per_pt` remains as the fallback.
-* Render fingerprint now includes the paragraph's font, so existing marks redraw when the font changes.
+* Horizontal text: marks sit on the characters' bottom line instead of hanging below them. The picture is lowered by `(bottom line + ink inset) × font size` (`bottom_line_em`, `font_bottom_line_em`, `ink_inset_em` in `mapping.json`); the per-font bottom line is read from the paragraph's font (Songti SC differs). The old fixed `position_hps_per_pt` remains as the fallback. Checked against ONLYOFFICE's converter at 24–48 pt (within 0.012 em) and in ONLYOFFICE Desktop.
+* The render fingerprint now includes the paragraph's font, so existing marks redraw when the font changes.
+* Known: ONLYOFFICE enforces a minimum picture size of about 10 pt, so marks look larger than the mapping asks for below about 24 pt body text. Writer has no vertical page flow, so there is no vertical rule.
+* Release note: bump `config.json` `version` when publishing this to the Marketplace.
 
 ## 0.1.14 - 2026-10-16
 
