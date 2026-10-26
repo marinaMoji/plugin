@@ -88,6 +88,8 @@ In 縦書き the marks stay in the column like small characters: each sits in it
 
 The per-font values come from measuring renders (the mark box's left edge against the typical left edge of the characters' ink). A font whose ink starts further left or right than the others needs its own entry. LibreOffice anchors the in-line image by its right edge, so the offset also subtracts the difference between a single mark's width and the picture's.
 
+In 縦書き each mark glyph is drawn so its **ink** (not its side bearing) starts at the left edge of the mark's box: ㆑ has a side bearing of about 0.19 em of its font size, 中 and 甲 about 0.13, most others about 0.05. `rendering.glyph_ink_left_em` holds those bearings (measured in Hiragino Mincho ProN, the mark font); LibreOffice uses the table and Word measures the real bearing from the canvas, falling back to the table.
+
 ## Position (vertical text, Word)
 
 The marks stay in the column as inline pictures, with their box's left edge on the characters' left edge, whatever the picture's width (single mark, stack or row). Word centres every inline picture on one axis in the column, so the add-in shifts each by that axis's distance minus half its width. `rendering.word_inline_picture.vertical_center_em` (`0.458`) is that axis's distance from the characters' left edge; it was the same for the fonts tested (Hiragino, Yu, Songti).

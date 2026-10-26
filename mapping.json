@@ -3,6 +3,11 @@
   "description": "Canonical Unicode marks from marinaMoji IME; display glyphs and render hints for LibreOffice, Word, and ONLYOFFICE. To change kaeriten size, edit glyph_ratio (and compound_glyph_ratio) in the three image blocks under rendering; see docs/TWEAKING_LAYOUT.md.",
   "version": 2,
   "rendering": {
+    "glyph_ink_left_em": {
+      "レ": 0.187, "一": 0.049, "二": 0.053, "三": 0.05, "四": 0.086,
+      "上": 0.06, "中": 0.123, "下": 0.05, "甲": 0.139, "乙": 0.125,
+      "丙": 0.049, "丁": 0.051, "天": 0.045, "地": 0.036, "人": 0.048
+    },
     "libreoffice_primary": "inline_image",
     "libreoffice_frame": {
       "border": false,

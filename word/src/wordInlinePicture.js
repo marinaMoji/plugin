@@ -235,6 +235,21 @@ export function imageMetricsFromHost(hostPt, glyphCount, opts = {}) {
 }
 
 /**
+ * Horizontal offset (px) to draw `glyph` with textAlign "left" so its ink starts at x = 0:
+ * the measured ink bounds when the canvas reports them, else the mapping's table.
+ */
+function glyphInkOffsetPx(ctx, glyph, fontPx, opts) {
+  try {
+    const m = ctx.measureText(glyph);
+    if (m && Number.isFinite(m.actualBoundingBoxLeft)) return m.actualBoundingBoxLeft;
+  } catch {
+    /* fall through to the table */
+  }
+  const table = opts.imageGlyphInkLeftEm || {};
+  return -Number(table[glyph] ?? 0) * fontPx;
+}
+
+/**
  * Draw the mark cluster to a base64 PNG (no `data:` prefix — that is what
  * insertInlinePictureFromBase64 expects).
  * @returns {{ base64: string, widthPt: number, heightPt: number }}
@@ -270,14 +285,20 @@ export function drawKaeritenImage(marks, byChar, hostPt, opts = {}) {
   const fontPx = cellPx * Number(opts.imageGlyphFill ?? 0.94);
   ctx.font = `${fontPx}px ${opts.imageFontFamily || DEFAULT_FONT_FAMILY}`;
 
-  ctx.textAlign = "center";
+  // 横書き: glyphs centred in their cell. 縦書き: each glyph's ink starts on the left
+  // edge of the box (its side bearing is measured, or taken from the mapping table), so
+  // the mark's ink meets the characters' left edge.
+  ctx.textAlign = opts.vertical ? "left" : "center";
   ctx.textBaseline = "bottom";
   const bandBottomPx =
     metrics.heightPt * scale - metrics.bottomPadPt * scale - nudgePx;
   glyphs.forEach((glyph, i) => {
     const col = metrics.rows === 1 ? i : 0;
     const stackFromBottom = metrics.rows === 1 ? 0 : glyphs.length - 1 - i;
-    const cx = (cellPx + (metrics.rows === 1 ? gapPx : 0)) * col + cellPx / 2;
+    const cellLeftPx = (cellPx + (metrics.rows === 1 ? gapPx : 0)) * col;
+    const cx = opts.vertical
+      ? cellLeftPx + glyphInkOffsetPx(ctx, glyph, fontPx, opts)
+      : cellLeftPx + cellPx / 2;
     const cy = bandBottomPx - (cellPx + gapPx) * stackFromBottom;
     ctx.fillText(glyph, cx, cy);
   });

@@ -193,6 +193,7 @@ function wordRenderOptions(mappingData) {
         ? Number(img.bottom_line_em)
         : null,
     imageFontBottomLineEm: img.font_bottom_line_em || {},
+    imageGlyphInkLeftEm: r.glyph_ink_left_em || {},
     imageVerticalCenterEm:
       img.vertical_center_em != null && img.vertical_center_em !== ""
         ? Number(img.vertical_center_em)
@@ -360,7 +361,7 @@ async function loadHostFontName(context, range) {
 
 function pictureRenderFingerprint(mappingData, hostPt, vertical, opts) {
   return [
-    "v1",
+    "v2",
     "renderer=inline_picture",
     `pt=${Number(hostPt || 12).toFixed(1)}`,
     `vert=${vertical ? 1 : 0}`,

@@ -270,6 +270,12 @@ class _MarkMapper(object):
             str(k).lower(): float(v)
             for k, v in (lo_img.get("vertical_font_left_em") or {}).items()
         }
+        # Distance from a mark glyph's origin to its ink's left edge, as a fraction of the
+        # mark font size (measured in Hiragino Mincho ProN). In 縦書き the glyph is drawn
+        # that far left so its ink, not its side bearing, meets the characters' left edge.
+        self._glyph_ink_left_em = {
+            str(k): float(v) for k, v in (rendering.get("glyph_ink_left_em") or {}).items()
+        }
         self._runtime_font = ""
         self._by_char = {}
         for entry in data.get("marks", []):
@@ -703,7 +709,7 @@ def _render_fingerprint(doc, text, anchor, marks, mapper, vertical=None, host_pt
     renderer = "image" if mapper.use_image_renderer else "frame"
     return "|".join(
         (
-            "v1",
+            "v2",
             "renderer=%s" % renderer,
             "pt=%.1f" % host,
             "vert=%d" % (1 if vertical else 0),
@@ -874,7 +880,7 @@ def _image_metrics_from_host(mapper, glyph_count):
     }
 
 
-def _svg_for_marks(marks, mapper):
+def _svg_for_marks(marks, mapper, vertical=False):
     glyphs = mapper.glyphs_for_marks(marks)
     metrics = _image_metrics_from_host(mapper, len(glyphs))
     width = metrics["width_pt"]
@@ -897,12 +903,17 @@ def _svg_for_marks(marks, mapper):
         )
     parts.append(
         '<g fill="%s" font-family="%s" font-size="%.3f" '
-        'text-anchor="middle" dominant-baseline="text-after-edge">' %
-        (color, family, font_size)
+        'text-anchor="%s" dominant-baseline="text-after-edge">' %
+        (color, family, font_size, "start" if vertical else "middle")
     )
     for i, glyph in enumerate(glyphs):
         stack_from_bottom = len(glyphs) - 1 - i
-        x = cell / 2.0
+        # 縦書き: start each glyph so its ink (not its side bearing) is on the left edge
+        # of the box, which is on the characters' left edge.
+        if vertical:
+            x = -mapper._glyph_ink_left_em.get(str(glyph), 0.0) * font_size
+        else:
+            x = cell / 2.0
         y = height - (cell + gap) * stack_from_bottom
         parts.append(
             '<text x="%.3f" y="%.3f">%s</text>' %
@@ -919,8 +930,8 @@ def _image_cache_dir():
     return path
 
 
-def _write_marks_svg(marks, mapper):
-    svg, metrics = _svg_for_marks(marks, mapper)
+def _write_marks_svg(marks, mapper, vertical=False):
+    svg, metrics = _svg_for_marks(marks, mapper, vertical)
     # Keep a short deterministic-ish name for easier debugging; include metrics so
     # the same marks at different host sizes/touch settings don't share a link.
     safe = "".join("%04x" % ord(ch) for ch in marks)
@@ -930,7 +941,9 @@ def _write_marks_svg(marks, mapper):
         int(round(metrics["height_pt"] * 100)),
         int(round(metrics["gap_pt"] * 100)),
     )
-    path = os.path.join(_image_cache_dir(), "kaeriten_%s.svg" % key)
+    path = os.path.join(
+        _image_cache_dir(), "kaeriten_%s%s.svg" % (key, "_v" if vertical else "")
+    )
     with open(path, "w", encoding="utf-8") as f:
         f.write(svg)
     return path, metrics
@@ -1023,7 +1036,7 @@ def _configure_graphic(graphic, mapper, metrics, vertical=False):
 
 
 def _insert_graphic(text, cursor, marks, mapper, doc, vertical=False, fingerprint=None):
-    path, metrics = _write_marks_svg(marks, mapper)
+    path, metrics = _write_marks_svg(marks, mapper, vertical)
     url = uno.systemPathToFileUrl(path)
     graphic = doc.createInstance("com.sun.star.text.TextGraphicObject")
     _configure_graphic(graphic, mapper, metrics, vertical)
@@ -1275,7 +1288,7 @@ def _refresh_graphics_in_place(doc, work_range, mapper):
         if _fingerprint_from_text_content(graphic) == fingerprint:
             mapper.clear_runtime_size()
             continue
-        path, metrics = _write_marks_svg(marks, mapper)
+        path, metrics = _write_marks_svg(marks, mapper, vertical)
         url = uno.systemPathToFileUrl(path)
         loaded = _graphic_from_url(url)
         if loaded is not None:
