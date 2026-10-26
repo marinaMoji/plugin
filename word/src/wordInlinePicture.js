@@ -328,12 +328,15 @@ export function inlinePictureBaselineShiftPt(hostPt, opts = {}) {
     const host = hostPt > 0 ? hostPt : 12;
     return -(bottomLineEm(opts) + Number(opts.imageInkInsetEm ?? 0.066)) * host;
   }
-  if (vertical && opts.imageVerticalLeftEm != null && Number.isFinite(opts.imageVerticalLeftEm)) {
-    // 縦書き: position moves the picture sideways in the column (+ = right). At position 0
-    // its box sits `imageVerticalLeftEm` right of the characters' left edge; shift it back
-    // so the two edges meet (the same margin).
+  if (vertical && opts.imageVerticalCenterEm != null && Number.isFinite(opts.imageVerticalCenterEm)) {
+    // 縦書き: Word centres every inline picture on one axis in the column, and the run
+    // position moves it sideways (+ = right). At position 0 that axis is
+    // `imageVerticalCenterEm` right of the characters' left edge, so a picture's left
+    // edge is at centre - width/2; shift it so the left edge meets the characters'
+    // (the same margin), whatever the picture's width (single mark, stack, row).
     const host = hostPt > 0 ? hostPt : 12;
-    return -Number(opts.imageVerticalLeftEm) * host;
+    const halfWidth = Number(opts.pictureWidthPt) > 0 ? Number(opts.pictureWidthPt) / 2 : 0.21 * host;
+    return -(Number(opts.imageVerticalCenterEm) * host - halfWidth);
   }
   let pt;
   if (vertical) {
@@ -355,8 +358,8 @@ export function inlinePictureBaselineShiftPt(hostPt, opts = {}) {
  * Word treats inline pictures like characters: Font.position lowers or raises the
  * whole image on the line (same as Format Font → Position for inline shapes).
  */
-export async function applyInlinePictureRunPosition(context, pic, hostPt, opts) {
-  const shiftPt = inlinePictureBaselineShiftPt(hostPt, opts);
+export async function applyInlinePictureRunPosition(context, pic, hostPt, opts, widthPt) {
+  const shiftPt = inlinePictureBaselineShiftPt(hostPt, { ...opts, pictureWidthPt: widthPt });
   if (shiftPt) {
     try {
       const range = pic.getRange(W.rangeWhole());
@@ -431,7 +434,7 @@ export async function insertKaeritenInlinePicture(
   );
   applyPictureGeometry(pic, drawn.widthPt, drawn.heightPt);
   await context.sync();
-  await applyInlinePictureRunPosition(context, pic, hostPt, opts);
+  await applyInlinePictureRunPosition(context, pic, hostPt, opts, drawn.widthPt);
   await applyInlinePictureOoxmlLayout(context, pic, hostPt, drawn.metrics, opts);
   return { pic, widthPt: drawn.widthPt, heightPt: drawn.heightPt };
 }
@@ -509,7 +512,7 @@ export async function refreshInlinePicture(
   );
   applyPictureGeometry(fresh, drawn.widthPt, drawn.heightPt);
   await context.sync();
-  await applyInlinePictureRunPosition(context, fresh, hostPt, opts);
+  await applyInlinePictureRunPosition(context, fresh, hostPt, opts, drawn.widthPt);
   await applyInlinePictureOoxmlLayout(
     context,
     fresh,

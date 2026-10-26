@@ -193,9 +193,9 @@ function wordRenderOptions(mappingData) {
         ? Number(img.bottom_line_em)
         : null,
     imageFontBottomLineEm: img.font_bottom_line_em || {},
-    imageVerticalLeftEm:
-      img.vertical_left_em != null && img.vertical_left_em !== ""
-        ? Number(img.vertical_left_em)
+    imageVerticalCenterEm:
+      img.vertical_center_em != null && img.vertical_center_em !== ""
+        ? Number(img.vertical_center_em)
         : null,
     imageInkInsetEm:
       img.ink_inset_em != null && img.ink_inset_em !== ""

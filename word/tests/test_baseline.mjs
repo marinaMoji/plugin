@@ -16,6 +16,9 @@ assert.ok(Math.abs(inlinePictureBaselineShiftPt(48, base) / inlinePictureBaselin
 assert.equal(inlinePictureBaselineShiftPt(12, { imageBaselineShiftPt: -5 }), -5);
 // vertical text keeps its own shift
 assert.equal(inlinePictureBaselineShiftPt(12, { ...base, vertical: true, imageVerticalBaselineShiftPt: 3 }), 3);
-// vertical text with vertical_left_em: picture edge meets the characters' left edge
-assert.ok(Math.abs(inlinePictureBaselineShiftPt(24, { ...base, vertical: true, imageVerticalLeftEm: 0.248 }) - -(0.248 * 24)) < 1e-9);
+// vertical text: the picture's left edge meets the characters' left edge for any width
+const v = { ...base, vertical: true, imageVerticalCenterEm: 0.458 };
+const left = (host, w) => 0.458 * host + inlinePictureBaselineShiftPt(host, { ...v, pictureWidthPt: w }) - w / 2; // box-left minus ink-left at shift
+for (const w of [0.42 * 24, 0.34 * 24, 0.92 * 24]) assert.ok(Math.abs(left(24, w)) < 1e-9);
+assert.ok(Math.abs(inlinePictureBaselineShiftPt(24, { ...v, pictureWidthPt: 0.42 * 24 }) - -(0.248 * 24)) < 1e-9);
 console.log("test_baseline: ok");

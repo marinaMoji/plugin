@@ -326,10 +326,17 @@ class _MarkMapper(object):
 
     def vertical_position_hmm(self, metrics):
         """VertOrientPosition (1/100 mm) of an in-line mark in 縦書き. For an in-line
-        image the position moves it sideways in the column with + = left; 0 puts its
-        box left of the characters, so shift it right (negative) until its left edge
-        meets theirs. `vertical_orient_position_hmm` is an extra nudge, + = right."""
-        shift = int(round(self.vertical_left_em() * metrics["host_pt"] * _PT_TO_HMM))
+        image the position moves it sideways in the column with + = left, and the image
+        is anchored by its right edge: 0 puts a single mark's box left of the characters,
+        so shift it right (negative) until its left edge meets theirs. A narrower image
+        (a compound stack) would end up further right, so it is shifted back by the
+        width difference. `vertical_orient_position_hmm` is an extra nudge, + = right."""
+        single_pt = metrics["host_pt"] * self._image_glyph_ratio
+        shift_pt = (
+            self.vertical_left_em() * metrics["host_pt"]
+            - (single_pt - metrics["width_pt"])
+        )
+        shift = int(round(shift_pt * _PT_TO_HMM))
         return -(shift + self._image_vertical_orient_position_hmm)
 
     def horizontal_position_hmm(self, metrics):

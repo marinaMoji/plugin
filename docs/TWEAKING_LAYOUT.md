@@ -86,11 +86,11 @@ In 縦書き the marks stay in the column like small characters: each sits in it
 | `vertical_font_left_em` | Per-font overrides by family-name prefix (Songti SC `0.356`, Yu Gothic `0.389`, …) |
 | `vertical_orient_position_hmm` | Extra sideways nudge in 1/100 mm (positive = right) |
 
-The per-font values come from measuring renders (the mark box's left edge against the typical left edge of the characters' ink). A font whose ink starts further left or right than the others needs its own entry.
+The per-font values come from measuring renders (the mark box's left edge against the typical left edge of the characters' ink). A font whose ink starts further left or right than the others needs its own entry. LibreOffice anchors the in-line image by its right edge, so the offset also subtracts the difference between a single mark's width and the picture's.
 
 ## Position (vertical text, Word)
 
-The marks stay in the column as inline pictures, with their box's left edge on the characters' left edge. `rendering.word_inline_picture.vertical_left_em` (`0.248`) is how far right of that edge Word puts an unshifted picture; the add-in shifts it back by that amount. It is the same for the fonts tested (Hiragino, Yu, Songti).
+The marks stay in the column as inline pictures, with their box's left edge on the characters' left edge, whatever the picture's width (single mark, stack or row). Word centres every inline picture on one axis in the column, so the add-in shifts each by that axis's distance minus half its width. `rendering.word_inline_picture.vertical_center_em` (`0.458`) is that axis's distance from the characters' left edge; it was the same for the fonts tested (Hiragino, Yu, Songti).
 
 ## Apply the change
 
