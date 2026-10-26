@@ -72,8 +72,43 @@ jobs:
         working-directory: word
         run: npm ci
 
+      - name: Set up signing keychain
+        # Skipped (installers stay ad-hoc signed) until the secrets exist.
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          P12_BASE64: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_P12_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${P12_BASE64}" ]]; then
+            echo "No Developer ID secrets; skipping signing."
+            exit 0
+          fi
+          KEYCHAIN_NAME="marinamoji-plugins.keychain"
+          KEYCHAIN_PASSWORD="$(uuidgen)"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          security list-keychains -d user -s "$KEYCHAIN_NAME" login.keychain
+          echo "$P12_BASE64" | base64 -d > "$RUNNER_TEMP/app.p12"
+          security import "$RUNNER_TEMP/app.p12" -k "$KEYCHAIN_NAME" \
+            -f pkcs12 -P "$P12_PASSWORD" -T /usr/bin/codesign
+          rm -f "$RUNNER_TEMP/app.p12"
+          security set-key-partition-list -S apple-tool:,apple: -s \
+            -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME" > /dev/null
+          IDENTITY="$(security find-identity -v -p codesigning "$KEYCHAIN_NAME" \
+            | grep -o '"Developer ID Application: [^"]*"' | head -n1 | tr -d '"')"
+          if [[ -z "$IDENTITY" || "$IDENTITY" != *"($APPLE_TEAM_ID)"* ]]; then
+            echo "::error::Developer ID Application identity missing or not in team $APPLE_TEAM_ID."
+            exit 1
+          fi
+          echo "APP_IDENTITY=$IDENTITY" >> "$GITHUB_ENV"
+
       - name: Build release artifacts
         env:
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_NOTARY_API_PRIVATE_KEY_P8: ${{ secrets.APPLE_NOTARY_API_PRIVATE_KEY_P8 }}
           MARINAMOJI_RELEASE_VERSION: ${{ steps.meta.outputs.version }}
           MARINAMOJI_RELEASE_TAG: ${{ steps.meta.outputs.tag }}
           MARINAMOJI_GITHUB_REPO: ${{ github.repository }}

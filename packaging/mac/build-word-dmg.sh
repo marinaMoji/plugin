@@ -13,16 +13,37 @@ fi
 cat > "${README}" <<'EOF'
 marinaMoji Kaeriten — Word (Mac)
 
-1. If macOS says the app is from an unidentified developer:
-   Right-click "Install marinaMoji Kaeriten" → Open → Open.
+1. Installez d'abord marinaMoji (IME) depuis le site principal.
+   Quittez Word (Cmd+Q).
 
-2. Run the installer, then quit Word (Cmd+Q) and reopen.
+2. Double-cliquez sur "Install marinaMoji Kaeriten".
+   - Cette version est signée et notarisée par Apple : elle s'ouvre directement.
+   - Si macOS affiche « Apple n'a pas pu confirmer… » (ancienne version non signée) :
+     fermez la fenêtre, ouvrez Réglages Système → Confidentialité et sécurité,
+     faites défiler jusqu'au message sur l'installeur, cliquez sur « Ouvrir quand même »,
+     puis confirmez. (Le clic droit → Ouvrir ne fonctionne plus depuis macOS 15.)
 
-3. In Word: Accueil → Kaeriten → Kaeriten pane.
+3. Si macOS demande d'autoriser l'installeur à accéder aux données d'autres apps
+   (Word), cliquez sur « Autoriser ». Sans cela, rien ne peut être installé.
 
-Install marinaMoji (IME) first from the main marinaMoji website.
+4. Rouvrez Word avec un document (connexion internet requise : le complément
+   est chargé depuis marinamoji.github.io).
 
-More help: see INSTALL-MAC-GATEKEEPER on the marinaMoji site.
+5. Dans Word : Accueil → Kaeriten → volet Kaeriten.
+   S'il n'apparaît pas : Insertion → Compléments → Mes compléments → section
+   « Compléments de développeur ».
+
+---
+
+marinaMoji Kaeriten — Word (Mac)
+
+1. Install marinaMoji (IME) first, then quit Word (Cmd+Q).
+2. Double-click "Install marinaMoji Kaeriten". It is signed and notarized, so it opens
+   directly. On an older unsigned build: System Settings → Privacy & Security → Open
+   Anyway (right-click → Open no longer works on macOS 15+).
+3. If macOS asks to let the installer access data from other apps (Word), choose Allow.
+4. Reopen Word with a document (internet required).
+5. Home → Kaeriten → Kaeriten pane, or Insert → Add-ins → My Add-ins → Developer Add-ins.
 EOF
 
 STAGING="${PACKAGING}/release/dmg-staging"

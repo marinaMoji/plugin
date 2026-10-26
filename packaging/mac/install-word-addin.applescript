@@ -23,7 +23,7 @@ on run
 
 	set destPosix to wefPosix & manifestName
 	try
-		do shell script "rm -f " & quoted form of (wefPosix & "*.xml") & " " & quoted form of (wefPosix & "*.manifest.xml")
+		do shell script "rm -f " & quoted form of destPosix
 		do shell script "cp " & quoted form of bundledManifest & " " & quoted form of destPosix
 	on error errMsg
 		display alert "Could not copy manifest." message errMsg as critical

@@ -2,26 +2,20 @@
 
 marinaMoji tools are distributed from **GitHub** and our **website**, not from the Mac App Store. Apple may block the first launch of an unsigned installer. This is normal.
 
-## Quick fix (recommended)
+## Releases are signed and notarized
 
-When you see that the app **cannot be opened** or is from an **unidentified developer**:
+Installers published from `plugins-v*` tags are signed with a Developer ID and notarized by Apple, so they open with a double-click. Only older, unsigned downloads show the warning.
 
-1. **Control-click** (right-click) the app or installer.
-2. Choose **Open**.
-3. Click **Open** again in the dialog.
+## If you still see the warning
 
-French: **Clic droit → Ouvrir → Ouvrir**.
-
-You only need to do this **once** per downloaded file.
-
-## Alternative: System Settings
-
-1. Try to open the app (it will be blocked).
+1. Try to open the app (it will be blocked; close the dialog).
 2. Open **System Settings** → **Privacy & Security**.
 3. Scroll down; click **Open Anyway** next to the marinaMoji message.
-4. Confirm **Open**.
+4. Confirm **Open** (password required).
 
 French: **Réglages Système → Confidentialité et sécurité → Ouvrir quand même**.
+
+**Right-click → Open** no longer bypasses Gatekeeper on macOS 15 (Sequoia) and later.
 
 ## What we do *not* recommend
 
@@ -30,7 +24,7 @@ French: **Réglages Système → Confidentialité et sécurité → Ouvrir quand
 
 ## Downloads from the browser
 
-Files from Chrome/Safari may have a **quarantine** flag. **Right-click → Open** clears the usual block. Advanced support only:
+Files from Chrome/Safari may have a **quarantine** flag. If the warning persists, advanced support only:
 
 ```bash
 xattr -cr "/path/to/Install marinaMoji Kaeriten.app"
@@ -38,7 +32,7 @@ xattr -cr "/path/to/Install marinaMoji Kaeriten.app"
 
 ## Notarization (for maintainers)
 
-**Apple notarization** needs a paid Apple Developer account. We currently ship **unsigned** installers and document **Right-click → Open**. Notarization can be added later if funding allows.
+CI signs and notarizes the `.dmg` installers (`packaging/mac/sign-and-notarize.sh`) when the Apple secrets are set on the repo. Without them the build falls back to ad-hoc signing and the warning above appears.
 
 ## Product-specific install pages
 

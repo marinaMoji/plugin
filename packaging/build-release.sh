@@ -73,6 +73,10 @@ if [[ "$(uname -s)" == "Darwin" ]]; then
     "${PACKAGING}/mac/build-word-installer-app.sh"
     "${PACKAGING}/mac/build-word-dmg.sh"
   fi
+
+  # Developer ID sign + notarize + staple (no-op without APP_IDENTITY). Must run
+  # before checksums: stapling modifies the dmgs.
+  "${PACKAGING}/mac/sign-and-notarize.sh"
 fi
 
 WORD_BUILT=0
@@ -120,7 +124,8 @@ if [[ "${WORD_BUILT}" == "1" ]]; then
   cat >> "${RELEASE}/INSTALL.txt" <<EOF
 --- Word (pre-release) ---
 Download marinamoji-kaeriten-word-mac.dmg (Mac) or marinamoji-kaeriten-word.xml (Windows)
-Mac: Right-click installer → Open if macOS warns → run installer → Cmd+Q Word → reopen
+Mac: Cmd+Q Word → run installer (allow access to Word data if asked) → reopen Word
+     (unsigned build blocked? System Settings → Privacy & Security → Open Anyway)
      Accueil → Kaeriten → Kaeriten pane
 Windows: Insertion → Compléments → Téléverser mon complément → select manifest XML
 Requires internet: Word loads the add-in from ${MARINAMOJI_PLUGIN_BASE}

@@ -70,7 +70,7 @@ export MARINAMOJI_PLUGIN_BASE="https://your-domain/word"
 
 ## Gatekeeper
 
-Installers are **not notarized**. Document **Right-click → Open** on the website. Optional ad-hoc sign:
+CI signs (Developer ID) and notarizes the dmgs via `sign-and-notarize.sh` when the `APPLE_*` secrets exist. Without them, builds are ad-hoc signed and users must use System Settings → Privacy & Security → Open Anyway. Ad-hoc sign by hand:
 
 ```bash
 codesign --force --deep --sign - "Install marinaMoji Kaeriten (LibreOffice).app"
