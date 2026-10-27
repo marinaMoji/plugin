@@ -88,7 +88,9 @@ cd plugin/onlyoffice
 
 Copy the plugin into **`data/sdkjs-plugins/{GUID}/`** — not `plugins/marinamoji-kaeriten/`. See [onlyoffice/README.md](../onlyoffice/README.md).
 
-Restart ONLYOFFICE Writer → **Plugins** → **marinaMoji Kaeriten**.
+Restart ONLYOFFICE → open a **Document** → ribbon **Plugins** tab → **marinaMoji** (sidebar).
+
+**Not on Home.** Unlike Word’s Kaeriten group, ONLYOFFICE only shows this plugin on the Plugins tab, and only in the Document editor. Spreadsheet / Presentation will list it in Plugin Manager but will not show a ribbon icon. Desktop must be **9.3+**. For Plugin Manager sideload, prefer the `.plugin` file over renaming a zip by hand.
 
 ### Document Server (team / browser)
 

@@ -88,7 +88,17 @@ changelog = changelog_path.read_text(encoding="utf-8")
 need(version in changelog, f"CHANGELOG.md must mention version {version}")
 langs = json.loads((config_path.parent / "translations" / "langs.json").read_text(encoding="utf-8"))
 need("en-EN" in langs, 'translations/langs.json must include "en-EN"')
+for loc in langs:
+    if loc == "en-EN":
+        continue
+    p = config_path.parent / "translations" / f"{loc}.json"
+    need(p.is_file(), f"translations/langs.json lists {loc!r} but {p.name} is missing")
+v0 = (cfg.get("variations") or [{}])[0]
+need(v0.get("type") == "panel" or v0.get("isInsideMode") is True,
+     'set variations[0].type to "panel" (or keep isInsideMode true) so the Plugins-tab icon appears')
 readme = (config_path.parent / "README.md").read_text(encoding="utf-8")
+need("Plugins" in readme and "Document" in readme,
+     "README.md must explain Plugins tab + Document editor location")
 need("Render" in readme and "Unrender" in readme and "Plain text" in readme,
      "README.md must document Render / Unrender / Plain text")
 

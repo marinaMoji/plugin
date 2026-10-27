@@ -113,9 +113,12 @@ Download marinamoji-kaeriten-libreoffice-mac.dmg
 The Mac installer copies Python macros (required on LibreOffice 26.x) and opens the .oxt.
 
 --- ONLYOFFICE (experimental) ---
+Needs Desktop Editors 9.3+. Document editor only (not spreadsheet/presentation).
 Download marinamoji-kaeriten-onlyoffice-mac.dmg (Mac), marinamoji-kaeriten.plugin, or marinamoji-kaeriten-onlyoffice.zip
-Mac: run "Install marinaMoji Kaeriten (ONLYOFFICE)", quit ONLYOFFICE, reopen Writer
+Mac: run "Install marinaMoji Kaeriten (ONLYOFFICE)", quit ONLYOFFICE, reopen a Document
 Plugin Manager (7.4+): Plugins → Plugin Manager → Install plugin manually → select .plugin
+  (prefer .plugin over .zip; same contents, official extension)
+Then: open a Document → Plugins tab → marinaMoji (sidebar). Not on the Home ribbon.
 Manual zip: unzip into sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/
 
 EOF

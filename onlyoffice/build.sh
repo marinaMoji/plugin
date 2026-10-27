@@ -148,4 +148,4 @@ echo "Built ${PLUGIN}"
 if [[ -x "${ROOT}/validate-marketplace.sh" ]]; then
   "${ROOT}/validate-marketplace.sh"
 fi
-echo "Install: ONLYOFFICE Writer → Plugins → Plugin Manager → My plugins → Install plugin manually"
+echo "Install: Document editor → Plugins → Plugin Manager → Install plugin manually → .plugin file"

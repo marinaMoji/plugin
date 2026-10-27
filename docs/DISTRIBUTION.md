@@ -199,13 +199,13 @@ No local server if manifest URLs point to your website.
 1. Download `marinamoji-kaeriten-onlyoffice-mac.dmg`.
 2. **Right-click → Open** the installer if macOS warns.
 3. **Quit ONLYOFFICE** (Cmd+Q), run **Install marinaMoji Kaeriten (ONLYOFFICE)**.
-4. Reopen Writer → **Plugins → marinaMoji → marinaMoji Kaeriten**.
+4. Reopen a **Document** → ribbon **Plugins** → **marinaMoji**.
 
 **Manual (all platforms):**
 
-1. Download `marinamoji-kaeriten-onlyoffice.zip`.
-2. Unzip into `sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/` (see [onlyoffice/README.md](../onlyoffice/README.md)).
-3. Restart ONLYOFFICE Writer.
+1. Prefer `marinamoji-kaeriten.plugin` → Plugins → Plugin Manager → *Install plugin manually* (Desktop 7.4+; plugin needs **9.3+** to run).
+2. Or download `marinamoji-kaeriten-onlyoffice.zip` and unzip into `sdkjs-plugins/{7A9E3B2C-4D5F-6E8A-1B0C-9D3E5F7A2B1C}/` (see [onlyoffice/README.md](../onlyoffice/README.md)).
+3. Quit ONLYOFFICE fully, reopen a Document, look on the **Plugins** tab (not Home).
 
 Build: `plugin/packaging/build-release.sh` (zips `plugin/onlyoffice/` and builds Mac `.app` / `.dmg`).
 
