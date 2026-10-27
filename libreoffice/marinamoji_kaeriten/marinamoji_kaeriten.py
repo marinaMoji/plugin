@@ -1598,20 +1598,31 @@ _COMPOSED_NAME = "marinaMoji_composed_character"
 def insert_composed_character(*_args):
     """Insert the character composer's drawing at the cursor, once.
 
-    Called when the Writer window regains focus (the composer has just closed),
-    and runnable by hand. Does nothing unless the composer left a fresh SVG that
-    has not been inserted yet.
+    Run by the watcher thread and runnable by hand. Does nothing unless the
+    composer left a fresh SVG that has not been inserted yet.
     """
     if _composer_handoff is None:
         return
-    found = _composer_handoff.take_fresh_svg(_image_cache_dir())
+    cache = _image_cache_dir()
+    found = _composer_handoff.peek_fresh_svg(cache)
     if found is None:
         return
     svg, mtime = found
     try:
         doc = _get_document()
     except RuntimeError:
-        return
+        return  # no Writer document right now; try again while the result is fresh
+    try:
+        _insert_composed_svg(doc, svg, mtime)
+        _composer_handoff.log(cache, "inserted composed character")
+    except Exception as exc:  # noqa: BLE001 — never surface to the UI thread
+        import traceback
+
+        _composer_handoff.log(cache, "insert failed: %r\n%s" % (exc, traceback.format_exc()))
+    _composer_handoff.mark_seen(cache, mtime)
+
+
+def _insert_composed_svg(doc, svg, mtime):
     cursor = doc.getCurrentController().getViewCursor()
     host_pt = _resolve_char_height_pt(doc, cursor) or 12.0
     width, height = _composer_handoff.svg_dimensions(svg)
@@ -1644,6 +1655,39 @@ def insert_composed_character(*_args):
     else:
         graphic.setPropertyValue("GraphicURL", url)
     doc.getText().insertTextContent(cursor, graphic, False)
+
+
+_composer_watcher = None
+
+
+def _composer_watch_loop():
+    import time
+
+    while True:
+        time.sleep(0.7)
+        try:
+            insert_composed_character()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def start_composer_watcher(*_args):
+    """Start (once) the thread that inserts composer drawings as they appear.
+
+    An OnFocus job alone is not enough: Writer does not raise it when the user
+    returns from another application, which is where the composer runs.
+    """
+    global _composer_watcher
+    import threading
+
+    if _composer_watcher is not None and _composer_watcher.is_alive():
+        return
+    _composer_watcher = threading.Thread(
+        target=_composer_watch_loop, name="marinaMoji-composer-watch", daemon=True
+    )
+    _composer_watcher.start()
+    if _composer_handoff is not None:
+        _composer_handoff.log(_image_cache_dir(), "composer watcher started")
 
 
 def copy_plain_text(*_args):

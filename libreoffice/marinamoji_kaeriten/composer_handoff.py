@@ -69,11 +69,18 @@ def _mark_seen(cache_dir, mtime):
         pass
 
 
-def take_fresh_svg(cache_dir=None, now=None, path=None):
-    """Return (svg_text, mtime) for a result not yet inserted, else None.
+def mark_seen(cache_dir, mtime):
+    """Record that the result with this modification time has been dealt with."""
+    os.makedirs(cache_dir, exist_ok=True)
+    _mark_seen(cache_dir, mtime)
 
-    A result is taken at most once: its modification time is recorded in
-    |cache_dir|, and anything older than FRESH_SECONDS is ignored.
+
+def peek_fresh_svg(cache_dir=None, now=None, path=None):
+    """Return (svg_text, mtime) for a fresh result not yet dealt with, else None.
+
+    Does not mark it: call mark_seen() once it has been inserted (or given up
+    on), so a moment with no Writer document open does not lose the result.
+    Anything older than FRESH_SECONDS is ignored and marked.
     """
     import time
 
@@ -97,5 +104,26 @@ def take_fresh_svg(cache_dir=None, now=None, path=None):
     if now - mtime > FRESH_SECONDS:
         _mark_seen(cache_dir, mtime)  # stale: never insert it later either
         return None
-    _mark_seen(cache_dir, mtime)
     return svg.strip(), mtime
+
+
+def take_fresh_svg(cache_dir=None, now=None, path=None):
+    """peek_fresh_svg() and mark the result as dealt with."""
+    found = peek_fresh_svg(cache_dir, now, path)
+    if found is not None:
+        if cache_dir is None:
+            cache_dir = os.path.join(tempfile.gettempdir(), "marinamoji_kaeriten")
+        _mark_seen(cache_dir, found[1])
+    return found
+
+
+def log(cache_dir, message):
+    """Append a line to composer_handoff.log (an event job has no visible stderr)."""
+    import time
+
+    try:
+        os.makedirs(cache_dir, exist_ok=True)
+        with open(os.path.join(cache_dir, "composer_handoff.log"), "a", encoding="utf-8") as f:
+            f.write("%s %s\n" % (time.strftime("%H:%M:%S"), message))
+    except OSError:
+        pass
