@@ -5,6 +5,8 @@
   <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data"
                        manifest:full-path="ProtocolHandler.xcu"/>
   <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data"
+                       manifest:full-path="Jobs.xcu"/>
+  <manifest:file-entry manifest:media-type="application/vnd.sun.star.configuration-data"
                        manifest:full-path="Office/UI/WriterWindowState.xcu"/>
   <manifest:file-entry manifest:media-type="application/vnd.sun.star.uno-components"
                        manifest:full-path="MarinaMojiKaeriten.components"/>
@@ -25,6 +27,8 @@
   <manifest:file-entry manifest:media-type="application/binary" manifest:full-path="Scripts/python/"/>
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="Scripts/python/marinamoji_kaeriten.py"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="Scripts/python/composer_handoff.py"/>
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="Scripts/python/marinamoji_mapping.json"/>
   <manifest:file-entry manifest:media-type="text/plain"

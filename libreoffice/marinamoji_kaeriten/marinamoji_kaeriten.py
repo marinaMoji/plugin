@@ -18,6 +18,11 @@ from xml.sax.saxutils import escape as _xml_escape
 import uno
 
 try:
+    import composer_handoff as _composer_handoff
+except ImportError:
+    _composer_handoff = None
+
+try:
     from export_core import export_plain_text as _plain_text_export
 except ImportError:
     _plain_text_export = None
@@ -1587,6 +1592,60 @@ def unrender_kaeriten(*_args):
     _show_source(doc, work)
 
 
+_COMPOSED_NAME = "marinaMoji_composed_character"
+
+
+def insert_composed_character(*_args):
+    """Insert the character composer's drawing at the cursor, once.
+
+    Called when the Writer window regains focus (the composer has just closed),
+    and runnable by hand. Does nothing unless the composer left a fresh SVG that
+    has not been inserted yet.
+    """
+    if _composer_handoff is None:
+        return
+    found = _composer_handoff.take_fresh_svg(_image_cache_dir())
+    if found is None:
+        return
+    svg, mtime = found
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return
+    cursor = doc.getCurrentController().getViewCursor()
+    host_pt = _resolve_char_height_pt(doc, cursor) or 12.0
+    width, height = _composer_handoff.svg_dimensions(svg)
+    height_pt = host_pt
+    width_pt = host_pt * width / height
+
+    path = os.path.join(_image_cache_dir(), "composed_%d.svg" % int(mtime * 1000))
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(svg)
+    url = uno.systemPathToFileUrl(path)
+
+    graphic = doc.createInstance("com.sun.star.text.TextGraphicObject")
+    graphic.setPropertyValue("AnchorType", AS_CHARACTER)
+    _set_graphic_margins_zero(graphic)
+    graphic.setPropertyValue("Width", _pt_to_hmm(width_pt))
+    graphic.setPropertyValue("Height", _pt_to_hmm(height_pt))
+    for name, value in (
+        ("Description", "marinaMoji composed character"),
+        ("Title", _COMPOSED_NAME),
+        ("Name", _COMPOSED_NAME),
+        ("VertOrient", _VERT_CHAR_CENTER),
+    ):
+        try:
+            graphic.setPropertyValue(name, value)
+        except Exception:
+            pass
+    loaded = _graphic_from_url(url)
+    if loaded is not None:
+        graphic.setPropertyValue("Graphic", loaded)
+    else:
+        graphic.setPropertyValue("GraphicURL", url)
+    doc.getText().insertTextContent(cursor, graphic, False)
+
+
 def copy_plain_text(*_args):
     if _plain_text_export is None:
         return
@@ -1617,4 +1676,5 @@ g_exportedScripts = (
     format_document,
     refresh_rendering,
     show_source,
+    insert_composed_character,
 )

@@ -2,6 +2,10 @@
 
 Turns Unicode Kanbun source (`說㆒㆑者`) into small **anchored images** with painted kaeriten glyphs (一 / レ). Legacy borderless frames remain readable/unrenderable.
 
+## Composer drawings (no button)
+
+When the marinaMoji character composer builds a structure with no Unicode character, **Insert** writes `character_composer_result.svg` to the marinaMoji profile folder (`~/Library/Application Support/marinaMoji/` on macOS, `~/.config/marinamoji/` on Linux). The extension listens for Writer's **OnFocus** event (`Jobs.xcu`): when the Writer window regains focus after the composer closes, a result newer than the last one inserted, and under two minutes old, is inserted at the cursor as an as-character SVG image sized to the surrounding text. Each result is inserted once. There is no toolbar button. macOS and Linux only; Windows is not wired yet. Reinstall the extension (remove the old one first) for the event job to register.
+
 ## Requirements
 
 - LibreOffice **6.4+** Writer (tested on **26.x** macOS)

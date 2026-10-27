@@ -30,6 +30,8 @@ need_file "${SRC}/description.xml"
 need_file "${SRC}/META-INF/manifest.xml"
 need_file "${SRC}/Addons.xcu"
 need_file "${SRC}/ProtocolHandler.xcu"
+need_file "${SRC}/Jobs.xcu"
+need_file "${SRC}/composer_handoff.py"
 need_file "${SRC}/MarinaMojiKaeriten.components"
 need_file "${SRC}/marinamoji_kaeriten_dispatch.py"
 need_file "${SRC}/marinamoji_kaeriten.py"
@@ -147,11 +149,13 @@ required_members = [
     "META-INF/manifest.xml",
     "Addons.xcu",
     "ProtocolHandler.xcu",
+    "Jobs.xcu",
     "MarinaMojiKaeriten.components",
     "marinamoji_kaeriten_dispatch.py",
     "Scripts/python/marinamoji_kaeriten.py",
     "Scripts/python/marinamoji_mapping.json",
     "Scripts/python/export_core.py",
+    "Scripts/python/composer_handoff.py",
     "registration/license_en.txt",
     "description/desc_en.txt",
     "description/desc_fr.txt",

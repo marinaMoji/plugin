@@ -5,5 +5,8 @@
     <implementation name="MarinaMojiKaeritenProtocolHandler">
       <service name="com.sun.star.frame.ProtocolHandler"/>
     </implementation>
+    <implementation name="MarinaMojiComposerJob">
+      <service name="com.sun.star.task.Job"/>
+    </implementation>
   </component>
 </components>

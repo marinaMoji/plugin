@@ -10,6 +10,7 @@ import uno
 import unohelper
 from com.sun.star.frame import XDispatch, XDispatchProvider
 from com.sun.star.lang import XInitialization, XServiceInfo
+from com.sun.star.task import XJob
 
 PROTOCOL = "org.marinaMoji.kaeriten:"
 IMPLE_NAME = "MarinaMojiKaeritenProtocolHandler"
@@ -91,9 +92,44 @@ class MarinaMojiKaeritenProtocolHandler(
         pass
 
 
+JOB_IMPLE_NAME = "MarinaMojiComposerJob"
+JOB_SERVICE_NAME = "com.sun.star.task.Job"
+
+
+class MarinaMojiComposerJob(unohelper.Base, XServiceInfo, XJob):
+    """Runs on the OnFocus document event: inserts a fresh composer drawing."""
+
+    def __init__(self, ctx, *args):
+        self.ctx = ctx
+
+    def execute(self, args):
+        try:
+            _macro_module().insert_composed_character()
+        except Exception:
+            # An event job must never raise or show a dialog on every focus change.
+            import traceback
+
+            traceback.print_exc(file=sys.stderr)
+        return None
+
+    def getImplementationName(self):
+        return JOB_IMPLE_NAME
+
+    def supportsService(self, name):
+        return name == JOB_SERVICE_NAME
+
+    def getSupportedServiceNames(self):
+        return (JOB_SERVICE_NAME,)
+
+
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationHelper.addImplementation(
     MarinaMojiKaeritenProtocolHandler,
     IMPLE_NAME,
     (SERVICE_NAME,),
+)
+g_ImplementationHelper.addImplementation(
+    MarinaMojiComposerJob,
+    JOB_IMPLE_NAME,
+    (JOB_SERVICE_NAME,),
 )
