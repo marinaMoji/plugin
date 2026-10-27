@@ -22,6 +22,13 @@ _SEEN_FILE = "composer_seen"
 _WINDOWS_PRODUCT_DIRS = ("marinaMoji", "Mozc")
 
 
+def _mtime(path):
+    try:
+        return os.path.getmtime(path)
+    except OSError:
+        return -1.0
+
+
 def svg_path(platform=None, home=None, local_app_data=None):
     """Where the composer writes its SVG, or None where that is not wired up yet.
 
@@ -38,17 +45,19 @@ def svg_path(platform=None, home=None, local_app_data=None):
             for d in _WINDOWS_PRODUCT_DIRS
         ]
 
-        def mtime(path):
-            try:
-                return os.path.getmtime(path)
-            except OSError:
-                return -1.0
-
-        return max(candidates, key=mtime)
+        return max(candidates, key=_mtime)
     if platform == "darwin":
         base = os.path.join(home, "Library", "Application Support", "marinaMoji")
     elif platform.startswith("linux"):
-        base = os.path.join(home, ".config", "marinamoji")
+        # The IME uses ~/.marinamoji if it exists, else $XDG_CONFIG_HOME/marinamoji,
+        # else ~/.config/marinamoji: take whichever holds the newest result.
+        xdg = os.environ.get("XDG_CONFIG_HOME")
+        bases = [os.path.join(home, ".config", "marinamoji")]
+        if xdg:
+            bases.append(os.path.join(xdg, "marinamoji"))
+        bases.append(os.path.join(home, ".marinamoji"))
+        candidates = [os.path.join(b, "character_composer_result.svg") for b in bases]
+        return max(candidates, key=_mtime)
     else:
         return None
     return os.path.join(base, "character_composer_result.svg")
