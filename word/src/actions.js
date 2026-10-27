@@ -10,7 +10,11 @@ import {
   canonicalTextForExport,
 } from "./render.js";
 import { writeClipboardText } from "./clipboard.js";
-import { runInsertComposedCharacter } from "./wordComposedInsert.js";
+import {
+  runInsertComposedCharacter,
+  insertComposedSvgText,
+  refreshComposedCharacters,
+} from "./wordComposedInsert.js";
 import { runInsertComposedSvgSpike } from "./wordSvgSpike.js";
 
 async function wordRun(fn) {
@@ -24,9 +28,11 @@ async function wordRun(fn) {
 
 export async function runRenderKaeriten() {
   const mapping = await loadMapping();
-  let result = { newCount: 0, viewCount: 0 };
+  let result = { newCount: 0, viewCount: 0, composedCount: 0 };
   await wordRun(async (context) => {
     result = await renderKaeritenDocument(context, mapping);
+    // Composed characters follow the font size too.
+    result = { ...result, composedCount: await refreshComposedCharacters(context) };
   });
   return result;
 }
@@ -70,6 +76,11 @@ export function runCopyPlainText() {
 /** Insert SVG left by marinaMoji's character composer (clipboard). */
 export function runComposedInsert() {
   return runInsertComposedCharacter();
+}
+
+/** Insert an SVG pasted into the pane (when it cannot read the clipboard itself). */
+export function runComposedInsertFromText(svg) {
+  return insertComposedSvgText(svg);
 }
 
 /** Dev spike: hard-coded ⿰言某 SVG (Api smoke test). */

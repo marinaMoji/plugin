@@ -136,7 +136,8 @@ section.composed {
   min-height: 4em;
 }
 
-.export-copy[hidden] {
+.export-copy[hidden],
+#composed-paste[hidden] {
   display: none !important;
 }
 

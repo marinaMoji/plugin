@@ -105,7 +105,8 @@
       <div class="btn-row">
         <button type="button" id="btn-composed-insert" class="secondary">Insert composed character</button>
       </div>
-      <p class="hint">Use the marinaMoji <strong>character composer</strong> (toolbar). If the structure has no Unicode character, click <strong>Insert</strong> there, then click this button. Desktop Word only.</p>
+      <textarea id="composed-paste" class="export-copy" hidden rows="3" spellcheck="false" aria-label="Paste the composed drawing here"></textarea>
+      <p class="hint">Use the marinaMoji <strong>character composer</strong> (toolbar). If the structure has no Unicode character, click <strong>Insert</strong> there, then click this button. If Word will not let the pane read the clipboard, a box appears: press ⌘V in it. Desktop Word only.</p>
       <details class="spike-details">
         <summary>Dev spike</summary>
         <div class="btn-row">

@@ -5,6 +5,7 @@ import {
   runUnrenderKaeriten,
   runCopyPlainText,
   runComposedInsert,
+  runComposedInsertFromText,
   runSvgSpike,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
@@ -53,6 +54,14 @@ function wire(id, fn, doneMsg) {
       const msg =
         (typeof result === "string" && result) || doneMsg || "Done.";
       setStatus(msg, "ok");
+      if (msg.includes("paste box")) {
+        const paste = document.getElementById("composed-paste");
+        if (paste) {
+          paste.hidden = false;
+          paste.value = "";
+          paste.focus();
+        }
+      }
       if (msg.includes("box below")) {
         const box = document.getElementById("export-copy");
         if (box && !box.hidden) {
@@ -99,7 +108,12 @@ function initUi() {
   wire(
     "btn-render",
     async () => {
-      const { newCount, viewCount } = await runRenderKaeriten();
+      const { newCount, viewCount, composedCount } = await runRenderKaeriten();
+      if (composedCount > 0 && newCount === 0 && viewCount === 0) {
+        return composedCount === 1
+          ? "Resized 1 composed character."
+          : `Resized ${composedCount} composed characters.`;
+      }
       if (newCount > 0) {
         return newCount === 1
           ? "Formatted 1 kaeriten group (beside kanji)."
@@ -124,6 +138,21 @@ function initUi() {
   );
   wire("btn-plain", runCopyPlainText, "Copied plain text.");
   wire("btn-composed-insert", runComposedInsert, null);
+  const pasteBox = document.getElementById("composed-paste");
+  if (pasteBox) {
+    pasteBox.addEventListener("paste", async (event) => {
+      const text = event.clipboardData && event.clipboardData.getData("text/plain");
+      event.preventDefault();
+      try {
+        await whenOfficeReady();
+        const msg = await runComposedInsertFromText(text || "");
+        setStatus(msg, msg.startsWith("Inserted") ? "ok" : "err");
+        if (msg.startsWith("Inserted")) pasteBox.hidden = true;
+      } catch (err) {
+        setStatus(String((err && err.message) || err), "err");
+      }
+    });
+  }
   wire("btn-svg-spike", runSvgSpike, null);
   setStatus("Connecting to Word…");
   whenOfficeReady(45000, {
