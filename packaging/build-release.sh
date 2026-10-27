@@ -110,7 +110,7 @@ Download marinamoji-kaeriten-libreoffice-mac.dmg
 2. Quit Writer, run "Install marinaMoji Kaeriten (LibreOffice)"
 3. Accept extension → restart Writer → enable marinaMoji toolbar
 
-The Mac installer copies Python macros (required on LibreOffice 26.x) and opens the .oxt.
+The Mac installer copies Python macros (required on LibreOffice 26.x) and registers the .oxt with unopkg.
 
 --- ONLYOFFICE (experimental) ---
 Needs Desktop Editors 9.3+. Document editor only (not spreadsheet/presentation).

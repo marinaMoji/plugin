@@ -21,7 +21,7 @@ On macOS this also builds:
 
 | Output | Purpose |
 |--------|---------|
-| `Install marinaMoji Kaeriten (LibreOffice).app` | Copies LO Python macros + opens `.oxt` |
+| `Install marinaMoji Kaeriten (LibreOffice).app` | Copies LO Python macros + installs `.oxt` via `unopkg` |
 | `marinamoji-kaeriten-libreoffice-mac.dmg` | DMG with installer + `.oxt` + readme |
 | `Install marinaMoji Kaeriten (ONLYOFFICE).app` | Copies plugin into `sdkjs-plugins/{GUID}/` |
 | `marinamoji-kaeriten-onlyoffice-mac.dmg` | DMG with installer + zip + readme |
@@ -34,6 +34,8 @@ On macOS this also builds:
 ```
 
 The `.app` bundles `MarinaMojiKaeriten.oxt` plus Python macro files. On macOS LibreOffice 26.x, bundled extension Python often fails to register; copying macros to the user profile fixes toolbar buttons.
+
+The installer must **not** rely on bare `open file.oxt` (Launch Services often returns `kLSApplicationNotFoundErr` even when LibreOffice is installed). It locates `LibreOffice.app` and runs `Contents/MacOS/unopkg add --force`, with `open -a LibreOffice …` as fallback.
 
 ## ONLYOFFICE installer
 

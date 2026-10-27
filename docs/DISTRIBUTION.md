@@ -134,10 +134,10 @@ Users may still need Right-click → Open the first time.
 1. Download `marinamoji-kaeriten-libreoffice-mac.dmg` from the website or GitHub.
 2. **Right-click → Open** the installer app if macOS warns ([Gatekeeper](#gatekeeper-macos)).
 3. **Quit Writer** (Cmd+Q), then run **Install marinaMoji Kaeriten (LibreOffice)**.
-4. Accept the extension in Extension Manager when it opens → **restart Writer**.
+4. Restart Writer completely (Cmd+Q, then reopen).
 5. **View → Toolbars → marinaMoji**.
 
-The Mac installer copies Python macros into your LibreOffice profile (required on **LibreOffice 26.x**) and opens `MarinaMojiKaeriten.oxt`.
+The Mac installer copies Python macros into your LibreOffice profile (required on **LibreOffice 26.x**) and registers `MarinaMojiKaeriten.oxt` with LibreOffice’s `unopkg` (not bare `open`, which often fails on macOS when Launch Services has no `.oxt` handler).
 
 **Linux / Windows / power users:**
 
