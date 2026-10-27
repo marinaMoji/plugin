@@ -811,7 +811,16 @@
   }
 
   function runRender() {
-    return renderAllViews("Rendering…", "Rendered");
+    // Composed-character pictures follow the font size too; do them first.
+    const composer = window.MarinaMojiComposer;
+    const sizes = composer && composer.refreshSizes ? composer.refreshSizes() : Promise.resolve(0);
+    return sizes.then((resized) => {
+      renderAllViews("Rendering…", "Rendered");
+      if (resized) {
+        const el = document.getElementById("composer-status");
+        if (el) el.textContent = resized + " composed character(s) resized.";
+      }
+    });
   }
 
   function runUnrender() {
