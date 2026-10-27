@@ -648,6 +648,7 @@ def _refresh_rendered_views(doc):
     mapper = _MarkMapper()
     _refresh_frames_in_place(doc, work, mapper)
     _refresh_graphics_in_place(doc, work, mapper)
+    _refresh_composed_in_place(doc, work)
 
 
 def toggle_page_writing_mode(*_args):
@@ -1564,10 +1565,48 @@ def _export_is_full_document(doc):
     return _get_selection_range(doc) is None
 
 
+def _refresh_composed_in_place(doc, work_range):
+    """Resize composer drawings to the current font size at their position.
+
+    Keeps each drawing's aspect ratio; only the height follows the text.
+    """
+    try:
+        graphics = doc.getGraphicObjects()
+    except Exception:
+        return 0
+    if graphics is None:
+        return 0
+    text = doc.Text
+    count = 0
+    for i in range(graphics.getCount()):
+        try:
+            graphic = graphics.getByIndex(i)
+            if graphic.getPropertyValue("Title") != _COMPOSED_NAME:
+                continue
+            anchor = graphic.getAnchor()
+            if not _range_contains(work_range, anchor):
+                continue
+            host_pt = _host_char_height_at_anchor(doc, text, anchor)
+            if not host_pt:
+                continue
+            old_w = graphic.getPropertyValue("Width")
+            old_h = graphic.getPropertyValue("Height")
+            new_h = _pt_to_hmm(host_pt)
+            if old_h <= 0 or abs(new_h - old_h) <= 2:
+                continue
+            graphic.setPropertyValue("Width", int(round(old_w * new_h / old_h)))
+            graphic.setPropertyValue("Height", new_h)
+            count += 1
+        except Exception:
+            continue
+    return count
+
+
 def _render_in_scope(doc, work_range, mapper):
     n_new = _format_clusters(doc.Text, work_range, mapper, doc)
     n_updated = _refresh_frames_in_place(doc, work_range, mapper)
     n_updated += _refresh_graphics_in_place(doc, work_range, mapper)
+    n_updated += _refresh_composed_in_place(doc, work_range)
     return n_new, n_updated
 
 

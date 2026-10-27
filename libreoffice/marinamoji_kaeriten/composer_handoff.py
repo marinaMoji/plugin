@@ -17,10 +17,34 @@ FRESH_SECONDS = 120  # older than this is a leftover from an earlier session
 _SEEN_FILE = "composer_seen"
 
 
-def svg_path(platform=None, home=None):
-    """Where the composer writes its SVG, or None where that is not wired up yet."""
+# Windows keeps the profile in %LOCALAPPDATA%\<product>; a build with the default
+# branding is "Mozc", the marinaMoji-branded one "marinaMoji".
+_WINDOWS_PRODUCT_DIRS = ("marinaMoji", "Mozc")
+
+
+def svg_path(platform=None, home=None, local_app_data=None):
+    """Where the composer writes its SVG, or None where that is not wired up yet.
+
+    On Windows, whichever product directory holds the newest result.
+    """
     platform = sys.platform if platform is None else platform
     home = os.path.expanduser("~") if home is None else home
+    if platform == "win32":
+        base = local_app_data or os.environ.get("LOCALAPPDATA") or os.path.join(
+            home, "AppData", "Local"
+        )
+        candidates = [
+            os.path.join(base, d, "character_composer_result.svg")
+            for d in _WINDOWS_PRODUCT_DIRS
+        ]
+
+        def mtime(path):
+            try:
+                return os.path.getmtime(path)
+            except OSError:
+                return -1.0
+
+        return max(candidates, key=mtime)
     if platform == "darwin":
         base = os.path.join(home, "Library", "Application Support", "marinaMoji")
     elif platform.startswith("linux"):

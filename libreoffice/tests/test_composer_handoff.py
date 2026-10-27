@@ -16,7 +16,24 @@ def test_svg_path_per_platform(tmp_path):
         "Library/Application Support/marinaMoji/character_composer_result.svg"
     )
     assert h.svg_path("linux", "/home/a") == "/home/a/.config/marinamoji/character_composer_result.svg"
-    assert h.svg_path("win32", "C:/u") is None
+    assert h.svg_path("win32", "C:/u", "C:/L").replace("\\", "/") == (
+        "C:/L/marinaMoji/character_composer_result.svg"
+    )
+    assert h.svg_path("freebsd", "/home/a") is None
+
+
+def test_svg_path_on_windows_takes_the_newest_product_dir(tmp_path):
+    import os
+
+    for name, mtime in (("marinaMoji", 1000), ("Mozc", 2000)):
+        d = tmp_path / name
+        d.mkdir()
+        f = d / "character_composer_result.svg"
+        f.write_text(SVG)
+        os.utime(f, (mtime, mtime))
+    assert h.svg_path("win32", "C:/u", str(tmp_path)) == str(
+        tmp_path / "Mozc" / "character_composer_result.svg"
+    )
 
 
 def test_svg_dimensions():
