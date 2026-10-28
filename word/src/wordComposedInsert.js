@@ -30,7 +30,7 @@ export function isComposedPicture(pic) {
 // The drawing fills its square; a font's ink is a little smaller and hangs a
 // little below the baseline. Same values as the ONLYOFFICE plugin, measured
 // against Arial/Mincho text there.
-export const INK_SCALE = 0.94;
+export const INK_SCALE = 1.0;
 export const DROP_EM = 0.19;
 
 /** Picture size (pt, square) and Font.position (pt) for text of |hostPt|. */
