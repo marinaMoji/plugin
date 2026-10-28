@@ -4,6 +4,8 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
+* Composed drawings inserted from the composer are lowered 0.15 em (`DROP_EM`) instead of 0, so they sit on the text's baseline instead of riding high. Chosen by rendering a test document through ONLYOFFICE's converter (`x2t`): 0 left the ink about 0.15 em too high, 0.19 about 0.035 em too low. Not yet checked with a real insert in Desktop.
+
 ## 0.1.17 - 2026-10-28
 
 * Composer hand-off: load `composer_result.js` via XHR first (script-tag fallback),

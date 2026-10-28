@@ -13,9 +13,10 @@
   var MAX_AGE_MS = 120000;
   var RASTER_HEIGHT_PX = 256;
   var DEFAULT_PT = 12;
-  // Full-body IDS drawings fill the em square; do not apply the kaeriten drop.
+  // The drawing fills its square; a font's ink is a little smaller and hangs a
+  // little below the baseline. Measured against ONLYOFFICE's own layout (Song-style CJK face).
   var INK_SCALE = 0.94;
-  var DROP_EM = 0;
+  var DROP_EM = 0.15;
   var STORE_KEY = "marinamoji.composer.lastId";
 
   var busy = false;
@@ -161,7 +162,7 @@
           if (drawing.SetWrappingStyle) drawing.SetWrappingStyle("inline");
           if (drawing.SetName) drawing.SetName("marinaMoji composed character");
           var run = Api.CreateRun();
-          if (run.SetPosition) run.SetPosition(0);
+          if (run.SetPosition) run.SetPosition(-Math.round(pt * 2 * Asc.scope.composedDropEm));
           run.AddDrawing(drawing);
           var para = Api.CreateParagraph();
           para.AddElement(run);
