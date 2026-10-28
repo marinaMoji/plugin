@@ -2,9 +2,9 @@
  * marinaMoji character composer -> ONLYOFFICE.
  *
  * Keep this panel open. On Insert the composer writes composer_result.js next
- * to index.html (and copies the SVG to the clipboard). The panel polls that
- * file (script tag, # cache-bust only — a ?query breaks file:// on Desktop)
- * and also checks the clipboard, then inserts an inline PNG at the caret.
+ * to index.html (svg and/or text). The panel polls that file (script tag,
+ * # cache-bust only — a ?query breaks file:// on Desktop) and also checks the
+ * clipboard for SVG, then inserts text or an inline PNG at the caret.
  */
 (function () {
   "use strict";
@@ -186,6 +186,67 @@
     }
   }
 
+  function insertText(text, id) {
+    if (typeof text !== "string" || !text) return false;
+    id = Number(id) || Date.now();
+    if (id <= Math.max(lastSeenId(), memoryId)) return false;
+    if (Date.now() - id > MAX_AGE_MS) {
+      rememberId(id);
+      return false;
+    }
+    if (busy) return false;
+    busy = true;
+    setStatus("Inserting character…");
+    var asc = window.Asc;
+    function done(ok) {
+      if (ok) {
+        rememberId(id);
+        setStatus("Inserted character.");
+      } else {
+        setStatus("Insert failed. Click in the document, then try Insert composed.");
+      }
+      busy = false;
+    }
+    if (!asc || !asc.plugin) {
+      done(false);
+      return true;
+    }
+    if (asc.plugin.executeMethod) {
+      try {
+        asc.plugin.executeMethod("PasteText", [text]);
+        done(true);
+        return true;
+      } catch (e) {}
+    }
+    if (!asc.plugin.callCommand) {
+      done(false);
+      return true;
+    }
+    asc.scope = asc.scope || {};
+    asc.scope.composerText = text;
+    try {
+      asc.plugin.callCommand(
+        function () {
+          var doc = Api.GetDocument();
+          var run = Api.CreateRun();
+          run.AddText(Asc.scope.composerText);
+          var para = Api.CreateParagraph();
+          para.AddElement(run);
+          doc.InsertContent([para], true);
+          return true;
+        },
+        false,
+        true,
+        function (ok) {
+          done(!!ok);
+        }
+      );
+    } catch (e) {
+      done(false);
+    }
+    return true;
+  }
+
   function insertSvg(svg, id) {
     if (typeof svg !== "string" || svg.indexOf("<svg") < 0) return false;
     id = Number(id) || Date.now();
@@ -273,6 +334,8 @@
   function poll() {
     if (busy) return;
     loadComposerResultScript().then(function (result) {
+      // Unicode character from the composer (IBus may also try; often fails in Desktop).
+      if (result && result.text && insertText(result.text, result.id)) return;
       if (result && insertSvg(result.svg, result.id)) return;
       return readClipboardSvg().then(function (svg) {
         if (!svg) return;

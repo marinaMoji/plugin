@@ -15,6 +15,7 @@ import tempfile
 
 FRESH_SECONDS = 120  # older than this is a leftover from an earlier session
 _SEEN_FILE = "composer_seen"
+_SEEN_TEXT_FILE = "composer_seen_text"
 
 
 # Windows keeps the profile in %LOCALAPPDATA%\<product>; a build with the default
@@ -68,6 +69,16 @@ def svg_path(platform=None, home=None, local_app_data=None):
     else:
         return None
     return os.path.join(base, "character_composer_result.svg")
+
+
+def text_path(platform=None, home=None, local_app_data=None):
+    """Where the composer writes a Unicode character (.txt), same dirs as svg_path."""
+    svg = svg_path(platform, home, local_app_data)
+    if svg is None:
+        return None
+    if svg.endswith(".svg"):
+        return svg[:-4] + ".txt"
+    return svg + ".txt"
 
 
 def svg_dimensions(svg):
@@ -155,6 +166,57 @@ def take_fresh_svg(cache_dir=None, now=None, path=None):
             cache_dir = os.path.join(tempfile.gettempdir(), "marinamoji_kaeriten")
         _mark_seen(cache_dir, found[1])
     return found
+
+
+def _seen_text_path(cache_dir):
+    return os.path.join(cache_dir, _SEEN_TEXT_FILE)
+
+
+def _last_seen_text(cache_dir):
+    try:
+        with open(_seen_text_path(cache_dir), "r") as f:
+            return float(f.read().strip())
+    except (OSError, ValueError):
+        return 0.0
+
+
+def mark_seen_text(cache_dir, mtime):
+    """Record that the Unicode .txt result with this mtime has been dealt with."""
+    os.makedirs(cache_dir, exist_ok=True)
+    try:
+        with open(_seen_text_path(cache_dir), "w") as f:
+            f.write(repr(mtime))
+    except OSError:
+        pass
+
+
+def peek_fresh_text(cache_dir=None, now=None, path=None):
+    """Return (text, mtime) for a fresh Unicode composer result, else None."""
+    import time
+
+    path = text_path() if path is None else path
+    if path is None:
+        return None
+    if cache_dir is None:
+        cache_dir = os.path.join(tempfile.gettempdir(), "marinamoji_kaeriten")
+    os.makedirs(cache_dir, exist_ok=True)
+    now = time.time() if now is None else now
+    try:
+        mtime = os.path.getmtime(path)
+        with open(path, "r", encoding="utf-8") as f:
+            text = f.read().strip()
+    except OSError:
+        return None
+    if not text or "<svg" in text:
+        return None
+    if len(text.encode("utf-8")) > 32:
+        return None
+    if mtime <= _last_seen_text(cache_dir):
+        return None
+    if now - mtime > FRESH_SECONDS:
+        mark_seen_text(cache_dir, mtime)
+        return None
+    return text, mtime
 
 
 def log(cache_dir, message):

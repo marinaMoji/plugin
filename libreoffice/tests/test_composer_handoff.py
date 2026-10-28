@@ -91,3 +91,21 @@ def test_missing_or_non_svg_file(tmp_path):
     bad = tmp_path / "bad.svg"
     bad.write_text("hello", encoding="utf-8")
     assert h.take_fresh_svg(cache, path=str(bad)) is None
+
+
+def test_text_path_matches_svg_sibling():
+    assert h.text_path("linux", "/home/a") == "/home/a/.config/marinamoji/character_composer_result.txt"
+    assert h.text_path("darwin", "/Users/a").endswith(
+        "Library/Application Support/marinaMoji/character_composer_result.txt"
+    )
+
+
+def test_fresh_unicode_text_is_taken_once(tmp_path):
+    txt = tmp_path / "r.txt"
+    txt.write_text("謀\n", encoding="utf-8")
+    cache = str(tmp_path / "cache")
+    mtime = os.path.getmtime(txt)
+    first = h.peek_fresh_text(cache, now=mtime + 5, path=str(txt))
+    assert first == ("謀", mtime)
+    h.mark_seen_text(cache, mtime)
+    assert h.peek_fresh_text(cache, now=mtime + 6, path=str(txt)) is None

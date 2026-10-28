@@ -1653,29 +1653,37 @@ def _focus_writer(doc):
 
 
 def insert_composed_character(*_args):
-    """Insert the character composer's drawing at the cursor, once.
+    """Insert the character composer's drawing or Unicode character at the cursor.
 
-    Run by the watcher thread, OnFocus job, and runnable by hand. Does nothing
-    unless the composer left a fresh SVG that has not been inserted yet.
+    Run by the watcher thread, OnFocus job, and runnable by hand. Prefers a
+    fresh SVG (unencoded structure); otherwise a fresh .txt Unicode result.
     Only marks the result as seen after a successful insert, so a focus change
     can retry if Writer was not ready while the composer had the focus.
     """
     if _composer_handoff is None:
         return
     cache = _image_cache_dir()
-    found = _composer_handoff.peek_fresh_svg(cache)
-    if found is None:
+    found_svg = _composer_handoff.peek_fresh_svg(cache)
+    found_text = None if found_svg is not None else _composer_handoff.peek_fresh_text(cache)
+    if found_svg is None and found_text is None:
         return
-    svg, mtime = found
     try:
         doc = _get_document()
     except RuntimeError:
         return  # no Writer document right now; try again while the result is fresh
     try:
         _focus_writer(doc)
-        _insert_composed_svg(doc, svg, mtime)
-        _composer_handoff.mark_seen(cache, mtime)
-        _composer_handoff.log(cache, "inserted composed character")
+        if found_svg is not None:
+            svg, mtime = found_svg
+            _insert_composed_svg(doc, svg, mtime)
+            _composer_handoff.mark_seen(cache, mtime)
+            _composer_handoff.log(cache, "inserted composed character")
+        else:
+            text, mtime = found_text
+            cursor = doc.getCurrentController().getViewCursor()
+            doc.getText().insertString(cursor, text, False)
+            _composer_handoff.mark_seen_text(cache, mtime)
+            _composer_handoff.log(cache, "inserted unicode character")
     except Exception as exc:  # noqa: BLE001 — never surface to the UI thread
         import traceback
 

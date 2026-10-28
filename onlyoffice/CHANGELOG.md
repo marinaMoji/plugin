@@ -6,6 +6,8 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## 0.1.16 - 2026-10-28
 
+* Composer hand-off also accepts a Unicode `text` field in `composer_result.js` (not only SVG drawings), so Insert of a real character can land via the panel when IBus FocusIn is late.
+
 * Composed-character hand-off on Desktop: keep the marinaMoji panel open, then Insert from the composer (also **Insert composed**). Insert at the caret with baseline alignment; poll `composer_result.js` and the clipboard. Load `../v1/plugins.js`. Linux Desktop verified.
 
 * Desktop install: load `../v1/plugins.js` like stock plugins. Composer hand-off: load `composer_result.js` with a `#` cache-bust (a `?query` breaks `file://` on Linux Desktop), only mark a result seen after a successful insert, and add an **Insert composed** button as a manual retry. Keep the marinaMoji panel open.
