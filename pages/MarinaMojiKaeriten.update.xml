@@ -4,9 +4,9 @@
              xmlns:lo="http://libreoffice.org/extensions/description/2011"
              xmlns:d="http://openoffice.org/extensions/description/2006">
   <identifier value="org.marinaMoji.kaeriten"/>
-  <version value="0.3.13"/>
+  <version value="0.3.14"/>
   <update-download>
-    <src xlink:href="https://github.com/marinaMoji/plugin/releases/download/libreoffice-v0.3.13/MarinaMojiKaeriten.oxt"/>
+    <src xlink:href="https://github.com/marinaMoji/plugin/releases/download/libreoffice-v0.3.14/MarinaMojiKaeriten.oxt"/>
   </update-download>
   <publisher>
     <name xlink:href="https://github.com/marinaMoji/plugin" lang="en">marinaMoji</name>
