@@ -4,6 +4,12 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
+* Docs: Windows Desktop hand-off path is
+  `%LOCALAPPDATA%\ONLYOFFICE\DesktopEditors\data\sdkjs-plugins\{GUID}\`.
+  The panel already polls `composer_result.js`; Insert failed on Win11 because
+  the IME returned an empty plugin directory (fixed in marinaMoji, not in this
+  package). Keep the panel open. Not yet verified on Windows.
+
 ## 0.1.16 - 2026-10-28
 
 * Composer hand-off also accepts a Unicode `text` field in `composer_result.js` (not only SVG drawings), so Insert of a real character can land via the panel when IBus FocusIn is late.

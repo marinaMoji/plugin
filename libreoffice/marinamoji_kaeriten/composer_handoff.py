@@ -18,8 +18,9 @@ _SEEN_FILE = "composer_seen"
 _SEEN_TEXT_FILE = "composer_seen_text"
 
 
-# Windows keeps the profile in %LOCALAPPDATA%\<product>; a build with the default
-# branding is "Mozc", the marinaMoji-branded one "marinaMoji".
+# Windows IME profile is AppData\LocalLow\<product> (Mozc GetLocalAppDataPath).
+# Older plugin code and some docs looked under %LOCALAPPDATA% (AppData\Local).
+# Branding: "marinaMoji", or "Mozc" for an unbranded build.
 _WINDOWS_PRODUCT_DIRS = ("marinaMoji", "Mozc")
 
 
@@ -30,23 +31,47 @@ def _mtime(path):
         return -1.0
 
 
+def _windows_profile_roots(home, local_app_data=None):
+    """Directories that may contain <product>/character_composer_result.svg."""
+    if local_app_data is not None:
+        # Explicit root (unit tests): do not invent a LocalLow sibling.
+        return [local_app_data]
+    local = os.environ.get("LOCALAPPDATA") or os.path.join(home, "AppData", "Local")
+    stripped = local.rstrip("\\/")
+    if os.path.basename(stripped).lower() == "local":
+        local_low = os.path.join(os.path.dirname(stripped), "LocalLow")
+    else:
+        local_low = os.path.join(home, "AppData", "LocalLow")
+    # Prefer LocalLow (where the IME actually writes).
+    roots = [local_low, local]
+    ordered = []
+    seen = set()
+    for root in roots:
+        key = os.path.normcase(root)
+        if key not in seen:
+            seen.add(key)
+            ordered.append(root)
+    return ordered
+
+
 def svg_path(platform=None, home=None, local_app_data=None):
     """Where the composer writes its SVG, or None where that is not wired up yet.
 
-    On Windows, whichever product directory holds the newest result.
+    On Windows, whichever product directory holds the newest result (LocalLow
+    first, then Local).
     """
     platform = sys.platform if platform is None else platform
     home = os.path.expanduser("~") if home is None else home
     if platform == "win32":
-        base = local_app_data or os.environ.get("LOCALAPPDATA") or os.path.join(
-            home, "AppData", "Local"
-        )
         candidates = [
             os.path.join(base, d, "character_composer_result.svg")
+            for base in _windows_profile_roots(home, local_app_data)
             for d in _WINDOWS_PRODUCT_DIRS
         ]
-
-        return max(candidates, key=_mtime)
+        existing = [p for p in candidates if os.path.isfile(p)]
+        if existing:
+            return max(existing, key=_mtime)
+        return candidates[0]
     if platform == "darwin":
         base = os.path.join(home, "Library", "Application Support", "marinaMoji")
     elif platform.startswith("linux"):

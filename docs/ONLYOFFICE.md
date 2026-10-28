@@ -89,7 +89,7 @@ cd plugin/onlyoffice
 
 Copy the plugin into **`…/sdkjs-plugins/{GUID}/`** — not `plugins/marinamoji-kaeriten/`. See [onlyoffice/README.md](../onlyoffice/README.md).
 
-**Composed characters (no Unicode code point):** keep the marinaMoji sidebar open, then press **Insert** in the character composer. The IME writes `composer_result.js` next to the plugin; the panel inserts a PNG at the cursor. Needs a marinaMoji build that knows the Linux plugin path (post–Oct 2026 hand-off fix).
+**Composed characters (no Unicode code point):** keep the marinaMoji sidebar open, then press **Insert** in the character composer. The IME writes `composer_result.js` next to the plugin; the panel inserts a PNG at the cursor. Needs a marinaMoji build that knows the Desktop plugin path (macOS / Linux / Windows `%LOCALAPPDATA%\ONLYOFFICE\DesktopEditors\data\sdkjs-plugins\{GUID}\`).
 
 Restart ONLYOFFICE → open a **Document** → ribbon **Plugins** tab → **marinaMoji** (sidebar).
 

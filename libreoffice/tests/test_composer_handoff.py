@@ -53,6 +53,34 @@ def test_svg_path_on_windows_takes_the_newest_product_dir(tmp_path):
     )
 
 
+def test_svg_path_on_windows_prefers_locallow_over_local(tmp_path, monkeypatch):
+    """IME writes LocalLow; %LOCALAPPDATA% is Local — prefer the IME path."""
+    import os
+
+    home = tmp_path / "home"
+    local = home / "AppData" / "Local"
+    local_low = home / "AppData" / "LocalLow"
+    local.mkdir(parents=True)
+    local_low.mkdir(parents=True)
+    monkeypatch.setenv("LOCALAPPDATA", str(local))
+    # Default (no file yet) points at LocalLow\marinaMoji.
+    assert h.svg_path("win32", str(home)).replace("\\", "/") == (
+        str(local_low / "marinaMoji" / "character_composer_result.svg").replace("\\", "/")
+    )
+    # A file only under Local is still found (fallback).
+    local_file = local / "marinaMoji" / "character_composer_result.svg"
+    local_file.parent.mkdir()
+    local_file.write_text(SVG)
+    assert h.svg_path("win32", str(home)) == str(local_file)
+    # A newer LocalLow file wins over Local.
+    os.utime(local_file, (1000, 1000))
+    low_file = local_low / "marinaMoji" / "character_composer_result.svg"
+    low_file.parent.mkdir()
+    low_file.write_text(SVG)
+    os.utime(low_file, (2000, 2000))
+    assert h.svg_path("win32", str(home)) == str(low_file)
+
+
 def test_svg_dimensions():
     assert h.svg_dimensions(SVG) == (60.0, 40.0)
     assert h.svg_dimensions('<svg viewBox="0 0 24 12"></svg>') == (24.0, 12.0)
