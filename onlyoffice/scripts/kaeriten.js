@@ -1065,7 +1065,10 @@
         wire("btn-plain", runCopyPlain);
         wire("btn-composed-insert", () => {
           const composer = window.MarinaMojiComposer;
+          const status = document.getElementById("composer-status");
+          if (status) status.textContent = "Insert composed: loading…";
           if (composer && composer.pollNow) composer.pollNow();
+          else if (status) status.textContent = "Composer hand-off script not loaded.";
         });
         if (window.MarinaMojiComposer && window.MarinaMojiComposer.start) {
           window.MarinaMojiComposer.start();

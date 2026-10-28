@@ -4,6 +4,14 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
+## 0.1.17 - 2026-10-28
+
+* Composer hand-off: load `composer_result.js` via XHR first (script-tag fallback),
+  show status when a result is skipped (already seen / stale / busy), let
+  **Insert composed** force a retry, and time out `callCommand` so a hung insert
+  cannot leave the panel stuck. Addresses “IME wrote the file but nothing
+  happens” on Linux Desktop (Ubuntu ARM .deb verified to receive the file).
+
 * Docs: Windows Desktop hand-off path is
   `%LOCALAPPDATA%\ONLYOFFICE\DesktopEditors\data\sdkjs-plugins\{GUID}\`.
   The panel already polls `composer_result.js`; Insert failed on Win11 because

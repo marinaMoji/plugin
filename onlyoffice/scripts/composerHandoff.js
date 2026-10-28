@@ -98,12 +98,22 @@
 
   function insertAtCursor(png, done) {
     var asc = window.Asc;
+    var settled = false;
+    function finish(ok) {
+      if (settled) return;
+      settled = true;
+      done(ok);
+    }
+    // Desktop sometimes never invokes the callCommand callback; don't leave busy stuck.
+    window.setTimeout(function () {
+      finish(false);
+    }, 8000);
     if (!asc || !asc.plugin || !asc.plugin.callCommand) {
       try {
         pasteHtml(png);
-        done(true);
+        finish(true);
       } catch (e) {
-        done(false);
+        finish(false);
       }
       return;
     }
@@ -167,38 +177,49 @@
           if (!ok) {
             try {
               pasteHtml(png);
-              done(true);
+              finish(true);
             } catch (e) {
-              done(false);
+              finish(false);
             }
           } else {
-            done(ok);
+            finish(ok);
           }
         }
       );
     } catch (e) {
       try {
         pasteHtml(png);
-        done(true);
+        finish(true);
       } catch (e2) {
-        done(false);
+        finish(false);
       }
     }
   }
 
-  function insertText(text, id) {
+  function insertText(text, id, opts) {
+    opts = opts || {};
     if (typeof text !== "string" || !text) return false;
     id = Number(id) || Date.now();
-    if (id <= Math.max(lastSeenId(), memoryId)) return false;
-    if (Date.now() - id > MAX_AGE_MS) {
-      rememberId(id);
+    if (!opts.force && id <= Math.max(lastSeenId(), memoryId)) {
+      setStatus("Already tried this character (id " + id + "). Click Insert composed to retry.");
       return false;
     }
-    if (busy) return false;
+    if (!opts.force && Date.now() - id > MAX_AGE_MS) {
+      rememberId(id);
+      setStatus("Composer result is older than two minutes. Insert again in the composer.");
+      return false;
+    }
+    if (busy) {
+      setStatus("Insert already in progress…");
+      return false;
+    }
     busy = true;
     setStatus("Inserting character…");
     var asc = window.Asc;
+    var settled = false;
     function done(ok) {
+      if (settled) return;
+      settled = true;
       if (ok) {
         rememberId(id);
         setStatus("Inserted character.");
@@ -207,6 +228,9 @@
       }
       busy = false;
     }
+    window.setTimeout(function () {
+      done(false);
+    }, 8000);
     if (!asc || !asc.plugin) {
       done(false);
       return true;
@@ -247,15 +271,23 @@
     return true;
   }
 
-  function insertSvg(svg, id) {
+  function insertSvg(svg, id, opts) {
+    opts = opts || {};
     if (typeof svg !== "string" || svg.indexOf("<svg") < 0) return false;
     id = Number(id) || Date.now();
-    if (id <= Math.max(lastSeenId(), memoryId)) return false;
-    if (Date.now() - id > MAX_AGE_MS) {
-      rememberId(id);
+    if (!opts.force && id <= Math.max(lastSeenId(), memoryId)) {
+      setStatus("Already tried this drawing (id " + id + "). Click Insert composed to retry.");
       return false;
     }
-    if (busy) return false;
+    if (!opts.force && Date.now() - id > MAX_AGE_MS) {
+      rememberId(id);
+      setStatus("Composer result is older than two minutes. Insert again in the composer.");
+      return false;
+    }
+    if (busy) {
+      setStatus("Insert already in progress…");
+      return false;
+    }
     busy = true;
     setStatus("Inserting composed character…");
     svgToPng(svg)
@@ -284,17 +316,46 @@
     return true;
   }
 
-  function composerResultUrl() {
+  function composerResultBaseUrl() {
     try {
       var href = String(window.location.href || "");
-      var base = href.replace(/[#?].*$/, "").replace(/[^/]*$/, "");
-      return base + "composer_result.js#" + Date.now();
+      return href.replace(/[#?].*$/, "").replace(/[^/]*$/, "") + "composer_result.js";
     } catch (e) {
-      return "composer_result.js#" + Date.now();
+      return "composer_result.js";
     }
   }
 
-  function loadComposerResultScript() {
+  function loadComposerResultViaXhr() {
+    return new Promise(function (resolve) {
+      window.marinaMojiComposerResult = undefined;
+      var xhr = new XMLHttpRequest();
+      try {
+        // No ?query — that breaks file:// on Desktop. Bust cache with open+send timing.
+        xhr.open("GET", composerResultBaseUrl(), true);
+        xhr.overrideMimeType("text/plain; charset=utf-8");
+        xhr.onload = function () {
+          if (xhr.status === 0 || (xhr.status >= 200 && xhr.status < 300)) {
+            try {
+              // Same assignment as the .js file; avoids <script> injection quirks.
+              // eslint-disable-next-line no-eval
+              eval(xhr.responseText);
+            } catch (e) {
+              setStatus("composer_result.js parse error: " + (e && e.message ? e.message : e));
+            }
+          }
+          resolve(window.marinaMojiComposerResult);
+        };
+        xhr.onerror = function () {
+          resolve(undefined);
+        };
+        xhr.send();
+      } catch (e) {
+        resolve(undefined);
+      }
+    });
+  }
+
+  function loadComposerResultViaScript() {
     return new Promise(function (resolve) {
       window.marinaMojiComposerResult = undefined;
       var old = document.getElementById("composer-result-script");
@@ -310,9 +371,17 @@
       }
       s.onload = finish;
       s.onerror = finish;
-      s.src = composerResultUrl();
+      // # cache-bust only — a ?query breaks file:// on Desktop.
+      s.src = composerResultBaseUrl() + "#" + Date.now();
       document.head.appendChild(s);
       window.setTimeout(finish, 800);
+    });
+  }
+
+  function loadComposerResult() {
+    return loadComposerResultViaXhr().then(function (result) {
+      if (result) return result;
+      return loadComposerResultViaScript();
     });
   }
 
@@ -331,17 +400,34 @@
       });
   }
 
-  function poll() {
-    if (busy) return;
-    loadComposerResultScript().then(function (result) {
+  function poll(opts) {
+    opts = opts || {};
+    if (busy) {
+      if (opts.force) setStatus("Insert already in progress…");
+      return;
+    }
+    loadComposerResult().then(function (result) {
       // Unicode character from the composer (IBus may also try; often fails in Desktop).
-      if (result && result.text && insertText(result.text, result.id)) return;
-      if (result && insertSvg(result.svg, result.id)) return;
+      if (result && result.text && insertText(result.text, result.id, opts)) return;
+      if (result && insertSvg(result.svg, result.id, opts)) return;
+      if (opts.force && result) {
+        setStatus("Loaded composer_result.js but it has no usable svg/text.");
+        return;
+      }
+      if (opts.force && !result) {
+        setStatus("Could not load composer_result.js next to the plugin.");
+        return;
+      }
       return readClipboardSvg().then(function (svg) {
-        if (!svg) return;
+        if (!svg) {
+          if (opts.force) {
+            setStatus("No composer_result.js and no SVG on the clipboard.");
+          }
+          return;
+        }
         var h = hashText(svg);
-        if (h === lastClipboardHash) return;
-        if (insertSvg(svg, Date.now())) lastClipboardHash = h;
+        if (!opts.force && h === lastClipboardHash) return;
+        if (insertSvg(svg, Date.now(), opts)) lastClipboardHash = h;
       });
     });
   }
@@ -425,7 +511,10 @@
 
   window.MarinaMojiComposer = {
     refreshSizes: refreshSizes,
-    pollNow: poll,
+    // Manual button: retry even if this id was already marked seen.
+    pollNow: function () {
+      poll({ force: true });
+    },
     start: startPolling,
   };
 
