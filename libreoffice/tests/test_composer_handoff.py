@@ -26,7 +26,7 @@ def test_svg_path_on_linux_prefers_legacy_dot_dir(tmp_path, monkeypatch):
     home = tmp_path / "home"
     legacy = home / ".marinamoji"
     config = home / ".config" / "marinamoji"
-    legacy.mkdir()
+    legacy.mkdir(parents=True)
     config.mkdir(parents=True)
     (config / "character_composer_result.svg").write_text(SVG)
     monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
