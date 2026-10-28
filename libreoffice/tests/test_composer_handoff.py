@@ -30,8 +30,11 @@ def test_svg_path_on_linux_prefers_legacy_dot_dir(tmp_path, monkeypatch):
     config.mkdir(parents=True)
     (config / "character_composer_result.svg").write_text(SVG)
     monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
-    # Legacy dir exists → IME writes there; even with no SVG yet, prefer it.
-    assert h.svg_path("linux", str(home)) == str(legacy / "character_composer_result.svg")
+    # Only the .config dir holds a result so far → that one is read.
+    assert h.svg_path("linux", str(home)) == str(config / "character_composer_result.svg")
+    # Once the IME writes into the legacy dir (newer), that one wins.
+    import os
+    os.utime(config / "character_composer_result.svg", (1000, 1000))
     (legacy / "character_composer_result.svg").write_text(SVG)
     assert h.svg_path("linux", str(home)) == str(legacy / "character_composer_result.svg")
 
