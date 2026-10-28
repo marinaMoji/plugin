@@ -65,5 +65,14 @@ Source lives in [marinaMoji/plugin](https://github.com/marinaMoji/plugin) under 
 
 ## Developers
 
+```bash
+cd onlyoffice
+./build.sh
+./install-mac.sh      # macOS Desktop Editors
+./install-linux.sh    # Linux → ~/.local/share/onlyoffice/desktopeditors/sdkjs-plugins/{GUID}/
+```
+
+Keep the marinaMoji sidebar open when inserting a composed character from the character composer (the panel polls `composer_result.js`).
+
 Build, sideload, and packaging notes: [docs/ONLYOFFICE.md](../docs/ONLYOFFICE.md) and [docs/ONLYOFFICE_MARKETPLACE.md](../docs/ONLYOFFICE_MARKETPLACE.md).
 

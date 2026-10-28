@@ -4,9 +4,15 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
+## 0.1.16 - 2026-10-28
+
+* Composed-character hand-off on Desktop: keep the marinaMoji panel open, then Insert from the composer (also **Insert composed**). Insert at the caret with baseline alignment; poll `composer_result.js` and the clipboard. Load `../v1/plugins.js`. Linux Desktop verified.
+
+* Desktop install: load `../v1/plugins.js` like stock plugins. Composer hand-off: load `composer_result.js` with a `#` cache-bust (a `?query` breaks `file://` on Linux Desktop), only mark a result seen after a successful insert, and add an **Insert composed** button as a manual retry. Keep the marinaMoji panel open.
+
 * Render also resizes inserted composed characters to the font size of their paragraph, so they follow font and size changes (the composed drawing keeps its aspect ratio). Not yet verified in ONLYOFFICE Desktop.
 
-* Composer hand-off: while the panel is open, a drawing made in the marinaMoji character composer (a structure with no Unicode character) is inserted at the cursor when you press Insert in the composer. No button. The composer (macOS) writes `composer_result.js` into this plugin's folder; the panel loads it about once a second, rasterises the SVG to PNG and inserts it inline at the cursor through the document API (as Render does; `PasteHtml` only as a fallback). Results older than two minutes are ignored, and each is inserted once. Not yet verified in ONLYOFFICE Desktop.
+* Composer hand-off: while the panel is open, a drawing made in the marinaMoji character composer (a structure with no Unicode character) is inserted at the cursor when you press Insert in the composer. No button. The composer (macOS / Linux) writes `composer_result.js` into this plugin's folder; the panel loads it about once a second, rasterises the SVG to PNG and inserts it inline at the cursor through the document API (as Render does; `PasteHtml` only as a fallback). Results older than two minutes are ignored, and each is inserted once. Linux install: `./install-linux.sh`. Not yet verified in ONLYOFFICE Desktop.
 
 * Horizontal text: marks sit on the characters' bottom line instead of hanging below them. The picture is lowered by `(bottom line + ink inset) × font size` (`bottom_line_em`, `font_bottom_line_em`, `ink_inset_em` in `mapping.json`); the per-font bottom line is read from the paragraph's font (Songti SC differs). The old fixed `position_hps_per_pt` remains as the fallback. Checked against ONLYOFFICE's converter at 24–48 pt (within 0.012 em) and in ONLYOFFICE Desktop.
 * The render fingerprint now includes the paragraph's font, so existing marks redraw when the font changes.

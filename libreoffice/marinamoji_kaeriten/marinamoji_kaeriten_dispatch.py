@@ -97,14 +97,21 @@ JOB_SERVICE_NAME = "com.sun.star.task.Job"
 
 
 class MarinaMojiComposerJob(unohelper.Base, XServiceInfo, XJob):
-    """Starts the composer watcher (OnStartApp / OnFocus / OnNew / OnLoad)."""
+    """Starts the composer watcher and inserts a pending drawing.
+
+    OnFocus matters: Writer often cannot insert while the character composer
+    (another process) holds the focus, so returning to the document is the
+    moment we retry.
+    """
 
     def __init__(self, ctx, *args):
         self.ctx = ctx
 
     def execute(self, args):
         try:
-            _macro_module().start_composer_watcher()
+            mod = _macro_module()
+            mod.start_composer_watcher()
+            mod.insert_composed_character()
         except Exception:
             # An event job must never raise or show a dialog on every focus change.
             import traceback

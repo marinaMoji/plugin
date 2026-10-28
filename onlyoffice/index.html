@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <title>marinaMoji</title>
   <link rel="stylesheet" href="styles.css" />
-  <script
-    type="text/javascript"
-    src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"
-  ></script>
+  <!-- Desktop Editors ships v1 next to sdkjs-plugins/{GUID}/; prefer that over the CDN. -->
+  <script type="text/javascript" src="../v1/plugins.js"></script>
   <script type="text/javascript" src="scripts/exportCore.js"></script>
   <script type="text/javascript" src="scripts/kaeriten.js"></script>
   <script type="text/javascript" src="scripts/composerHandoff.js"></script>
@@ -41,7 +39,10 @@
 
   <section>
     <h2>Character composer</h2>
-    <p class="hint">Compose in marinaMoji and press Insert: a character with no Unicode code point appears here at the cursor. Keep this panel open.</p>
+    <p class="hint"><strong>Open this panel first</strong>, then press Insert in the marinaMoji character composer. The drawing appears at the cursor. If needed, click Insert composed.</p>
+    <div class="btn-row">
+      <button type="button" id="btn-composed-insert">Insert composed</button>
+    </div>
     <p id="composer-status" class="hint" role="status"></p>
   </section>
 

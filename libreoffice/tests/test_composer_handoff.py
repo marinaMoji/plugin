@@ -22,6 +22,20 @@ def test_svg_path_per_platform(tmp_path):
     assert h.svg_path("freebsd", "/home/a") is None
 
 
+def test_svg_path_on_linux_prefers_legacy_dot_dir(tmp_path, monkeypatch):
+    home = tmp_path / "home"
+    legacy = home / ".marinamoji"
+    config = home / ".config" / "marinamoji"
+    legacy.mkdir()
+    config.mkdir(parents=True)
+    (config / "character_composer_result.svg").write_text(SVG)
+    monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
+    # Legacy dir exists → IME writes there; even with no SVG yet, prefer it.
+    assert h.svg_path("linux", str(home)) == str(legacy / "character_composer_result.svg")
+    (legacy / "character_composer_result.svg").write_text(SVG)
+    assert h.svg_path("linux", str(home)) == str(legacy / "character_composer_result.svg")
+
+
 def test_svg_path_on_windows_takes_the_newest_product_dir(tmp_path):
     import os
 

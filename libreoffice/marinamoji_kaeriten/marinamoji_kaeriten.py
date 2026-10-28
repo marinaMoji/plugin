@@ -1634,11 +1634,31 @@ def unrender_kaeriten(*_args):
 _COMPOSED_NAME = "marinaMoji_composed_character"
 
 
+def _focus_writer(doc):
+    """Bring Writer to the front so an insert is visible without a manual click."""
+    try:
+        frame = doc.getCurrentController().getFrame()
+        win = frame.getContainerWindow()
+        win.setVisible(True)
+        try:
+            win.toFront()
+        except Exception:
+            pass
+        try:
+            win.setFocus()
+        except Exception:
+            pass
+    except Exception:
+        pass
+
+
 def insert_composed_character(*_args):
     """Insert the character composer's drawing at the cursor, once.
 
-    Run by the watcher thread and runnable by hand. Does nothing unless the
-    composer left a fresh SVG that has not been inserted yet.
+    Run by the watcher thread, OnFocus job, and runnable by hand. Does nothing
+    unless the composer left a fresh SVG that has not been inserted yet.
+    Only marks the result as seen after a successful insert, so a focus change
+    can retry if Writer was not ready while the composer had the focus.
     """
     if _composer_handoff is None:
         return
@@ -1652,13 +1672,14 @@ def insert_composed_character(*_args):
     except RuntimeError:
         return  # no Writer document right now; try again while the result is fresh
     try:
+        _focus_writer(doc)
         _insert_composed_svg(doc, svg, mtime)
+        _composer_handoff.mark_seen(cache, mtime)
         _composer_handoff.log(cache, "inserted composed character")
     except Exception as exc:  # noqa: BLE001 — never surface to the UI thread
         import traceback
 
         _composer_handoff.log(cache, "insert failed: %r\n%s" % (exc, traceback.format_exc()))
-    _composer_handoff.mark_seen(cache, mtime)
 
 
 def _insert_composed_svg(doc, svg, mtime):

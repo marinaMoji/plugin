@@ -49,15 +49,22 @@ def svg_path(platform=None, home=None, local_app_data=None):
     if platform == "darwin":
         base = os.path.join(home, "Library", "Application Support", "marinaMoji")
     elif platform.startswith("linux"):
-        # The IME uses ~/.marinamoji if it exists, else $XDG_CONFIG_HOME/marinamoji,
-        # else ~/.config/marinamoji: take whichever holds the newest result.
+        # Match the IME (system_util.cc): ~/.marinamoji if that directory exists,
+        # else $XDG_CONFIG_HOME/marinamoji, else ~/.config/marinamoji. If more than
+        # one result file exists (e.g. after a profile move), take the newest.
         xdg = os.environ.get("XDG_CONFIG_HOME")
-        bases = [os.path.join(home, ".config", "marinamoji")]
+        preferred = []
+        legacy = os.path.join(home, ".marinamoji")
+        if os.path.isdir(legacy):
+            preferred.append(legacy)
         if xdg:
-            bases.append(os.path.join(xdg, "marinamoji"))
-        bases.append(os.path.join(home, ".marinamoji"))
-        candidates = [os.path.join(b, "character_composer_result.svg") for b in bases]
-        return max(candidates, key=_mtime)
+            preferred.append(os.path.join(xdg, "marinamoji"))
+        preferred.append(os.path.join(home, ".config", "marinamoji"))
+        candidates = [os.path.join(b, "character_composer_result.svg") for b in preferred]
+        existing = [p for p in candidates if os.path.isfile(p)]
+        if existing:
+            return max(existing, key=_mtime)
+        return candidates[0]
     else:
         return None
     return os.path.join(base, "character_composer_result.svg")

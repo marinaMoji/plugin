@@ -1,30 +1,27 @@
 /*
  * marinaMoji character composer -> ONLYOFFICE.
  *
- * For a structure with no Unicode character the composer (macOS) writes a
- * drawing as SVG, and also composer_result.js next to this plugin's
- * index.html:
- *
- *   window.marinaMojiComposerResult = { id: <ms since epoch>, svg: "<svg…>" };
- *
- * While the panel is open it loads that file about once a second (a relative
- * <script src> works from file:// with no CORS or clipboard permission),
- * rasterises a fresh result and inserts it at the cursor. No button involved.
+ * Keep this panel open. On Insert the composer writes composer_result.js next
+ * to index.html (and copies the SVG to the clipboard). The panel polls that
+ * file (script tag, # cache-bust only — a ?query breaks file:// on Desktop)
+ * and also checks the clipboard, then inserts an inline PNG at the caret.
  */
 (function () {
   "use strict";
 
   var POLL_MS = 1000;
-  var MAX_AGE_MS = 120000; // ignore anything older, e.g. left over from a past session
-  var RASTER_HEIGHT_PX = 256; // the picture's pixels; its size on the page is set at insert
-  var DEFAULT_PT = 12; // used when the font size at the cursor cannot be read
-  // The drawing fills its square; a font's ink is a little smaller and hangs a
-  // little below the baseline. Measured against Arial/Mincho text in ONLYOFFICE.
+  var MAX_AGE_MS = 120000;
+  var RASTER_HEIGHT_PX = 256;
+  var DEFAULT_PT = 12;
+  // Full-body IDS drawings fill the em square; do not apply the kaeriten drop.
   var INK_SCALE = 0.94;
-  var DROP_EM = 0.19;
+  var DROP_EM = 0;
   var STORE_KEY = "marinamoji.composer.lastId";
 
   var busy = false;
+  var memoryId = 0;
+  var started = false;
+  var lastClipboardHash = "";
 
   function lastSeenId() {
     try {
@@ -37,13 +34,9 @@
   function rememberId(id) {
     try {
       window.localStorage.setItem(STORE_KEY, String(id));
-    } catch (e) {
-      /* in-memory guard below still applies */
-    }
+    } catch (e) {}
     memoryId = id;
   }
-
-  var memoryId = 0;
 
   function setStatus(text) {
     var el = document.getElementById("composer-status");
@@ -58,7 +51,12 @@
     return { width: width || 100, height: height || 100 };
   }
 
-  /** Rasterises |svg| to a PNG data URL; resolves {dataUrl, aspect} (width / height). */
+  function hashText(text) {
+    var h = 5381;
+    for (var i = 0; i < text.length; i++) h = ((h << 5) + h) ^ text.charCodeAt(i);
+    return (h >>> 0).toString(16);
+  }
+
   function svgToPng(svg) {
     return new Promise(function (resolve, reject) {
       var size = svgSize(svg);
@@ -69,8 +67,7 @@
           var canvas = document.createElement("canvas");
           canvas.height = RASTER_HEIGHT_PX;
           canvas.width = Math.max(1, Math.round(RASTER_HEIGHT_PX * aspect));
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
           resolve({ dataUrl: canvas.toDataURL("image/png"), aspect: aspect });
         } catch (e) {
           reject(e);
@@ -83,21 +80,33 @@
     });
   }
 
-  /** Pastes the picture as HTML: the fallback when the document API cannot. */
   function pasteHtml(png) {
     var heightPx = Math.round((DEFAULT_PT * 96) / 72);
     var html =
-      '<img src="' + png.dataUrl + '" width="' + Math.round(heightPx * png.aspect) +
-      '" height="' + heightPx + '" alt="marinaMoji composed character"/>';
+      '<img src="' +
+      png.dataUrl +
+      '" width="' +
+      Math.round(heightPx * png.aspect) +
+      '" height="' +
+      heightPx +
+      '" alt="marinaMoji composed character"/>';
+    if (!window.Asc || !window.Asc.plugin || !window.Asc.plugin.executeMethod) {
+      throw new Error("ONLYOFFICE plugin API is not ready");
+    }
     window.Asc.plugin.executeMethod("PasteHtml", [html]);
   }
 
-  /**
-   * Inserts the picture inline at the cursor through the document API, the way
-   * Render places its pictures; falls back to PasteHtml if that fails.
-   */
   function insertAtCursor(png, done) {
     var asc = window.Asc;
+    if (!asc || !asc.plugin || !asc.plugin.callCommand) {
+      try {
+        pasteHtml(png);
+        done(true);
+      } catch (e) {
+        done(false);
+      }
+      return;
+    }
     asc.scope = asc.scope || {};
     asc.scope.composedPng = png.dataUrl;
     asc.scope.composedAspect = png.aspect;
@@ -108,8 +117,6 @@
       asc.plugin.callCommand(
         function () {
           var doc = Api.GetDocument();
-          // Font size (pt) of the text at the cursor: the paragraph's last run
-          // with text, else the paragraph, else the document default.
           function sizePt(textPr) {
             var hps = textPr && textPr.GetFontSize ? Number(textPr.GetFontSize()) : 0;
             return hps > 0 ? hps / 2 : 0;
@@ -121,8 +128,13 @@
               for (var i = cur.GetElementsCount() - 1; i >= 0 && !pt; i--) {
                 var el = cur.GetElement(i);
                 if (el && el.GetText && el.GetText()) {
-                  pt = el.GetFontSize ? sizePt({ GetFontSize: function () { return el.GetFontSize(); } })
-                                      : sizePt(el.GetTextPr && el.GetTextPr());
+                  pt = el.GetFontSize
+                    ? sizePt({
+                        GetFontSize: function () {
+                          return el.GetFontSize();
+                        },
+                      })
+                    : sizePt(el.GetTextPr && el.GetTextPr());
                 }
               }
               if (!pt && cur.GetTextPr) pt = sizePt(cur.GetTextPr());
@@ -139,37 +151,52 @@
           if (drawing.SetWrappingStyle) drawing.SetWrappingStyle("inline");
           if (drawing.SetName) drawing.SetName("marinaMoji composed character");
           var run = Api.CreateRun();
-          // A CJK glyph's box reaches below the baseline; sit the picture there.
-          if (run.SetPosition) run.SetPosition(-Math.round(pt * 2 * Asc.scope.composedDropEm));
+          if (run.SetPosition) run.SetPosition(0);
           run.AddDrawing(drawing);
           var para = Api.CreateParagraph();
           para.AddElement(run);
+          var clean = Api.CreateRun();
+          if (clean.SetPosition) clean.SetPosition(0);
+          para.AddElement(clean);
           doc.InsertContent([para], true);
           return pt || true;
         },
         false,
         true,
         function (ok) {
-          if (!ok) pasteHtml(png);
-          done(ok);
+          if (!ok) {
+            try {
+              pasteHtml(png);
+              done(true);
+            } catch (e) {
+              done(false);
+            }
+          } else {
+            done(ok);
+          }
         }
       );
     } catch (e) {
-      pasteHtml(png);
-      done(true);
+      try {
+        pasteHtml(png);
+        done(true);
+      } catch (e2) {
+        done(false);
+      }
     }
   }
 
-  function handle(result) {
-    var id = Number(result && result.id);
-    var svg = result && result.svg;
-    if (!id || typeof svg !== "string" || svg.indexOf("<svg") < 0) return;
-    if (id <= Math.max(lastSeenId(), memoryId)) return;
+  function insertSvg(svg, id) {
+    if (typeof svg !== "string" || svg.indexOf("<svg") < 0) return false;
+    id = Number(id) || Date.now();
+    if (id <= Math.max(lastSeenId(), memoryId)) return false;
     if (Date.now() - id > MAX_AGE_MS) {
-      rememberId(id); // too old to be what the user just composed; do not retry
-      return;
+      rememberId(id);
+      return false;
     }
+    if (busy) return false;
     busy = true;
+    setStatus("Inserting composed character…");
     svgToPng(svg)
       .then(function (png) {
         return new Promise(function (resolve) {
@@ -177,43 +204,92 @@
         });
       })
       .then(function (ok) {
-        rememberId(id);
-        setStatus("Inserted composed character" + (typeof ok === "number" ? " at " + ok + " pt." : "."));
+        if (ok) {
+          rememberId(id);
+          setStatus(
+            "Inserted composed character" +
+              (typeof ok === "number" ? " at " + ok + " pt." : ".")
+          );
+        } else {
+          setStatus("Insert failed. Click in the document, then try Insert composed.");
+        }
       })
       .catch(function (e) {
-        setStatus("Composer result could not be inserted: " + (e && e.message ? e.message : e));
+        setStatus("Insert failed: " + (e && e.message ? e.message : e));
       })
       .then(function () {
         busy = false;
+      });
+    return true;
+  }
+
+  function composerResultUrl() {
+    try {
+      var href = String(window.location.href || "");
+      var base = href.replace(/[#?].*$/, "").replace(/[^/]*$/, "");
+      return base + "composer_result.js#" + Date.now();
+    } catch (e) {
+      return "composer_result.js#" + Date.now();
+    }
+  }
+
+  function loadComposerResultScript() {
+    return new Promise(function (resolve) {
+      window.marinaMojiComposerResult = undefined;
+      var old = document.getElementById("composer-result-script");
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+      var s = document.createElement("script");
+      s.id = "composer-result-script";
+      s.charset = "utf-8";
+      var settled = false;
+      function finish() {
+        if (settled) return;
+        settled = true;
+        resolve(window.marinaMojiComposerResult);
+      }
+      s.onload = finish;
+      s.onerror = finish;
+      s.src = composerResultUrl();
+      document.head.appendChild(s);
+      window.setTimeout(finish, 800);
+    });
+  }
+
+  function readClipboardSvg() {
+    if (!navigator.clipboard || !navigator.clipboard.readText) {
+      return Promise.resolve(null);
+    }
+    return navigator.clipboard
+      .readText()
+      .then(function (text) {
+        if (text && text.indexOf("<svg") >= 0) return text.trim();
+        return null;
+      })
+      .catch(function () {
+        return null;
       });
   }
 
   function poll() {
     if (busy) return;
-    window.marinaMojiComposerResult = undefined;
-    var old = document.getElementById("composer-result-script");
-    if (old && old.parentNode) old.parentNode.removeChild(old);
-    var s = document.createElement("script");
-    s.id = "composer-result-script";
-    s.charset = "utf-8";
-    s.onload = function () {
-      handle(window.marinaMojiComposerResult);
-    };
-    s.onerror = function () {
-      /* no file yet: the composer has not produced a drawing */
-    };
-    s.src = "composer_result.js?_=" + Date.now();
-    document.head.appendChild(s);
+    loadComposerResultScript().then(function (result) {
+      if (result && insertSvg(result.svg, result.id)) return;
+      return readClipboardSvg().then(function (svg) {
+        if (!svg) return;
+        var h = hashText(svg);
+        if (h === lastClipboardHash) return;
+        if (insertSvg(svg, Date.now())) lastClipboardHash = h;
+      });
+    });
   }
 
-  /**
-   * Resizes every composed-character picture in the document to the font size
-   * of its paragraph (aspect kept), so Render follows font and size changes.
-   * Resolves with the number resized.
-   */
   function refreshSizes() {
     return new Promise(function (resolve) {
       var asc = window.Asc;
+      if (!asc || !asc.plugin || !asc.plugin.callCommand) {
+        resolve(0);
+        return;
+      }
       asc.scope = asc.scope || {};
       asc.scope.composedDefaultPt = DEFAULT_PT;
       asc.scope.composedInkScale = INK_SCALE;
@@ -244,7 +320,9 @@
             for (var d = 0; d < drawings.length; d++) {
               var drawing = drawings[d];
               try {
-                if (!drawing.GetName || drawing.GetName() !== "marinaMoji composed character") continue;
+                if (!drawing.GetName || drawing.GetName() !== "marinaMoji composed character") {
+                  continue;
+                }
                 var para = drawing.GetParentParagraph();
                 if (!para) continue;
                 var pt = paragraphPt(para);
@@ -254,7 +332,9 @@
                 if (!oldH || Math.abs(h - oldH) < 1270) continue;
                 drawing.SetSize(Math.round((oldW * h) / oldH), h);
                 var run = drawing.GetParentRun ? drawing.GetParentRun() : null;
-                if (run && run.SetPosition) run.SetPosition(-Math.round(pt * 2 * Asc.scope.composedDropEm));
+                if (run && run.SetPosition) {
+                  run.SetPosition(-Math.round(pt * 2 * Asc.scope.composedDropEm));
+                }
                 count++;
               } catch (e) {}
             }
@@ -272,16 +352,39 @@
     });
   }
 
-  window.MarinaMojiComposer = { refreshSizes: refreshSizes };
-
-  function start() {
+  function startPolling() {
+    if (started) return;
+    started = true;
     setStatus("Composer: waiting for a composed character.");
+    poll();
     window.setInterval(poll, POLL_MS);
   }
 
+  window.MarinaMojiComposer = {
+    refreshSizes: refreshSizes,
+    pollNow: poll,
+    start: startPolling,
+  };
+
+  function arm() {
+    if (!window.Asc || !window.Asc.plugin) {
+      setStatus("Open this panel from Plugins → marinaMoji.");
+      window.setTimeout(arm, 500);
+      return;
+    }
+    var prev = window.Asc.plugin.init;
+    window.Asc.plugin.init = function (data) {
+      if (typeof prev === "function") prev.call(window.Asc.plugin, data);
+      startPolling();
+    };
+    window.setTimeout(function () {
+      if (!started) startPolling();
+    }, 1500);
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
+    document.addEventListener("DOMContentLoaded", arm);
   } else {
-    start();
+    arm();
   }
 })();

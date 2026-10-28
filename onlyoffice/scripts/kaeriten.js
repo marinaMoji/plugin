@@ -1063,6 +1063,13 @@
         wire("btn-render", runRender);
         wire("btn-unrender", runUnrender);
         wire("btn-plain", runCopyPlain);
+        wire("btn-composed-insert", () => {
+          const composer = window.MarinaMojiComposer;
+          if (composer && composer.pollNow) composer.pollNow();
+        });
+        if (window.MarinaMojiComposer && window.MarinaMojiComposer.start) {
+          window.MarinaMojiComposer.start();
+        }
       })
       .catch((err) => setStatus(String(err.message || err), true));
   };
