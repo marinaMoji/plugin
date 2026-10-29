@@ -21,7 +21,20 @@ copy_lo_icon() {
     echo "WARNING: missing ${svg}" >&2
     return 0
   fi
-  cp "${svg}" "${ICON_DST}/${svg_name}"
+  # Toolbar SVGs must be size-less (viewBox only): an explicit width/height
+  # (Inkscape exports) makes LibreOffice rasterize at that size and scale the
+  # bitmap down, which looks fuzzy. Editor metadata is dropped too.
+  python3 - "${svg}" "${ICON_DST}/${svg_name}" <<'PY'
+import re, sys
+src, dst = sys.argv[1], sys.argv[2]
+text = open(src, encoding="utf-8").read()
+m = re.search(r"<svg\b[^>]*>", text, re.S)
+root = m.group(0)
+root = re.sub(r"\s(?:width|height)=\"[^\"]*\"", "", root)
+text = text[: m.start()] + root + text[m.end():]
+text = re.sub(r"<sodipodi:namedview\b.*?</sodipodi:namedview>", "", text, flags=re.S)
+open(dst, "w", encoding="utf-8").write(text)
+PY
 }
 
 copy_lo_icon about_marinamoji.svg
