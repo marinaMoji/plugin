@@ -30,7 +30,7 @@ We **do** use normal **HTTPS** on our own domain (e.g. Let’s Encrypt via GitHu
 | Product | End-user install (goal) | Gatekeeper |
 |---------|-------------------------|------------|
 | **LibreOffice** | Download Mac `.dmg` → run installer (or `.oxt` on Linux/Windows) | May warn on unsigned `.app` / `.dmg` |
-| **Word** | Download Mac `.dmg` (manifest) or upload `manifest.xml` (Windows) | May warn on unsigned `.dmg` |
+| **Word** | Download Mac `.dmg` (manifest) or Windows `marinamoji-kaeriten-word-setup.exe` | May warn on unsigned `.dmg`; Windows SmartScreen may warn on the unsigned `.exe` |
 | **ONLYOFFICE** | Download Mac `.dmg` → run installer (or manual zip) | May warn on unsigned `.app` / `.dmg` |
 
 **Recommended order for new users:** LibreOffice first (simplest), then Word or ONLYOFFICE if they need that host.
@@ -84,7 +84,7 @@ Build locally: `plugin/packaging/build-release.sh` (maintainers only).
 |------|---------|
 | **/install/** | Index: pick LibreOffice / Word / ONLYOFFICE |
 | **/install/libreoffice/** | Download `.oxt`, 3 screenshots (Extension Manager FR/EN) |
-| **/install/word/** | Download Mac `.dmg`, Windows “upload manifest” later |
+| **/install/word/** | Download Mac `.dmg` or Windows `marinamoji-kaeriten-word-setup.exe` |
 | **/install/onlyoffice/** | Download zip + Install app |
 | **/install/mac-gatekeeper/** | One page: “macOS blocked the app” — Right-click → Open |
 
@@ -185,10 +185,25 @@ We ship **`Install marinaMoji Kaeriten.app`** (AppleScript), built from:
 
 See [packaging/mac/README.md](../packaging/mac/README.md) for building the `.app` / `.dmg`.
 
-### Windows (later)
+### Windows installer
 
-**Insertion → Compléments → Mes compléments → Téléverser mon complément** → choose `manifest.production.xml`.  
-No local server if manifest URLs point to your website.
+We ship **`marinamoji-kaeriten-word-setup.exe`** (Inno Setup, built by CI on every `plugins-v*` release from `packaging/windows/marinamoji-kaeriten-word.iss`).
+
+**User steps:**
+
+1. Download `marinamoji-kaeriten-word-setup.exe` from the GitHub Release. Windows SmartScreen may warn because the installer is not Authenticode-signed (**More info → Run anyway**).
+2. Run it. It is per-user: no administrator rights, nothing outside your profile. English, French and Japanese.
+3. It copies the production manifest to `%LOCALAPPDATA%\marinaMoji\Kaeriten\` and registers it under `HKCU\Software\Microsoft\Office\16.0\WEF\Developer`.
+4. Close Word completely, reopen it with a document (internet required, the add-in is hosted on GitHub Pages).
+5. **Home → Kaeriten**, or **Insert → Add-ins → My Add-ins → Developer Add-ins**.
+
+Uninstall from **Settings → Apps** (removes the registry value and the folder).
+
+The add-in itself updates automatically (Word loads it from GitHub Pages); the installer only needs re-running if the manifest changes.
+
+**Status:** the installer is built by CI but has not yet been verified on a real Windows Word, nor has the composer's direct insert on Windows ([marinaMoji/plugin#12](https://github.com/marinaMoji/plugin/issues/12)). Direct insert from the composer needs marinaMoji 0.0.19 or later.
+
+**Manual (testers, Word on the web):** **Insertion → Compléments → Mes compléments → Téléverser mon complément** → choose `marinamoji-kaeriten-word.xml` from the release.
 
 ---
 

@@ -15,7 +15,7 @@ marinaMoji ships **three separate office plugins** plus the **IME** (input metho
 | Host | What users install once | What must stay online | Updates to *code* |
 |------|-------------------------|------------------------|-------------------|
 | **LibreOffice** | `.oxt` or Mac `.dmg` | Update feed on **GitHub Pages** (optional check) | Extension Manager can offer update; or re-install `.oxt` / Mac `.dmg` |
-| **Word** | Mac `.dmg` or Windows manifest `.xml` | **GitHub Pages** (`/word/` + `version.json`) | **Mostly automatic** — Word reloads JS from the web; pane may show a notice |
+| **Word** | Mac `.dmg` or Windows `…-word-setup.exe` (or manifest `.xml`) | **GitHub Pages** (`/word/` + `version.json`) | **Mostly automatic** — Word reloads JS from the web; pane may show a notice |
 | **ONLYOFFICE** | `.plugin` / zip or Mac `.dmg` | Nothing (Desktop) | Re-install plugin folder (no auto-check yet) |
 
 **Done vs leftovers:** [UPDATE_LEFTOVERS.md](UPDATE_LEFTOVERS.md).
@@ -72,11 +72,14 @@ export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"
 | `marinamoji-kaeriten.plugin` | All | ONLYOFFICE Plugin Manager (7.4+) |
 | `marinamoji-kaeriten-onlyoffice-mac.dmg` | Mac | GUI installer |
 | `word-dist.zip` | — | Archive of hosted files (when Word included) |
-| `marinamoji-kaeriten-word.xml` | Windows / reference | Production manifest |
+| `marinamoji-kaeriten-word.xml` | Windows / web / reference | Production manifest |
+| `marinamoji-kaeriten-word-setup.exe` | Windows | Per-user Inno Setup installer; registers the manifest under the `WEF\Developer` key. Built by the `windows-installer` CI job after the Release exists; unsigned unless you sign it with `packaging/sign-windows-release.mjs` |
 | `marinamoji-kaeriten-word-mac.dmg` | Mac | Copies the manifest into Word `wef/`; if macOS refuses (it usually does), stages it on the Desktop and opens Finder for a drag |
 | `INSTALL.txt`, `SHA256SUMS.txt`, `VERSION.txt` | All | Human readme + integrity |
 
-On **Linux/Windows** without a Mac, you still get `.oxt`, ONLYOFFICE zip/`.plugin`, and Word zip/manifest — but not the `.dmg` GUI wrappers (build those on a Mac before publishing).
+On **Linux/Windows** without a Mac, you still get `.oxt`, ONLYOFFICE zip/`.plugin`, and Word zip/manifest — but not the `.dmg` GUI wrappers (build those on a Mac before publishing). The Windows `.exe` is built only in CI (`release.yml`, `windows-installer` job).
+
+**GitHub Pages:** the Word site deploys on every push to `main` that touches `word/**` (`word-pages.yml`), not only on release. The version-channel and update-feed files, though, are committed by the release workflows with `GITHUB_TOKEN`, which does not start the Pages workflow; the next push touching `word/**`, `pages/**` or the workflow (or **Run workflow** by hand) publishes them.
 
 Details per host: [packaging/mac/README.md](../packaging/mac/README.md).
 

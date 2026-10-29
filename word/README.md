@@ -7,7 +7,7 @@ Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice e
 - **Commands:** **Render** / Unrender / Copy plain; Japanese typography Apply/Remove
   (warichū, tate-chū-yoko, emphasis, ruby, jidori)
 
-**Status (October 2026):** v1 works on Word for Mac; the composer's drawings insert through the pane or, on macOS, directly from the composer (awaiting a full test, [marinaMoji/plugin#11](https://github.com/marinaMoji/plugin/issues/11)). Word on Windows is untested ([#12](https://github.com/marinaMoji/plugin/issues/12)). **Users:** install the production manifest (below). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
+**Status (October 2026):** v1 works on Word for Mac; the composer's drawings insert through the pane or, on macOS, directly from the composer (awaiting a full test, [marinaMoji/plugin#11](https://github.com/marinaMoji/plugin/issues/11)). Word on Windows has an installer but is untested ([#12](https://github.com/marinaMoji/plugin/issues/12)). **Users:** install the production manifest (below). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
 
 **End-user distribution (no Terminal):** GitHub Pages hosts `dist/` at `https://marinamoji.github.io/plugin/word/`; Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
 
@@ -145,8 +145,10 @@ npm run start:server-only
 
 ### Windows / Word on the web
 
-**Insert** → **Add-ins** → **My Add-ins** → **Upload My Add-in** → `plugin/word/manifest.xml`  
-(French: **Insertion** → **Compléments** → **Mes compléments** → **Téléverser mon complément**.)
+**Word for Windows (users):** run `marinamoji-kaeriten-word-setup.exe` from the [latest release](https://github.com/marinaMoji/plugin/releases/latest), close Word completely, reopen it, then **Home → Kaeriten** (or **Insert → Add-ins → My Add-ins → Developer Add-ins**). The installer is per-user (no admin) and unsigned, so SmartScreen may warn. Untested on a real Windows Word so far ([#12](https://github.com/marinaMoji/plugin/issues/12)).
+
+**Word on the web / manual:** **Insert** → **Add-ins** → **My Add-ins** → **Upload My Add-in** → `marinamoji-kaeriten-word.xml` from the release  
+(French: **Insertion** → **Compléments** → **Mes compléments** → **Téléverser mon complément**.) Developers can upload `plugin/word/manifest.xml` (localhost).
 
 To stop debugging: `npm stop`.
 
