@@ -31,5 +31,9 @@ venv/
 .env.*
 packaging/word-release.env
 
-# LibreOffice lock files from local spike runs
-libreoffice/spikes/warichu/artifacts/.~lock.*
+# LibreOffice spike run outputs (scripts recreate these; keep *.md / *.json)
+libreoffice/spikes/**/artifacts/**/*.odt
+libreoffice/spikes/**/artifacts/**/*.docx
+libreoffice/spikes/**/artifacts/**/*.pdf
+libreoffice/spikes/**/artifacts/**/*.png
+libreoffice/spikes/**/.~lock.*
