@@ -31,6 +31,8 @@ _COMMANDS = frozenset(
         "set_emphasis_default",
         "apply_tatechuyoko",
         "remove_tatechuyoko",
+        "apply_jidori",
+        "remove_jidori",
         "inspect_typography",
     )
 )
@@ -115,6 +117,10 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.apply_tatechuyoko()
         elif path == "remove_tatechuyoko":
             macros.remove_tatechuyoko()
+        elif path == "apply_jidori":
+            macros.apply_jidori()
+        elif path == "remove_jidori":
+            macros.remove_jidori()
         elif path == "inspect_typography":
             macros.inspect_japanese_typography()
 

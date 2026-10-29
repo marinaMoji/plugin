@@ -10,8 +10,8 @@
 | 4 | Kinsoku shori 禁則処理 (diagnostics) | **0.3.31 inspector (E2)** — [`../kinsoku/e2/`](../kinsoku/e2/) |
 | 5 | Document-wide validation | pending |
 | 6 | Punctuation and spacing | pending |
-| 7 | Jidori 字取り | pending |
-| 8 | Furiwake 振り分け | pending |
+| 7 | Jidori 字取り | **0.3.33** — Apply/Remove; V compress refused — [`../jidori/`](../jidori/) |
+| 8 | Furiwake 振り分け | pending (distinct from jidori) |
 
 ## Phase 3 — ruby + warichū coexistence (**0.3.22** smoked)
 

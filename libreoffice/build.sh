@@ -24,6 +24,7 @@ fi
 cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_handoff.py" \
    "${SRC}/warichu.py" "${SRC}/ruby.py" "${SRC}/emphasis.py" "${SRC}/typography_prefs.py" \
    "${SRC}/tatechuyoko.py" "${SRC}/typography_analysis.py" "${SRC}/typography_inspector.py" \
+   "${SRC}/jidori.py" "${SRC}/jidori_math.py" \
    "${BUILD}/Scripts/python/"
 cp "${PLUGIN}/mapping.json" "${BUILD}/Scripts/python/marinamoji_mapping.json"
 

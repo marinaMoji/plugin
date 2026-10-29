@@ -5,13 +5,13 @@
                     oor:package="org.openoffice.Office">
   <node oor:name="AddonUI">
     <!--
-      Toolbar id .v5. Item nodes MUST be equal-length names (m01..m19):
+      Toolbar id .v6. Item nodes MUST be equal-length names (m01..m22):
       LibreOffice configmgr sorts set members by LengthContentsCompare
       (shorter names first), which scrambled i01_render / i18_copy_plain.
-      Order: kaeriten → warichū → tate → emphasis → ruby → inspect → copy
+      Order: kaeriten → warichū → tate → emphasis → ruby → jidori → inspect → copy
     -->
     <node oor:name="OfficeToolBar">
-      <node oor:name="org.marinaMoji.kaeriten.toolbar.v5" oor:op="replace">
+      <node oor:name="org.marinaMoji.kaeriten.toolbar.v6" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
           <value>marinaMoji</value>
           <value xml:lang="en-US">marinaMoji</value>
@@ -250,6 +250,45 @@
         </node>
         <node oor:name="m18" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:apply_jidori</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Apply jidori</value>
+            <value xml:lang="en-US">Apply jidori</value>
+            <value xml:lang="ja">字取りを適用</value>
+            <value xml:lang="fr">Appliquer le jidori</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="m19" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:remove_jidori</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Remove jidori</value>
+            <value xml:lang="en-US">Remove jidori</value>
+            <value xml:lang="ja">字取りを解除</value>
+            <value xml:lang="fr">Supprimer le jidori</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="m20" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>private:separator</value>
+          </prop>
+        </node>
+        <node oor:name="m21" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:inspect_typography</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
@@ -265,7 +304,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m19" oor:op="replace">
+        <node oor:name="m22" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:copy_plain_text</value>
           </prop>
@@ -450,6 +489,32 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/remove_ruby.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.apply_jidori" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:apply_jidori</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_jidori.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_jidori.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.remove_jidori" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:remove_jidori</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_jidori.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_jidori.svg</value>
           </prop>
         </node>
       </node>

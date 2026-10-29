@@ -78,5 +78,9 @@
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/remove_tatechuyoko.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/apply_jidori.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/remove_jidori.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/inspect_typography.svg"/>
 </manifest:manifest>

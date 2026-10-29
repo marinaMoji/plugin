@@ -39,6 +39,8 @@ copy_lo_icon remove_tatechuyoko.svg
 copy_lo_icon apply_emphasis.svg
 copy_lo_icon emphasis_menu.svg
 copy_lo_icon remove_emphasis.svg
+copy_lo_icon apply_jidori.svg
+copy_lo_icon remove_jidori.svg
 copy_lo_icon inspect_typography.svg
 
 # Extension Manager icon (recommended 42×42 PNG in description.xml)

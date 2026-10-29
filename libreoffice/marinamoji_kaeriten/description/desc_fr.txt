@@ -10,6 +10,8 @@ Tate-chū-yoko (縦中横) : sélectionnez un court run latin/chiffres → Appli
 
 Points d’emphase (圏点) : sélectionnez le texte → Appliquer (défaut du document, sésame noir) ou menu pour disque / cercle / point, Retirer, ou Définir le signe par défaut. Changer le défaut ne réécrit pas les marques existantes.
 
+Jidori (字取り) : sélectionnez un court run japonais → Appliquer le jidori → indiquez N cadratins. Expansion via l’interlettrage ; compression via l’échelle de largeur en horizontal seulement (refusée en vertical). Supprimer restaure l’échelle/l’interlettrage antérieurs si les métadonnées marinaMoji sont présentes. Approximation — pas l’équivalent de Fit Text Word.
+
 Inspecteur typographique japonais (lecture seule) : Vérifier la typographie japonaise affiche les réglages de composition et quelques avis prudents. Ne modifie pas le document et ne prétend pas à une conformité JLREQ complète.
 
 Fonctionne hors ligne. Aucune télémétrie. L’IME marinaMoji n’est pas requis à l’exécution (toute saisie produisant les marques Unicode convient). LibreOffice 6.4 ou plus récent.

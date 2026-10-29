@@ -10,6 +10,8 @@ Native tate-chū-yoko (縦中横): select a short Latin/digit run → Apply (Cha
 
 Native emphasis marks (圏点・傍点): select text → Apply (document default, 黒ゴマ / accent) or open the emphasis menu for 黒丸 / 白丸 / 点, Remove, or Set default. Passage marks are ordinary CharEmphasis; changing the document default does not rewrite existing marks.
 
+Jidori (字取り): select a short Japanese run → Apply jidori → enter N character cells. Expands with Spacing; compresses with Scale width in horizontal writing only (vertical compress is refused). Remove restores prior scaling/spacing when marinaMoji’s bookmark/metadata is present. Approximate fit — not Word Fit Text.
+
 Japanese Typography Inspector (read-only): Inspect Japanese Typography reports Asian composition settings and a few conservative advisories. It does not modify the document and does not claim full JLREQ validation.
 
 Works offline. No telemetry. Does not require the marinaMoji IME at runtime (any input that produces the Unicode marks is fine). LibreOffice 6.4 or newer.

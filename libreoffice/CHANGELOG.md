@@ -5,6 +5,14 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.33 - 2026-10-29
+
+* **Jidori (字取り):** Apply / Remove approximate fit to N full-width cells via
+  `CharKerning` (expand) and `CharScaleWidth` (horizontal shrink only).
+  Vertical compress refused (Scale width distorts). Restore prior scale/spacing
+  via bookmark + document UserDefinedProperties. Toolbar `.v6`.
+* Docs: [`docs/jidori/`](../docs/jidori/).
+
 ## 0.3.32 - 2026-10-29
 
 * Typography inspector: list **each** Western / halfwidth-JP punctuation

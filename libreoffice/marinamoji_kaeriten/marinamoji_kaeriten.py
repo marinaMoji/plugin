@@ -57,6 +57,11 @@ try:
 except ImportError:
     _typography_inspector = None
 
+try:
+    import jidori as _jidori
+except ImportError:
+    _jidori = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1889,6 +1894,20 @@ def inspect_japanese_typography(*_args):
     _typography_inspector.inspect_japanese_typography()
 
 
+def apply_jidori(*_args):
+    """Fit the selection into N full-width character cells (字取り)."""
+    if _jidori is None:
+        return
+    _jidori.apply_jidori()
+
+
+def remove_jidori(*_args):
+    """Remove marinaMoji jidori and restore prior scale/spacing when known."""
+    if _jidori is None:
+        return
+    _jidori.remove_jidori()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1911,6 +1930,8 @@ g_exportedScripts = (
     set_emphasis_default,
     apply_tatechuyoko,
     remove_tatechuyoko,
+    apply_jidori,
+    remove_jidori,
     inspect_japanese_typography,
     format_selection,
     format_paragraph,
