@@ -88,7 +88,7 @@ echo "${VERSION}" > "${RELEASE}/VERSION.txt"
 
 WORD_STATUS="not included (run ./build-word-release.sh or set MARINAMOJI_INCLUDE_WORD=1)"
 if [[ "${WORD_BUILT}" == "1" ]]; then
-  WORD_STATUS="included (pre-release — upload word-dist.zip to ${MARINAMOJI_PLUGIN_BASE:-your hosted URL} first)"
+  WORD_STATUS="included (hosted at ${MARINAMOJI_PLUGIN_BASE:-your hosted URL})"
 fi
 
 cat > "${RELEASE}/INSTALL.txt" <<EOF
@@ -125,14 +125,27 @@ EOF
 
 if [[ "${WORD_BUILT}" == "1" ]]; then
   cat >> "${RELEASE}/INSTALL.txt" <<EOF
---- Word (pre-release) ---
-Download marinamoji-kaeriten-word-mac.dmg (Mac) or marinamoji-kaeriten-word.xml (Windows)
-Mac: Cmd+Q Word → run installer (allow access to Word data if asked) → reopen Word
+--- Word ---
+Download marinamoji-kaeriten-word-mac.dmg (Mac) or marinamoji-kaeriten-word-setup.exe (Windows)
+(marinamoji-kaeriten-word.xml is the manifest on its own.)
+Mac: Cmd+Q Word → run the installer
      (unsigned build blocked? System Settings → Privacy & Security → Open Anyway)
-     Accueil → Kaeriten → Kaeriten pane
+     macOS usually will not let any script write into Word's add-in folder. The installer
+     then puts marinamoji-kaeriten.xml on your Desktop and opens Finder next to Word's
+     folder: DRAG the file into that folder (Replace if asked).
+     By hand instead: drag marinamoji-kaeriten-word.xml into
+     ~/Library/Containers/com.microsoft.Word/Data/Documents/wef  (create "wef" if missing)
+     and rename it marinamoji-kaeriten.xml.
+     Then reopen Word with a document → Accueil → Kaeriten → Kaeriten pane
+     (or Insert → Add-ins → My Add-ins → Developer Add-ins → marinaMoji).
 Windows: run marinamoji-kaeriten-word-setup.exe (per-user, no admin), restart Word
      Manual alternative: Insertion → Compléments → Téléverser mon complément → select manifest XML
 Requires internet: Word loads the add-in from ${MARINAMOJI_PLUGIN_BASE}
+
+Composed characters: with marinaMoji 0.0.19 or later on macOS, Insert in the character
+composer puts the drawing straight into Word at the cursor (allow marinaMoji to control
+Word the first time macOS asks). Otherwise use the pane's paste box. Press Render after
+changing the font or size to resize the drawings.
 
 EOF
 fi

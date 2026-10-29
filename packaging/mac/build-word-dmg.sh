@@ -34,6 +34,11 @@ marinaMoji Kaeriten — Word (Mac)
    S'il n'apparaît pas : Insertion → Compléments → Mes compléments → section
    « Compléments de développeur ».
 
+6. Caractères composés : avec marinaMoji 0.0.19 ou plus récent, « Insérer » dans le
+   compositeur de caractères place le dessin directement dans Word (autorisez marinaMoji à
+   contrôler Word la première fois que macOS le demande). Sinon, utilisez la zone de collage
+   du volet. Cliquez sur « Render » après un changement de police ou de taille.
+
 ---
 
 marinaMoji Kaeriten — Word (Mac)
@@ -47,6 +52,9 @@ marinaMoji Kaeriten — Word (Mac)
    beside it, choosing Replace if asked.
 4. Reopen Word with a document (internet required).
 5. Home → Kaeriten → Kaeriten pane, or Insert → Add-ins → My Add-ins → Developer Add-ins.
+6. Composed characters: with marinaMoji 0.0.19 or later, Insert in the character composer puts
+   the drawing straight into Word (allow marinaMoji to control Word when macOS asks). Otherwise
+   use the pane's paste box. Press Render after changing the font or size.
 EOF
 
 STAGING="${PACKAGING}/release/dmg-staging"

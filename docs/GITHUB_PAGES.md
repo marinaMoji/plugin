@@ -67,19 +67,14 @@ Produces `packaging/release/word-dist.zip`, `marinamoji-kaeriten-word.xml`, and 
 
 ## Sideload for testing (production URL)
 
-**Mac:** install the production manifest (not `./install-mac.sh`, which is dev-only localhost):
+**Mac:** install the production manifest (not `./install-mac.sh`, which is dev-only localhost). macOS blocks Terminal from writing into Word's `wef` folder, so the script falls back to staging the file on your Desktop and opening Finder next to the folder; drag it in:
 
 ```bash
 cd plugin/word
 ./install-mac-production.sh
 ```
 
-Or download and copy manually:
-
-```bash
-curl -fsSL -o ~/Library/Containers/com.microsoft.Word/Data/Documents/wef/marinamoji-kaeriten.xml \
-  https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml
-```
+Or do it by hand: download <https://marinamoji.github.io/plugin/marinamoji-kaeriten-word.xml>, rename it `marinamoji-kaeriten.xml`, and drag it in Finder into `~/Library/Containers/com.microsoft.Word/Data/Documents/wef` (create `wef` if missing). See [../word/README.md](../word/README.md#install-on-a-mac-users).
 
 Then **Cmd+Q Word**, reopen with a document, **Accueil → Kaeriten pane**. No `npm run serve`.
 

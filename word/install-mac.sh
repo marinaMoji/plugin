@@ -3,14 +3,12 @@
 # For GitHub Pages / production hosting use: ./install-mac-production.sh
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-WEF="${HOME}/Library/Containers/com.microsoft.Word/Data/Documents/wef"
+# shellcheck source=install-mac-lib.sh
+source "${ROOT}/install-mac-lib.sh"
 MANIFEST="${ROOT}/manifest.xml"
 
-mkdir -p "${WEF}"
-rm -f "${WEF}/marinamoji-kaeriten.xml"
-cp "${MANIFEST}" "${WEF}/marinamoji-kaeriten.xml"
-echo "Copied DEV manifest (127.0.0.1:3000) to:"
-echo "  ${WEF}/marinamoji-kaeriten.xml"
+echo "DEV manifest (points at https://127.0.0.1:3000; needs npm run serve running)."
+install_manifest "${MANIFEST}" || echo "(Finish the drag above, then continue below.)"
 echo ""
 echo "Production (GitHub Pages, no local server):"
 echo "  ./install-mac-production.sh"

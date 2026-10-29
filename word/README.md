@@ -6,7 +6,7 @@ Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice e
 - **View:** inline PNG pictures (canvas-drawn glyphs; default `word_primary: inline_picture`)
 - **Commands:** **Render** (includes smart refresh), Unrender, Copy plain text
 
-**Status (June 2026):** Implementation complete for v1. **Pre-publish QA** and production hosting required before distribution. **Testers:** GitHub Pages + `./install-mac-production.sh` ([../docs/GITHUB_PAGES.md](../docs/GITHUB_PAGES.md)). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
+**Status (October 2026):** v1 works on Word for Mac; the composer's drawings insert through the pane or, on macOS, directly from the composer (awaiting a full test, [marinaMoji/plugin#11](https://github.com/marinaMoji/plugin/issues/11)). Word on Windows is untested ([#12](https://github.com/marinaMoji/plugin/issues/12)). **Users:** install the production manifest (below). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
 
 **End-user distribution (no Terminal):** GitHub Pages hosts `dist/` at `https://marinamoji.github.io/plugin/word/`; Mac installer from [../packaging/](../packaging/). See [../docs/SELF_HOSTED_PUBLISHING_PLAN.md](../docs/SELF_HOSTED_PUBLISHING_PLAN.md) (Phase 3) and [../docs/DISTRIBUTION.md](../docs/DISTRIBUTION.md).
 
@@ -29,6 +29,26 @@ cd /Users/daniel/Code/marinaMoji/plugin/word
 **npm must run inside this folder.** If Terminal says it cannot find `/Users/daniel/package.json`, you are in the wrong directory. Shortcut: `./mm run serve` (see below).
 
 This installs npm dependencies (first time), bundles JavaScript into `dist/`, copies `mapping.json`, and runs export unit tests.
+
+## Install on a Mac (users)
+
+Word on Mac has no "upload add-in" menu: the add-in is registered by putting its manifest file in Word's `wef` folder. macOS **blocks Terminal from writing there** (`cp: … Operation not permitted`, even with `sudo`), so the dependable way is to drag the file in with Finder:
+
+1. Get the production manifest: `marinamoji-kaeriten-word.xml` from the [plugin release](https://github.com/marinaMoji/plugin/releases) (or this folder). The **`marinamoji-kaeriten-word-mac.dmg`** installer does steps 2–3 for you.
+2. In Finder, open `~/Library/Containers/com.microsoft.Word/Data/Documents/wef` (`Go → Go to Folder…`; create `wef` if missing). Drag the manifest in and **rename it to `marinamoji-kaeriten.xml`** (Replace if asked).
+3. Quit Word (Cmd+Q), reopen it with a document open, then **Accueil → Kaeriten → Kaeriten pane** (or Insert → Add-ins → My Add-ins → Developer Add-ins → marinaMoji).
+
+`./install-mac-production.sh` does the same from Terminal: it copies the file if macOS allows it, and otherwise puts the correctly named file on your Desktop and opens Finder on it and on `wef` for you to drag. Alternatively give your terminal app **Full Disk Access** (System Settings → Privacy & Security) and run it again.
+
+**Use the production manifest, not `manifest.xml`.** `manifest.xml` is the development one: it points at `https://127.0.0.1:3000` and shows "Erreur relative au complément" ("can't load the add-in") unless `npm run serve` is running. The production manifest loads the add-in from <https://marinamoji.github.io/plugin/word/> (internet required).
+
+## Composed characters from the marinaMoji composer
+
+The marinaMoji character composer draws characters that have no Unicode code point as SVG pictures.
+
+- **Through the pane:** with the composer's drawing on the clipboard, use the pane's composed-character button; if Word refuses clipboard access, paste into the **paste box** in the pane. The drawing is inserted at the cursor, 1.0 × the font size and lowered 0.19 em so it sits on the baseline, and tagged `MARINAMOJI:ids=…`.
+- **Directly from the composer (macOS):** if Word was the app in front when the composer opened, **Insert** puts the drawing at Word's cursor with no pane step. The first time, macOS asks whether the composer may control Microsoft Word: allow it (System Settings → Privacy & Security → Automation). Needs a marinaMoji build from v0.0.19 on.
+- **After changing font or size:** press **Render** in the pane; tagged drawings (including in headers, footers and footnotes) are resized to the text around them.
 
 ## Sideload for development (Mac)
 

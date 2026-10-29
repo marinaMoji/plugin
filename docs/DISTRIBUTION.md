@@ -165,7 +165,7 @@ For **this repo**, GitHub Pages already hosts the Word add-in — see [GITHUB_PA
    `MARINAMOJI_PLUGIN_BASE=https://<your-domain>/word ./packaging/build-word-manifest.sh`
 4. Ship `manifest.production.xml` (or embedded in the Mac installer).
 
-**Testers (this repo):** `./word/install-mac-production.sh` — no upload step needed; workflow deploys on push to `main`.
+**Testers (this repo):** `./word/install-mac-production.sh` (it falls back to a Finder drag when macOS blocks the copy) — no upload step needed; workflow deploys on push to `main`.
 
 TLS must be valid (Let’s Encrypt is fine). **No** self-signed certs for end users.
 

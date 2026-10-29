@@ -73,7 +73,7 @@ export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"
 | `marinamoji-kaeriten-onlyoffice-mac.dmg` | Mac | GUI installer |
 | `word-dist.zip` | — | Archive of hosted files (when Word included) |
 | `marinamoji-kaeriten-word.xml` | Windows / reference | Production manifest |
-| `marinamoji-kaeriten-word-mac.dmg` | Mac | Copies manifest into Word `wef/` |
+| `marinamoji-kaeriten-word-mac.dmg` | Mac | Copies the manifest into Word `wef/`; if macOS refuses (it usually does), stages it on the Desktop and opens Finder for a drag |
 | `INSTALL.txt`, `SHA256SUMS.txt`, `VERSION.txt` | All | Human readme + integrity |
 
 On **Linux/Windows** without a Mac, you still get `.oxt`, ONLYOFFICE zip/`.plugin`, and Word zip/manifest — but not the `.dmg` GUI wrappers (build those on a Mac before publishing).
@@ -92,7 +92,7 @@ cp packaging/word-release.env.example packaging/word-release.env
 
 Then push to `main` — the [GitHub Pages workflow](../.github/workflows/word-pages.yml) rebuilds and deploys `word/dist/` automatically. You often **do not** need a new Mac `.dmg` if the manifest URL and `<Version>` are unchanged.
 
-**Important:** `./word/install-mac.sh` installs the **dev** manifest (`127.0.0.1:3000`). For publication testing use:
+**Important:** `./word/install-mac.sh` installs the **dev** manifest (`127.0.0.1:3000`). For publication testing use (macOS blocks Terminal from writing into Word's folder, so it may ask you to drag the file in Finder):
 
 ```bash
 ./word/install-mac-production.sh
@@ -201,7 +201,7 @@ After the one-time manifest install:
 **When users see nothing new:**
 
 - Word or WebView cached old JS — quit Word (Cmd+Q), reopen, or bump manifest `<Version>`.
-- They still have the **dev** manifest (`127.0.0.1`) — run `install-mac-production.sh`.
+- They still have the **dev** manifest (`127.0.0.1`) — run `install-mac-production.sh` (or drag `marinamoji-kaeriten-word.xml` into `wef/` as `marinamoji-kaeriten.xml`).
 
 ### 2.2 LibreOffice — Extension Manager feed + manual reinstall
 
