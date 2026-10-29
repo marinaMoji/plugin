@@ -4,7 +4,8 @@ Office.js add-in for **Word on Mac or Windows**. Same model as the LibreOffice e
 
 - **Source:** visible Unicode from marinaMoji (`說㆒㆑者`)
 - **View:** inline PNG pictures (canvas-drawn glyphs; default `word_primary: inline_picture`)
-- **Commands:** **Render** (includes smart refresh), Unrender, Copy plain text
+- **Commands:** **Render** / Unrender / Copy plain; Japanese typography Apply/Remove
+  (warichū, tate-chū-yoko, emphasis, ruby, jidori)
 
 **Status (October 2026):** v1 works on Word for Mac; the composer's drawings insert through the pane or, on macOS, directly from the composer (awaiting a full test, [marinaMoji/plugin#11](https://github.com/marinaMoji/plugin/issues/11)). Word on Windows is untested ([#12](https://github.com/marinaMoji/plugin/issues/12)). **Users:** install the production manifest (below). **Developers:** localhost + `./install-mac.sh` ([../docs/WORD_ADDIN_DEV.md](../docs/WORD_ADDIN_DEV.md)). **Microsoft Marketplace:** [../docs/WORD_APPSOURCE.md](../docs/WORD_APPSOURCE.md) + `../packaging/release/marketplace-word/`. Project status: [../docs/STATUS.md](../docs/STATUS.md).
 

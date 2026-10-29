@@ -16,6 +16,15 @@ import {
   refreshComposedCharacters,
 } from "./wordComposedInsert.js";
 import { runInsertComposedSvgSpike } from "./wordSvgSpike.js";
+import {
+  runApplyEmphasis,
+  runRemoveEmphasis,
+} from "./typography/emphasis.js";
+import {
+  getEmphasisDefault,
+  setEmphasisDefault,
+} from "./typography/emphasisPrefs.js";
+import { styleOptions, shortName } from "./typography/emphasisStyles.js";
 
 async function wordRun(fn) {
   if (!wordEnumsReady()) {
@@ -87,3 +96,38 @@ export function runComposedInsertFromText(svg) {
 export function runSvgSpike() {
   return runInsertComposedSvgSpike();
 }
+
+/** Apply emphasis (圏点) — document default, or an explicit style id. */
+export function runEmphasisApply(styleId) {
+  return runApplyEmphasis(styleId);
+}
+
+export function runEmphasisRemove() {
+  return runRemoveEmphasis();
+}
+
+export function getEmphasisDefaultStyle() {
+  return getEmphasisDefault();
+}
+
+export async function runEmphasisSetDefault(styleId) {
+  const id = await setEmphasisDefault(styleId);
+  return `Default emphasis is now ${shortName(id, "en")}.`;
+}
+
+export function listEmphasisStyles(lang = "en") {
+  return styleOptions(lang);
+}
+
+export { runApplyWarichu as runWarichuApply } from "./typography/warichu.js";
+export { runRemoveWarichu as runWarichuRemove } from "./typography/warichu.js";
+
+export { runApplyTatechuyoko as runTatechuyokoApply } from "./typography/tatechuyoko.js";
+export { runRemoveTatechuyoko as runTatechuyokoRemove } from "./typography/tatechuyoko.js";
+
+export { runApplyRuby as runRubyApply } from "./typography/ruby.js";
+export { runRemoveRuby as runRubyRemove } from "./typography/ruby.js";
+
+export { runApplyJidori as runJidoriApply } from "./typography/jidori.js";
+export { runRemoveJidori as runJidoriRemove } from "./typography/jidori.js";
+export { initialN as jidoriInitialN } from "./typography/jidori.js";

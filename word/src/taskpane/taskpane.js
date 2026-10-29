@@ -1,4 +1,4 @@
-/* global Office */
+/* global Office, Word */
 
 import {
   runRenderKaeriten,
@@ -6,7 +6,19 @@ import {
   runCopyPlainText,
   runComposedInsert,
   runComposedInsertFromText,
-  runSvgSpike,
+  runEmphasisApply,
+  runEmphasisRemove,
+  runEmphasisSetDefault,
+  getEmphasisDefaultStyle,
+  listEmphasisStyles,
+  runWarichuApply,
+  runWarichuRemove,
+  runTatechuyokoApply,
+  runTatechuyokoRemove,
+  runRubyApply,
+  runRubyRemove,
+  runJidoriApply,
+  runJidoriRemove,
 } from "../actions.js";
 import { whenOfficeReady } from "../officeReady.js";
 import {
@@ -15,17 +27,36 @@ import {
 } from "../wordRuntimeOpts.js";
 import { fetchUpdateInfo, showUpdateBanner } from "../updateCheck.js";
 
+const HELP_URL = "https://marinamoji.crcao.fr";
+
+let statusFadeTimer = null;
+
 function setStatus(text, kind) {
   const el = document.getElementById("status");
   if (!el) return;
-  el.textContent = text || "";
-  el.className = "status" + (kind ? " " + kind : "");
+  if (statusFadeTimer) {
+    clearTimeout(statusFadeTimer);
+    statusFadeTimer = null;
+  }
+  const msg = text || "Ready";
+  el.textContent = msg;
+  el.dataset.kind = kind || "";
+
   const hint = document.getElementById("launch-hint");
   if (hint) {
     const catalog =
-      typeof text === "string" &&
-      (text.includes("Compléments") || text.includes("preview only"));
+      typeof msg === "string" &&
+      (msg.includes("Compléments") || msg.includes("preview only"));
     hint.hidden = !catalog;
+  }
+
+  if (kind === "ok" && msg !== "Ready" && !msg.startsWith("Ready")) {
+    statusFadeTimer = setTimeout(() => {
+      if (el.textContent === msg) {
+        el.textContent = "Ready";
+        el.dataset.kind = "";
+      }
+    }, 4500);
   }
 }
 
@@ -46,10 +77,9 @@ function wire(id, fn, doneMsg) {
       /* optional */
     }
     btn.disabled = true;
-    setStatus("Connecting to Word…");
+    setStatus("Working…");
     try {
       await whenOfficeReady();
-      setStatus("Working…");
       const result = await fn();
       const msg =
         (typeof result === "string" && result) || doneMsg || "Done.";
@@ -69,13 +99,99 @@ function wire(id, fn, doneMsg) {
           box.select();
         }
       }
+      if (id === "btn-render" || id === "btn-unrender") {
+        refreshScopeIndicator();
+      }
     } catch (err) {
-      console.error("marinaMoji:", err);
-      setStatus(String(err.message || err), "err");
+      const msg = String((err && err.message) || err);
+      if (msg === "Cancelled.") {
+        setStatus("Cancelled.", "ok");
+      } else {
+        console.error("marinaMoji:", err);
+        setStatus(msg, "err");
+      }
     } finally {
       btn.disabled = false;
     }
   });
+}
+
+function wireHelpPops() {
+  document.querySelectorAll(".info-btn[data-help]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("aria-controls");
+      const panel = id && document.getElementById(id);
+      if (!panel) return;
+      const open = panel.hidden;
+      document.querySelectorAll(".help-pop").forEach((p) => {
+        p.hidden = true;
+      });
+      document.querySelectorAll(".info-btn").forEach((b) => {
+        b.setAttribute("aria-expanded", "false");
+      });
+      if (open) {
+        panel.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  const helpBtn = document.getElementById("btn-help");
+  if (helpBtn) {
+    helpBtn.addEventListener("click", () => {
+      try {
+        window.open(HELP_URL, "_blank", "noopener,noreferrer");
+      } catch {
+        setStatus(`Open ${HELP_URL} in a browser.`, "warn");
+      }
+    });
+  }
+}
+
+async function refreshScopeIndicator() {
+  const el = document.getElementById("scope-indicator");
+  if (!el) return;
+  try {
+    await whenOfficeReady(3000);
+    if (typeof Word === "undefined" || !Word.run) {
+      el.textContent = "Scope: —";
+      return;
+    }
+    await Word.run(async (context) => {
+      const selection = context.document.getSelection();
+      selection.load("text");
+      await context.sync();
+      const t = (selection.text || "").trim();
+      if (!t) {
+        el.textContent = "Scope: entire document";
+      } else {
+        const preview =
+          t.length > 24 ? `${[...t].slice(0, 24).join("")}…` : t;
+        el.textContent = `Scope: selection (${preview})`;
+      }
+    });
+  } catch {
+    el.textContent = "Scope: selection or entire document";
+  }
+}
+
+function wireSelectionChanged() {
+  try {
+    if (
+      typeof Office !== "undefined" &&
+      Office.context &&
+      Office.context.document &&
+      Office.EventType &&
+      Office.EventType.DocumentSelectionChanged
+    ) {
+      Office.context.document.addHandlerAsync(
+        Office.EventType.DocumentSelectionChanged,
+        () => refreshScopeIndicator()
+      );
+    }
+  } catch {
+    /* optional */
+  }
 }
 
 function wireCompoundTouch() {
@@ -93,18 +209,25 @@ function wireCompoundTouch() {
   });
 }
 
-function checkUpdatesQuietly() {
-  fetchUpdateInfo()
-    .then((info) => {
-      if (!info || !info.show) return;
-      showUpdateBanner(document.getElementById("app"), info);
-    })
-    .catch(() => {});
+function fillEmphasisStyleSelect() {
+  const select = document.getElementById("opt-emphasis-style");
+  if (!select) return;
+  const opts = listEmphasisStyles("en");
+  const current = getEmphasisDefaultStyle();
+  select.innerHTML = "";
+  for (const row of opts) {
+    const opt = document.createElement("option");
+    opt.value = row.id;
+    opt.textContent = row.label;
+    if (row.id === current) opt.selected = true;
+    select.appendChild(opt);
+  }
 }
 
-function initUi() {
-  showApp();
+function wireAll() {
   wireCompoundTouch();
+  fillEmphasisStyleSelect();
+
   wire(
     "btn-render",
     async () => {
@@ -116,12 +239,10 @@ function initUi() {
       }
       if (newCount > 0) {
         return newCount === 1
-          ? "Formatted 1 kaeriten group (beside kanji)."
-          : `Formatted ${newCount} kaeriten groups (beside kanji).`;
+          ? "Formatted 1 kaeriten group."
+          : `Formatted ${newCount} kaeriten groups.`;
       }
-      if (viewCount > 0) {
-        return "Updated kaeriten views in scope.";
-      }
+      if (viewCount > 0) return "Updated kaeriten views in scope.";
       return "Done.";
     },
     null
@@ -136,12 +257,72 @@ function initUi() {
     },
     null
   );
+
+  wire("btn-warichu-apply", runWarichuApply, null);
+  wire("btn-warichu-remove", runWarichuRemove, null);
+  wire("btn-tate-apply", () => runTatechuyokoApply(), null);
+  wire("btn-tate-remove", runTatechuyokoRemove, null);
+
+  wire(
+    "btn-emphasis-apply",
+    async () => {
+      const styleSelect = document.getElementById("opt-emphasis-style");
+      const styleId = styleSelect
+        ? styleSelect.value
+        : getEmphasisDefaultStyle();
+      return runEmphasisApply(styleId);
+    },
+    null
+  );
+  wire("btn-emphasis-remove", runEmphasisRemove, null);
+
+  const defBtn = document.getElementById("btn-emphasis-default");
+  if (defBtn) {
+    defBtn.addEventListener("click", async () => {
+      defBtn.disabled = true;
+      try {
+        await whenOfficeReady();
+        const styleSelect = document.getElementById("opt-emphasis-style");
+        const styleId = styleSelect
+          ? styleSelect.value
+          : getEmphasisDefaultStyle();
+        setStatus(await runEmphasisSetDefault(styleId), "ok");
+      } catch (err) {
+        setStatus(String((err && err.message) || err), "err");
+      } finally {
+        defBtn.disabled = false;
+      }
+    });
+  }
+
+  wire(
+    "btn-ruby-apply",
+    async () => {
+      const input = document.getElementById("opt-ruby-reading");
+      return runRubyApply(input ? input.value : "");
+    },
+    null
+  );
+  wire("btn-ruby-remove", runRubyRemove, null);
+
+  wire(
+    "btn-jidori-apply",
+    async () => {
+      const input = document.getElementById("opt-jidori-n");
+      return runJidoriApply(input ? Number(input.value) : 5);
+    },
+    null
+  );
+  wire("btn-jidori-remove", runJidoriRemove, null);
+
   wire("btn-plain", runCopyPlainText, "Copied plain text.");
   wire("btn-composed-insert", runComposedInsert, null);
+
   const pasteBox = document.getElementById("composed-paste");
   if (pasteBox) {
     pasteBox.addEventListener("paste", async (event) => {
-      const text = event.clipboardData && event.clipboardData.getData("text/plain");
+      const text =
+        event.clipboardData && event.clipboardData.getData("text/plain");
       event.preventDefault();
       try {
         await whenOfficeReady();
@@ -153,23 +334,37 @@ function initUi() {
       }
     });
   }
-  wire("btn-svg-spike", runSvgSpike, null);
+}
+
+function checkUpdatesQuietly() {
+  fetchUpdateInfo()
+    .then((info) => {
+      if (!info || !info.show) return;
+      showUpdateBanner(document.getElementById("app"), info);
+    })
+    .catch(() => {});
+}
+
+function onReady() {
+  fillEmphasisStyleSelect();
+  refreshScopeIndicator();
+  wireSelectionChanged();
+  setStatus("Ready", "ok");
+  checkUpdatesQuietly();
+}
+
+function initUi() {
+  showApp();
+  wireHelpPops();
+  wireAll();
   setStatus("Connecting to Word…");
   whenOfficeReady(45000, {
     onSlow: (hint) => setStatus(hint, "err"),
   })
-    .then(() => {
-      setStatus("Ready — select text and click Render.", "ok");
-      checkUpdatesQuietly();
-    })
+    .then(onReady)
     .catch((err) => setStatus(String(err.message || err), "err"));
   window.addEventListener("mm-office-ready", () => {
-    whenOfficeReady(5000)
-      .then(() => {
-        setStatus("Ready — select text and click Render.", "ok");
-        checkUpdatesQuietly();
-      })
-      .catch(() => {});
+    whenOfficeReady(5000).then(onReady).catch(() => {});
   });
 }
 

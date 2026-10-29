@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>marinaMoji Kaeriten</title>
+  <title>marinaMoji</title>
   <link rel="stylesheet" href="taskpane.css" />
   <script>
     window.__mmBoot = function (msg, isErr) {
@@ -66,56 +66,188 @@
   <p id="boot" class="boot">Loading marinaMoji…</p>
 
   <div id="app" class="app" hidden>
-    <header>
-      <h1>marinaMoji Kaeriten</h1>
-      <p class="lead">Type marks with marinaMoji, e.g. <span class="sample">說㆒㆑者</span>, then format.</p>
-      <p class="hint">Renders small marks <strong>after</strong> the kanji (inline controls; 縦書き supported). <strong>Unrender</strong> restores ㆒㆑ Unicode.</p>
+    <header class="app-header">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="assets/logo_square.svg"
+          width="28"
+          height="28"
+          alt=""
+        />
+        <span class="brand-name">marinaMoji</span>
+      </div>
+      <button
+        type="button"
+        id="btn-help"
+        class="help-btn"
+        aria-label="About marinaMoji"
+        title="About marinaMoji"
+      >?</button>
     </header>
 
     <!-- Update banner injected by taskpane.js when version.json reports a newer build -->
 
-    <section>
-      <h2>Format</h2>
-      <div class="btn-row">
-        <button type="button" id="btn-render">Render</button>
-        <button type="button" id="btn-unrender">Unrender</button>
-      </div>
-      <p class="hint"><strong>Select</strong> text with marks (e.g. 漢㆒㆑字), or clear the selection to scan the document. Render also updates existing views after font or layout changes.</p>
-      <label class="opt-row">
-        <input type="checkbox" id="opt-compound-touch" />
-        Compound marks touching (一/レ)
-      </label>
-      <p id="launch-hint" class="hint launch-hint" hidden>
-        If you opened this from <strong>Compléments</strong> (add-in browser), Word only shows a preview.
-        Open a document, then <strong>Accueil → Kaeriten → Kaeriten pane</strong>, with <code>npm run serve</code> running.
-      </p>
-    </section>
-
-    <section>
-      <h2>Copy</h2>
-      <div class="btn-row">
-        <button type="button" id="btn-plain">Plain text</button>
-      </div>
-      <p class="hint">Export leaves rendered kaeriten in the document. If copy fails, use the box below and ⌘C.</p>
-      <textarea id="export-copy" class="export-copy" hidden readonly rows="5" spellcheck="false" aria-label="Export text for manual copy"></textarea>
-    </section>
-
-    <section class="composed">
-      <h2>Composed character</h2>
-      <div class="btn-row">
-        <button type="button" id="btn-composed-insert" class="secondary">Insert composed character</button>
-      </div>
-      <textarea id="composed-paste" class="export-copy" hidden rows="3" spellcheck="false" aria-label="Paste the composed drawing here"></textarea>
-      <p class="hint">Use the marinaMoji <strong>character composer</strong> (toolbar). If the structure has no Unicode character, click <strong>Insert</strong> there, then click this button. If Word will not let the pane read the clipboard, a box appears: press ⌘V in it. Desktop Word only.</p>
-      <details class="spike-details">
-        <summary>Dev spike</summary>
-        <div class="btn-row">
-          <button type="button" id="btn-svg-spike" class="secondary">Insert test ⿰言某 SVG</button>
+    <div class="tools">
+      <!-- Kaeriten -->
+      <section class="tool" aria-labelledby="title-kaeriten">
+        <div class="tool-head">
+          <h2 id="title-kaeriten" class="tool-title">Kaeriten · 返り点</h2>
+          <button type="button" class="info-btn" data-help="kaeriten" aria-expanded="false" aria-controls="help-kaeriten" aria-label="Help for Kaeriten">ⓘ</button>
         </div>
-      </details>
-    </section>
+        <p id="help-kaeriten" class="help-pop" hidden>
+          Render return marks in the selection or document. Unrender restores ㆒㆑. Empty selection = whole document.
+        </p>
+        <div class="tool-row">
+          <button type="button" id="btn-render" class="btn-primary">Render</button>
+          <button type="button" id="btn-unrender" class="btn-secondary">Unrender</button>
+          <label class="inline-check" title="Compound adjacent marks (一/レ)">
+            <input type="checkbox" id="opt-compound-touch" />
+            <span>Compound</span>
+          </label>
+        </div>
+        <p id="scope-indicator" class="scope-line" aria-live="polite">Scope: —</p>
+        <p id="launch-hint" class="launch-hint" hidden>
+          If you opened this from <strong>Compléments</strong>, Word only shows a preview.
+          Open a document, then <strong>Accueil → Kaeriten → Kaeriten pane</strong>.
+        </p>
+      </section>
 
-    <p id="status" class="status" role="status" aria-live="polite"></p>
+      <!-- Warichū -->
+      <section class="tool" aria-labelledby="title-warichu">
+        <div class="tool-head">
+          <h2 id="title-warichu" class="tool-title">Warichū · 割注</h2>
+          <button type="button" class="info-btn" data-help="warichu" aria-expanded="false" aria-controls="help-warichu" aria-label="Help for Warichū">ⓘ</button>
+        </div>
+        <p id="help-warichu" class="help-pop" hidden>
+          Select only the annotation text, not the whole paragraph.
+        </p>
+        <div class="tool-row">
+          <button type="button" id="btn-warichu-apply" class="btn-primary">Apply</button>
+          <button type="button" id="btn-warichu-remove" class="btn-secondary">Remove</button>
+        </div>
+      </section>
+
+      <!-- Tate-chū-yoko -->
+      <section class="tool" aria-labelledby="title-tate">
+        <div class="tool-head">
+          <h2 id="title-tate" class="tool-title">Tate-chū-yoko · 縦中横</h2>
+          <button type="button" class="info-btn" data-help="tate" aria-expanded="false" aria-controls="help-tate" aria-label="Help for Tate-chū-yoko">ⓘ</button>
+        </div>
+        <p id="help-tate" class="help-pop" hidden>
+          Short digits or letters in vertical text (e.g. 12 in 令和12年).
+        </p>
+        <div class="tool-row">
+          <button type="button" id="btn-tate-apply" class="btn-primary">Apply</button>
+          <button type="button" id="btn-tate-remove" class="btn-secondary">Remove</button>
+        </div>
+      </section>
+
+      <!-- Emphasis -->
+      <section class="tool" aria-labelledby="title-emphasis">
+        <div class="tool-head">
+          <h2 id="title-emphasis" class="tool-title">Emphasis · 圏点</h2>
+          <button type="button" class="info-btn" data-help="emphasis" aria-expanded="false" aria-controls="help-emphasis" aria-label="Help for Emphasis">ⓘ</button>
+        </div>
+        <p id="help-emphasis" class="help-pop" hidden>
+          Choose a mark, then Apply. “Set as document default” does not rewrite existing marks.
+        </p>
+        <div class="tool-row">
+          <select id="opt-emphasis-style" class="grow-input" aria-label="Emphasis mark style"></select>
+          <button type="button" id="btn-emphasis-apply" class="btn-primary">Apply</button>
+          <button type="button" id="btn-emphasis-remove" class="btn-secondary">Remove</button>
+        </div>
+        <button type="button" id="btn-emphasis-default" class="link-action">Set as document default</button>
+      </section>
+
+      <!-- Ruby -->
+      <section class="tool" aria-labelledby="title-ruby">
+        <div class="tool-head">
+          <h2 id="title-ruby" class="tool-title">Ruby · ルビ</h2>
+          <button type="button" class="info-btn" data-help="ruby" aria-expanded="false" aria-controls="help-ruby" aria-label="Help for Ruby">ⓘ</button>
+        </div>
+        <p id="help-ruby" class="help-pop" hidden>
+          Select the base characters, enter the reading, then Apply.
+        </p>
+        <div class="tool-row">
+          <input
+            type="text"
+            id="opt-ruby-reading"
+            class="text-input grow-input"
+            placeholder="ふりがな"
+            aria-label="Ruby reading"
+            autocomplete="off"
+          />
+          <button type="button" id="btn-ruby-apply" class="btn-primary">Apply</button>
+          <button type="button" id="btn-ruby-remove" class="btn-secondary">Remove</button>
+        </div>
+      </section>
+
+      <!-- Jidori -->
+      <section class="tool" aria-labelledby="title-jidori">
+        <div class="tool-head">
+          <h2 id="title-jidori" class="tool-title">Jidori · 字取り</h2>
+          <button type="button" class="info-btn" data-help="jidori" aria-expanded="false" aria-controls="help-jidori" aria-label="Help for Jidori">ⓘ</button>
+        </div>
+        <p id="help-jidori" class="help-pop" hidden>
+          Fit the selection to N full-width cells (Word Fit Text).
+        </p>
+        <div class="tool-row">
+          <label class="inline-label" for="opt-jidori-n">Cells</label>
+          <input
+            type="number"
+            id="opt-jidori-n"
+            class="text-input num-input"
+            min="1"
+            max="40"
+            value="5"
+            aria-label="Target cell count"
+          />
+          <button type="button" id="btn-jidori-apply" class="btn-primary">Apply</button>
+          <button type="button" id="btn-jidori-remove" class="btn-secondary">Remove</button>
+        </div>
+      </section>
+
+      <!-- Characters -->
+      <section class="tool tool-last" aria-labelledby="title-chars">
+        <div class="tool-head">
+          <h2 id="title-chars" class="tool-title">Characters</h2>
+          <button type="button" class="info-btn" data-help="chars" aria-expanded="false" aria-controls="help-chars" aria-label="Help for Characters">ⓘ</button>
+        </div>
+        <p id="help-chars" class="help-pop" hidden>
+          Insert a composer drawing, or copy canonical Unicode (說㆒㆑者). Desktop Word for composed insert.
+        </p>
+        <div class="tool-row tool-row-wrap">
+          <button type="button" id="btn-composed-insert" class="btn-primary">Insert composed</button>
+          <button type="button" id="btn-plain" class="btn-secondary">Copy plain text</button>
+        </div>
+        <textarea
+          id="composed-paste"
+          class="fallback-box"
+          hidden
+          rows="3"
+          spellcheck="false"
+          aria-label="Paste the composed drawing here"
+        ></textarea>
+        <textarea
+          id="export-copy"
+          class="fallback-box"
+          hidden
+          readonly
+          rows="3"
+          spellcheck="false"
+          aria-label="Export text for manual copy"
+        ></textarea>
+      </section>
+    </div>
+
+    <div
+      id="status"
+      class="status-bar"
+      role="status"
+      aria-live="polite"
+      data-kind=""
+    >Ready</div>
   </div>
 
   <script src="taskpane.js"></script>

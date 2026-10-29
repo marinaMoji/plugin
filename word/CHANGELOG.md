@@ -4,6 +4,30 @@ Version history for the Microsoft Word add-in (Kaeriten pane).
 
 ## Unreleased
 
+## 0.1.7 - 2026-10-29
+
+* **Task-pane redesign:** single compact panel (no tabs). Inputs sit beside
+  Apply/Remove (emphasis mark, ruby reading, jidori cells, compound checkbox).
+  marinaMoji brand tokens, ⓘ help, scope line, status strip. Dev spike removed
+  from the UI (underlying spike code still in the package for now).
+
+## 0.1.6 - 2026-10-29
+
+* **Japanese typography toolkit (Word):** task-pane Apply/Remove for warichū
+  (`w:eastAsianLayout` combine), tate-chū-yoko (`vert`), emphasis (`w:em`),
+  group ruby (`w:ruby`), and jidori / Fit Text (`w:fitText`). Selection policies
+  follow the LibreOffice extension (whole-paragraph warichū refuse; tate length
+  gates; ruby/warichū nesting refuse).
+* Unit tests: `tests/test_typography.mjs`.
+
+## 0.1.5 - 2026-10-29
+
+* **Emphasis marks (圏点・傍点):** Apply / Remove on the selection via OOXML `w:em`.
+  Styles: black sesame (`comma`, default), open circle, dot. LibreOffice’s filled
+  disc has no Word twin, so it is not listed. Optional “remember as document default”
+  uses Word document settings (`marinaMoji.Typography.EmphasisDefault`).
+* Task pane section **Emphasis (圏点)** under Format / before Copy.
+
 ## 0.1.4 - 2026-10-29
 
 * Composed drawings are sized to 1.0 × the font size (was 0.94, which looked small
