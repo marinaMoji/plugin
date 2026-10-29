@@ -17,6 +17,7 @@ IMPLE_NAME = "MarinaMojiKaeritenProtocolHandler"
 SERVICE_NAME = "com.sun.star.frame.ProtocolHandler"
 _COMMANDS = frozenset(
     (
+        "about_marinamoji",
         "render_kaeriten",
         "unrender_kaeriten",
         "copy_plain_text",
@@ -89,7 +90,9 @@ class MarinaMojiKaeritenProtocolHandler(
             return
         macros = _macro_module()
         path = url.Path
-        if path == "render_kaeriten":
+        if path == "about_marinamoji":
+            macros.about_marinamoji()
+        elif path == "render_kaeriten":
             macros.render_kaeriten()
         elif path == "unrender_kaeriten":
             macros.unrender_kaeriten()

@@ -62,6 +62,11 @@ try:
 except ImportError:
     _jidori = None
 
+try:
+    import about as _about
+except ImportError:
+    _about = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1908,6 +1913,13 @@ def remove_jidori(*_args):
     _jidori.remove_jidori()
 
 
+def about_marinamoji(*_args):
+    """Open the branded marinaMoji illustrated guide (document untouched)."""
+    if _about is None:
+        return
+    _about.show_about_marinamoji()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1917,6 +1929,7 @@ show_source = unrender_kaeriten
 
 
 g_exportedScripts = (
+    about_marinamoji,
     render_kaeriten,
     unrender_kaeriten,
     copy_plain_text,

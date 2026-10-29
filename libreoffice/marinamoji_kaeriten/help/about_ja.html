@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja" data-nav-prev="← %s" data-nav-next="次へ：%s →">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>日本語組版の小さな本 — marinaMoji</title>
+  <link rel="stylesheet" href="guide.css"/>
+</head>
+<body>
+  <div class="book-shell">
+    <header class="book-chrome">
+      <span class="book-mark">marinaMoji</span>
+      <span class="page-indicator" aria-live="polite">01 / 08</span>
+    </header>
+
+    <main class="book-main">
+
+      <section class="book-page is-active" data-page="1"
+               data-nav-title="はじめに"
+               data-begin-label="読みはじめる →"
+               data-next-label="ルビ"
+               aria-label="はじめに">
+        <div class="welcome">
+          <img class="logo-header" src="header_logo.svg" width="360" height="80" alt="marinaMoji"/>
+          <p class="tagline">入力から組版まで、日本語の文字環境。</p>
+          <p>
+            marinaMojiは、LibreOffice Writerに専門的な日本語組版機能を届けます。ルビや割注、縦中横、字取りなど、書き物の現場で必要になる処理を扱います。
+          </p>
+          <p>
+            拡張機能は単独でも使えます。あわせて、日本語入力と歴史的な字形のための道具を備えたmarinaMojiの入力メソッドと組み合わせることもできます。
+          </p>
+          <p class="quiet">
+            学術的・歴史的なテキストを含む、日本語の書き方の細やかな要求に応える環境を目指しています。
+          </p>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="2"
+               data-nav-title="ルビ"
+               data-prev-label="はじめに"
+               data-next-label="割注"
+               aria-label="ルビ">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>ルビ · Ruby</h1>
+            <p class="subtitle">文字のそばに、読みを</p>
+            <p>
+              ルビは、本文の文字を置き換えずに読みや注記を添える組版です。縦書きでは親文字のそばに、横書きでは上に置くのが通例です。
+            </p>
+            <p>
+              読みの明示、なじみの薄い読みの提示、文字と解釈の両方を残したい場合に用います。親文字は通常のテキストとして編集・検索できます。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                親文字を選んで<strong>ルビを適用</strong>し、ダイアログに読みを入力します。<strong>ルビを解除</strong>は選択、またはルビ内にカーソルを置いて実行できます。結果はWriter本体のルビ書式です。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--ruby">
+            <img src="specimens/ruby.png" alt="ルビを付けた縦書きの日本語"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="3"
+               data-nav-title="割注"
+               data-prev-label="ルビ"
+               data-next-label="圏点"
+               aria-label="割注">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>割注 · Warichū</h1>
+            <p class="subtitle">本文のなかの注</p>
+            <p>
+              割注は、本文に静かな第二の声を与えます。短い注が本行のなかに二行の小さな組として現れ、本文を離れずに説明を差し挟むことができます。
+            </p>
+            <p>
+              脚注と違い、注は読者がその語に出会うまさにその場所に残ります。簡潔な補足、日付、書誌的な情報、編集上の所見などに適し、日本語の学術・文芸組版に長い伝統があります。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                段落全体ではなく注の文字列だけを選び、<strong>割注を適用</strong>します。通常の文字に戻すには、注を選ぶか注内にカーソルを置いて<strong>割注を解除</strong>します。Writerが注を周囲の本文のなかで二行の小さな組として配置します。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--warichu">
+            <img src="specimens/warichu.png" alt="割注の二行組"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="4"
+               data-nav-title="圏点"
+               data-prev-label="割注"
+               data-next-label="縦中横"
+               aria-label="圏点">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>圏点 · 傍点</h1>
+            <p class="subtitle">視線を集めるしるし</p>
+            <p>
+              日本語組版では、強調のために文字の形や太さを変える必要はありません。文字のそばに小さなしるしを置くことで、文字そのものには手を触れずに視線を集めることができます。
+            </p>
+            <p>
+              圏点・傍点と呼ばれるこれらのしるしには、ゴマ、点、丸などがあります。とくに縦書きとの相性がよく、太字や斜体とは異なる方法で、文字のまわりの空間を通じて強調を示します。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                強調したい文字を選び、<strong>圏点を付ける</strong>で文書の既定スタイルを適用します。<strong>圏点を外す</strong>で選択部分のしるしを解除します。
+              </p>
+              <p>
+                黒ゴマ・黒丸・白丸・点など特定のしるしは<strong>圏点メニュー</strong>から選べます。メニューでは、すでに付けた圏点を書き換えることなく文書の既定も変更できます。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--emphasis">
+            <img src="specimens/emphasis.png" alt="圏点を付けた日本語"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="5"
+               data-nav-title="縦中横"
+               data-prev-label="圏点"
+               data-next-label="字取り"
+               aria-label="縦中横">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>縦中横 · Tate-chū-yoko</h1>
+            <p class="subtitle">わずかな横の空間</p>
+            <p>
+              縦書きのなかにも、横に並べた方が自然な短い列があります。数字がその典型です。縦中横は、周囲の縦組みを崩さず、そうした列だけを横に収めます。
+            </p>
+            <p>
+              一字ずつ縦に積むとぎこちなくなる短い表現を、縦のリズムのなかに収めるための技法です。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                縦書きの段落で、短いラテン文字や数字（通常は2字。3〜4字は確認あり。長い選択や和文混在は拒否）を選び、<strong>縦中横を適用</strong>します。<strong>縦中横を解除</strong>は横組みの結合を外し、文字を段落本来の書字方向に戻します。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--tate">
+            <img src="specimens/tate.png" alt="縦書き中の縦中横"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="6"
+               data-nav-title="字取り"
+               data-prev-label="縦中横"
+               data-next-label="禁則"
+               aria-label="字取り">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>字取り · Jidori</h1>
+            <p class="subtitle">字のための場所をつくる</p>
+            <p>
+              字取りは、短い文字列を指定した全角字数分の幅に収める処理です。自然幅のままではなく、見出しやラベルなど、字のグリッドとの関係が大切な箇所で用います。
+            </p>
+            <p>
+              単なる字形の引き延ばしではありません。対象は文字列全体に与えられる空間で、広げでは字間を、詰めでは（横書きで）尺度幅をおおよそ調整します。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                短い和文を選んで<strong>字取りを適用</strong>し、字数を入力します。広げは字間、詰めは横書きの尺度幅です（縦書きの詰めは拒否）。<strong>字取りを解除</strong>は、marinaMojiが自身の適用を識別できる場合に以前の書式へ戻します。結果は近似です。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--jidori">
+            <img src="specimens/jidori.png" alt="字取りした文字列"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="7"
+               data-nav-title="禁則"
+               data-prev-label="字取り"
+               data-next-label="Unicodeを超えて"
+               aria-label="禁則処理">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">日本語組版</p>
+            <h1>日本語組版 · 禁則処理</h1>
+            <p class="subtitle">行が終わってよいところ</p>
+            <p>
+              日本語の改行は、空いた幅にできるだけ多くの文字を詰め込むことではありません。句読点などは、見た目にも文法的にも周囲の文字と結びついており、不適切な切れ目はその関係を乱します。
+            </p>
+            <p>
+              禁則処理は、行頭や行末に通常置くべきでない文字を扱う約束です。LibreOffice Writerはすでに日本語の禁則を実装しており、marinaMojiは関連する組版設定を示し、選ばれた潜在的な論点を指摘することでそれを補います。Writerのレイアウトエンジンを置き換えるものではありません。
+            </p>
+            <div class="howto">
+              <h2>使い方</h2>
+              <p>
+                <strong>日本語組版を点検</strong>を選び、現在の段落または選択の組版設定を確認します。報告はテキスト中の選ばれた潜在的な論点も示します。読み取り専用で、文書は変更しません。
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--kinsoku">
+            <img src="specimens/kinsoku.png" alt="句読点と行の配置を示す縦書き"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="8"
+               data-nav-title="Unicodeを超えて"
+               data-prev-label="禁則"
+               aria-label="Unicodeを超えて">
+        <div class="spread spread--finale">
+          <div class="spread-copy">
+            <p class="eyebrow">Unicodeを超えて</p>
+            <h1>Unicodeを超えて</h1>
+            <p class="subtitle">欲しい字が、まだないとき</p>
+            <p>
+              Unicodeの字種は膨大でも、歴史的・特殊な字形のすべてに適切な表現があるわけではありません。写本や古い版本、珍しい異体では、通常のテキストフォントにその形がなかったり、そもそも符号化されていなかったりすることがあります。
+            </p>
+            <p>
+              marinaMojiの<strong>入力メソッド</strong>は、字形を合成し、インラインのベクター画像として挿入する道具を備えています。通常のUnicode文字としては入力できない字形でも、本文の流れのなかに置くことができます。LibreOfficeの組版ツールはIMEなしでも動きますが、合成と挿入は、その広い環境の側にあります。
+            </p>
+            <p>
+              漢字は、古くから巧みな組み合わせを誘ってきました。龍を三つ重ねれば龘、魚を三つ重ねれば鱻。では、夢を二つ重ねたら——何になるでしょうか。
+            </p>
+            <p class="fine-print">
+              ベクター画像はUnicode文字ではありません。検索・コピー・アクセシビリティ・交換では、通常の文字と扱いが異なることがあります。
+            </p>
+            <div class="finale-link">
+              <a href="https://marinamoji.crcao.fr">marinaMojiについて詳しく ↗</a>
+              <p class="url">marinamoji.crcao.fr</p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--composer">
+            <img src="specimens/composer.png" alt="文字合成の例（複雑な字形や創作字形を含む本文）"/>
+          </figure>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="book-nav" aria-label="ページ移動">
+      <button type="button" class="nav-prev" disabled>← 前へ</button>
+      <button type="button" class="nav-next">読みはじめる →</button>
+    </nav>
+  </div>
+  <script src="book.js"></script>
+</body>
+</html>

@@ -24,6 +24,7 @@ copy_lo_icon() {
   cp "${svg}" "${ICON_DST}/${svg_name}"
 }
 
+copy_lo_icon about_marinamoji.svg
 copy_lo_icon render_kaeriten.svg
 copy_lo_icon unrender_kaeriten.svg
 copy_lo_icon export_txt.svg

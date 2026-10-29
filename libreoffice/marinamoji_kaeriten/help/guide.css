@@ -1,0 +1,296 @@
+/* The Little Book of Japanese Typography — marinaMoji handbook
+ *
+ * Layout target ≈ 1100×800 CSS px. Page height follows content (Strategy A):
+ * do not stretch .book-main to fill the viewport — that stranded the nav.
+ *
+ * Specimens share a width-led scale so short PNGs (kinsoku) are not blown
+ * up by a shared max-height alone. Per-feature --specimen-* tweaks.
+ */
+:root {
+  --paper: #f7f5ef;
+  --indigo: #152d4d;
+  --indigo-soft: #31516f;
+  --ink: #253345;
+  --muted: #68798b;
+  --copper: #8c6b4f;
+  --rule: rgba(21, 45, 77, 0.14);
+  --specimen-max-w: 12rem;
+  --specimen-max-h: 24rem;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans",
+    "Noto Sans CJK JP", "Noto Sans JP", "Yu Gothic", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.book-shell {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-chrome {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.1rem;
+  flex-shrink: 0;
+}
+.book-mark {
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  font-size: 0.95rem;
+  color: var(--indigo);
+  letter-spacing: -0.01em;
+}
+.page-indicator {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.book-main {
+  flex: 0 1 auto;
+  position: relative;
+}
+
+.book-page {
+  display: none;
+}
+.book-page.is-active {
+  display: block;
+}
+
+/* ----- Welcome (title page) ----- */
+.welcome {
+  max-width: 26rem;
+  margin: 2.25rem auto 0.5rem;
+  padding: 0;
+  text-align: center;
+}
+.welcome .logo-header {
+  display: block;
+  width: min(17.5rem, 100%);
+  height: auto;
+  margin: 0 auto 1rem;
+}
+.welcome .tagline {
+  margin: 0 auto 1.65rem;
+  color: var(--indigo-soft);
+  font-size: 1.05rem;
+  text-align: center;
+}
+.welcome p {
+  margin: 0 auto 0.95rem;
+  color: var(--ink);
+  max-width: 24.5rem;
+  text-align: left;
+}
+.welcome .quiet {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* ----- Feature spread ----- */
+.spread {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(8.5rem, 0.85fr);
+  gap: 1.5rem 1.75rem;
+  align-items: start;
+}
+.spread-copy {
+  min-width: 0;
+}
+.eyebrow {
+  margin: 0 0 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+.spread h1 {
+  margin: 0 0 0.3rem;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  font-weight: 500;
+  font-size: 1.55rem;
+  letter-spacing: -0.015em;
+  color: var(--indigo);
+  line-height: 1.25;
+}
+.subtitle {
+  margin: 0 0 0.95rem;
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--indigo-soft);
+}
+.spread-copy > p {
+  margin: 0 0 0.8rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.howto {
+  margin-top: 1.2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+}
+.howto h2 {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+.howto p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+.howto p + p {
+  margin-top: 0.6rem;
+}
+
+.spread-figure {
+  margin: 0;
+  justify-self: end;
+  text-align: center;
+}
+.spread-figure img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, var(--specimen-max-w));
+  max-height: min(58vh, var(--specimen-max-h));
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Per-specimen display scale (character size, not identical bounding boxes). */
+.specimen--ruby {
+  --specimen-max-w: 12rem;
+  --specimen-max-h: 24rem;
+}
+.specimen--warichu {
+  --specimen-max-w: 12rem;
+  --specimen-max-h: 24rem;
+}
+.specimen--emphasis {
+  --specimen-max-w: 12rem;
+  --specimen-max-h: 25rem;
+}
+.specimen--tate {
+  --specimen-max-w: 10.75rem;
+  --specimen-max-h: 19.5rem;
+}
+.specimen--jidori {
+  --specimen-max-w: 12.25rem;
+  --specimen-max-h: 20rem;
+}
+.specimen--kinsoku {
+  --specimen-max-w: 9.75rem;
+  --specimen-max-h: 17.5rem;
+}
+.specimen--composer {
+  --specimen-max-w: 13.5rem;
+  --specimen-max-h: 26rem;
+}
+
+.fine-print {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.finale-link {
+  margin-top: 1.35rem;
+}
+.finale-link a {
+  color: var(--indigo-soft);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(49, 81, 111, 0.35);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+  font-size: 1.08rem;
+}
+.finale-link a:hover {
+  color: var(--indigo);
+  border-bottom-color: var(--indigo);
+}
+.finale-link .url {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* ----- Nav: follows content; not pinned to viewport bottom ----- */
+.book-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  flex-shrink: 0;
+}
+.book-nav button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0.35rem 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--indigo-soft);
+  cursor: pointer;
+  text-align: left;
+}
+.book-nav button:hover:not(:disabled) {
+  color: var(--indigo);
+}
+.book-nav button:disabled {
+  visibility: hidden;
+  pointer-events: none;
+}
+.book-nav .nav-next {
+  text-align: right;
+  margin-left: auto;
+}
+.book-nav button:focus-visible {
+  outline: 2px solid var(--indigo-soft);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .spread {
+    grid-template-columns: 1fr;
+  }
+  .spread-figure {
+    justify-self: center;
+    order: -1;
+  }
+  .spread-figure img {
+    max-height: min(42vh, 18rem);
+  }
+  .welcome {
+    margin-top: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}

@@ -5,6 +5,13 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.34 - 2026-10-29
+
+* **About marinaMoji:** square logo button at the far left of toolbar `.v7`
+  opens *The Little Book of Japanese Typography* — an offline eight-page
+  handbook (EN/JA/FR) with one specimen per feature page and a link to
+  https://marinamoji.crcao.fr. Document is never modified.
+
 ## 0.3.33 - 2026-10-29
 
 * **Jidori (字取り):** Apply / Remove approximate fit to N full-width cells via

@@ -24,9 +24,13 @@ fi
 cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_handoff.py" \
    "${SRC}/warichu.py" "${SRC}/ruby.py" "${SRC}/emphasis.py" "${SRC}/typography_prefs.py" \
    "${SRC}/tatechuyoko.py" "${SRC}/typography_analysis.py" "${SRC}/typography_inspector.py" \
-   "${SRC}/jidori.py" "${SRC}/jidori_math.py" \
+   "${SRC}/jidori.py" "${SRC}/jidori_math.py" "${SRC}/about.py" \
    "${BUILD}/Scripts/python/"
 cp "${PLUGIN}/mapping.json" "${BUILD}/Scripts/python/marinamoji_mapping.json"
+# Offline About guide (HTML + specimens + logo)
+if [[ -d "${SRC}/help" ]]; then
+  cp -R "${SRC}/help" "${BUILD}/"
+fi
 
 # License: keep registration/license_en.txt in sync with repo LICENSE
 if [[ -f "${PLUGIN}/LICENSE" ]]; then

@@ -5,13 +5,13 @@
                     oor:package="org.openoffice.Office">
   <node oor:name="AddonUI">
     <!--
-      Toolbar id .v6. Item nodes MUST be equal-length names (m01..m22):
+      Toolbar id .v6. Item nodes MUST be equal-length names (m01..m24):
       LibreOffice configmgr sorts set members by LengthContentsCompare
       (shorter names first), which scrambled i01_render / i18_copy_plain.
-      Order: kaeriten → warichū → tate → emphasis → ruby → jidori → inspect → copy
+      Order: about(logo) → kaeriten → warichū → tate → emphasis → ruby → jidori → inspect → copy
     -->
     <node oor:name="OfficeToolBar">
-      <node oor:name="org.marinaMoji.kaeriten.toolbar.v6" oor:op="replace">
+      <node oor:name="org.marinaMoji.kaeriten.toolbar.v7" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
           <value>marinaMoji</value>
           <value xml:lang="en-US">marinaMoji</value>
@@ -20,7 +20,30 @@
           <value>com.sun.star.text.TextDocument</value>
         </prop>
 
-        <node oor:name="m01" oor:op="replace">
+                <node oor:name="m01" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:about_marinamoji</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>About marinaMoji</value>
+            <value xml:lang="en-US">About marinaMoji</value>
+            <value xml:lang="ja">marinaMoji について</value>
+            <value xml:lang="fr">À propos de marinaMoji</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="m02" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>private:separator</value>
+          </prop>
+        </node>
+
+<node oor:name="m03" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:render_kaeriten</value>
           </prop>
@@ -35,7 +58,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m02" oor:op="replace">
+        <node oor:name="m04" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:unrender_kaeriten</value>
           </prop>
@@ -50,7 +73,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m03" oor:op="replace">
+        <node oor:name="m05" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:toggle_page_writing_mode</value>
           </prop>
@@ -66,12 +89,12 @@
           </prop>
         </node>
 
-        <node oor:name="m04" oor:op="replace">
+        <node oor:name="m06" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m05" oor:op="replace">
+        <node oor:name="m07" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_warichu</value>
           </prop>
@@ -88,7 +111,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m06" oor:op="replace">
+        <node oor:name="m08" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_warichu</value>
           </prop>
@@ -106,12 +129,12 @@
           </prop>
         </node>
 
-        <node oor:name="m07" oor:op="replace">
+        <node oor:name="m09" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m08" oor:op="replace">
+        <node oor:name="m10" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_tatechuyoko</value>
           </prop>
@@ -128,7 +151,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m09" oor:op="replace">
+        <node oor:name="m11" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_tatechuyoko</value>
           </prop>
@@ -146,12 +169,12 @@
           </prop>
         </node>
 
-        <node oor:name="m10" oor:op="replace">
+        <node oor:name="m12" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m11" oor:op="replace">
+        <node oor:name="m13" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_emphasis</value>
           </prop>
@@ -168,7 +191,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m12" oor:op="replace">
+        <node oor:name="m14" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:emphasis_menu</value>
           </prop>
@@ -185,7 +208,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m13" oor:op="replace">
+        <node oor:name="m15" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_emphasis</value>
           </prop>
@@ -203,12 +226,12 @@
           </prop>
         </node>
 
-        <node oor:name="m14" oor:op="replace">
+        <node oor:name="m16" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m15" oor:op="replace">
+        <node oor:name="m17" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_ruby</value>
           </prop>
@@ -225,7 +248,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m16" oor:op="replace">
+        <node oor:name="m18" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_ruby</value>
           </prop>
@@ -243,12 +266,12 @@
           </prop>
         </node>
 
-        <node oor:name="m17" oor:op="replace">
+        <node oor:name="m19" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m18" oor:op="replace">
+        <node oor:name="m20" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_jidori</value>
           </prop>
@@ -265,7 +288,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m19" oor:op="replace">
+        <node oor:name="m21" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_jidori</value>
           </prop>
@@ -282,12 +305,12 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m20" oor:op="replace">
+        <node oor:name="m22" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="m21" oor:op="replace">
+        <node oor:name="m23" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:inspect_typography</value>
           </prop>
@@ -304,7 +327,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="m22" oor:op="replace">
+        <node oor:name="m24" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:copy_plain_text</value>
           </prop>
@@ -323,6 +346,19 @@
     </node>
 
     <node oor:name="Images">
+      <node oor:name="org.marinaMoji.kaeriten.about_marinamoji" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:about_marinamoji</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/about_marinamoji.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/about_marinamoji.svg</value>
+          </prop>
+        </node>
+      </node>
       <node oor:name="org.marinaMoji.kaeriten.render" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">
           <value>org.marinaMoji.kaeriten:render_kaeriten</value>

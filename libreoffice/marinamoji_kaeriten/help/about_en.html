@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-nav-prev="← %s" data-nav-next="Next: %s →">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>The Little Book of Japanese Typography — marinaMoji</title>
+  <link rel="stylesheet" href="guide.css"/>
+</head>
+<body>
+  <div class="book-shell">
+    <header class="book-chrome">
+      <span class="book-mark">marinaMoji</span>
+      <span class="page-indicator" aria-live="polite">01 / 08</span>
+    </header>
+
+    <main class="book-main">
+
+      <section class="book-page is-active" data-page="1"
+               data-nav-title="Welcome"
+               data-begin-label="Begin reading →"
+               data-next-label="Ruby"
+               aria-label="Welcome">
+        <div class="welcome">
+          <img class="logo-header" src="header_logo.svg" width="360" height="80" alt="marinaMoji"/>
+          <p class="tagline">Japanese writing, from input to typography.</p>
+          <p>
+            marinaMoji brings specialized Japanese typography to LibreOffice Writer—
+            from ruby readings and inline annotations to vertical composition and
+            character-cell fitting.
+          </p>
+          <p>
+            The extension can be used on its own. It is also designed to complement
+            the marinaMoji input method, which provides Japanese text entry and tools
+            for working with historical character forms.
+          </p>
+          <p class="quiet">
+            Together they support writing that attends to the particular demands of
+            Japanese texts, including scholarly and historical materials.
+          </p>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="2"
+               data-nav-title="Ruby"
+               data-prev-label="Welcome"
+               data-next-label="Warichū"
+               aria-label="Ruby">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Ruby · ルビ</h1>
+            <p class="subtitle">Words beside words</p>
+            <p>
+              Ruby allows a reading or annotation to accompany Japanese characters
+              without replacing the original text. In vertical writing the reading
+              traditionally sits beside the base characters; in horizontal writing
+              it sits above them.
+            </p>
+            <p>
+              Editors use ruby for pronunciation, unfamiliar readings, and cases
+              where the written character and its interpretation must both remain
+              visible. The base text stays editable and searchable as ordinary text.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                Select the base characters, choose <strong>Apply ruby</strong>, and
+                enter the reading in the dialog. <strong>Remove ruby</strong> clears
+                the reading from the selection or from a caret inside the ruby span.
+                The result is native Writer ruby formatting.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--ruby">
+            <img src="specimens/ruby.png"
+                 alt="Vertical Japanese text with ruby readings beside selected characters"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="3"
+               data-nav-title="Warichū"
+               data-prev-label="Ruby"
+               data-next-label="Emphasis"
+               aria-label="Warichū">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Warichū · 割注</h1>
+            <p class="subtitle">A note within the text</p>
+            <p>
+              Warichū gives a text a second, quieter voice. A brief annotation
+              appears as two smaller lines within the main line of Japanese writing,
+              allowing an explanation to interrupt the passage without leaving it.
+            </p>
+            <p>
+              Unlike a footnote, the remark remains exactly where the reader
+              encounters the words it explains. Warichū is particularly useful for
+              short clarifications, dates, bibliographical details, and editorial
+              observations, and has a long place in Japanese scholarly and literary
+              typography.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                Select the annotation text, rather than the entire paragraph, and
+                choose <strong>Apply warichū</strong>. To restore ordinary text,
+                select the annotation or place the caret inside it and choose
+                <strong>Remove warichū</strong>. Writer arranges the annotation as
+                two smaller lines within the surrounding text.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--warichu">
+            <img src="specimens/warichu.png"
+                 alt="Warichū two-line inline annotation in vertical Japanese text"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="4"
+               data-nav-title="Emphasis"
+               data-prev-label="Warichū"
+               data-next-label="Tate-chū-yoko"
+               aria-label="Emphasis marks">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Emphasis · 圏点・傍点</h1>
+            <p class="subtitle">The art of drawing attention</p>
+            <p>
+              In Japanese typography, emphasis need not change the shape or weight
+              of a character. Instead, a small mark placed alongside it can draw
+              the reader’s attention while leaving the character itself untouched.
+            </p>
+            <p>
+              These marks, known as <em>kenten</em> or <em>bōten</em>, may take the
+              form of sesame-shaped marks, dots, or circles. Particularly at home
+              in vertical writing, they offer a distinctive alternative to boldface
+              or italics, allowing emphasis to be expressed through the space around
+              the text.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                Select the characters to emphasize and choose
+                <strong>Apply emphasis marks</strong> to use the document’s default
+                style. Choose <strong>Remove emphasis</strong> to clear marks from
+                the selected text.
+              </p>
+              <p>
+                For a particular mark—such as black sesame, a filled disc, an open
+                circle, or a dot—use the <strong>Emphasis marks menu</strong>. The
+                menu also lets you change the document default without rewriting
+                passages already marked.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--emphasis">
+            <img src="specimens/emphasis.png"
+                 alt="Japanese text with sesame-style emphasis marks"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="5"
+               data-nav-title="Tate-chū-yoko"
+               data-prev-label="Emphasis"
+               data-next-label="Jidori"
+               aria-label="Tate-chū-yoko">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Tate-chū-yoko · 縦中横</h1>
+            <p class="subtitle">A little horizontal space</p>
+            <p>
+              Vertical Japanese sometimes contains short sequences that read more
+              naturally as a horizontal unit. Digits are the familiar case.
+              Tate-chū-yoko keeps such a run horizontal inside an otherwise vertical
+              line, without changing the surrounding writing direction.
+            </p>
+            <p>
+              The technique preserves the rhythm of the column while accommodating
+              compact material that would feel awkward if stacked character by character.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                In a vertical paragraph, select a short Latin or digit run (two
+                characters is the usual case; three or four may ask for confirmation;
+                longer or mixed Japanese selections are refused). Choose
+                <strong>Apply tate-chū-yoko</strong>.
+                <strong>Remove tate-chū-yoko</strong> removes the horizontal
+                combination, returning the characters to the paragraph’s normal
+                writing direction.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--tate">
+            <img src="specimens/tate.png"
+                 alt="Short digits set horizontally inside a vertical Japanese column"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="6"
+               data-nav-title="Jidori"
+               data-prev-label="Tate-chū-yoko"
+               data-next-label="Kinsoku"
+               aria-label="Jidori">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Jidori · 字取り</h1>
+            <p class="subtitle">Making room for characters</p>
+            <p>
+              Jidori allocates a short passage to a specified number of full-width
+              character positions. Instead of occupying only its natural width, the
+              run is composed into a prescribed space—useful for headings, labels,
+              and other brief strings where the underlying character grid matters.
+            </p>
+            <p>
+              It is not simply the stretching of glyphs. The concern is the space
+              given to the sequence as a whole: expanding gaps when the target is
+              wider, and compressing approximately when it is narrower.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                Select a short Japanese run, choose <strong>Apply jidori</strong>,
+                and enter the desired number of character cells. Expansion uses
+                character spacing; compression uses scale width in horizontal writing
+                (vertical compression is refused). <strong>Remove jidori</strong>
+                restores the previous formatting when marinaMoji can identify its own
+                application. The fit is approximate.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--jidori">
+            <img src="specimens/jidori.png"
+                 alt="Japanese characters distributed across a fixed number of cells"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="7"
+               data-nav-title="Kinsoku"
+               data-prev-label="Jidori"
+               data-next-label="Beyond Unicode"
+               aria-label="Japanese composition and kinsoku">
+        <div class="spread">
+          <div class="spread-copy">
+            <p class="eyebrow">Japanese typography</p>
+            <h1>Japanese composition · 禁則処理</h1>
+            <p class="subtitle">Where a line may end</p>
+            <p>
+              A Japanese line break is not simply a matter of fitting as many
+              characters as possible into the available space. Punctuation belongs
+              visually and grammatically with the characters around it, and a poorly
+              placed break can disturb that relationship.
+            </p>
+            <p>
+              Kinsoku shori governs characters that should not ordinarily appear at
+              the beginning or end of a line. LibreOffice Writer already implements
+              Japanese line-breaking rules; marinaMoji complements them by exposing
+              relevant composition settings and identifying selected potential issues,
+              without replacing Writer’s layout engine.
+            </p>
+            <div class="howto">
+              <h2>How to use</h2>
+              <p>
+                Choose <strong>Inspect Japanese Typography</strong> to examine the
+                composition settings of the current paragraph or selection. The report
+                also identifies selected potential issues in the text. Inspection is
+                read-only and does not change the document.
+              </p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--kinsoku">
+            <img src="specimens/kinsoku.png"
+                 alt="Vertical Japanese lines illustrating punctuation and composition"/>
+          </figure>
+        </div>
+      </section>
+
+      <section class="book-page" data-page="8"
+               data-nav-title="Beyond Unicode"
+               data-prev-label="Kinsoku"
+               aria-label="Beyond Unicode">
+        <div class="spread spread--finale">
+          <div class="spread-copy">
+            <p class="eyebrow">Beyond Unicode</p>
+            <h1>Beyond Unicode</h1>
+            <p class="subtitle">When the character you need does not exist</p>
+            <p>
+              Unicode encodes an enormous repertoire of characters, but not every
+              historical or specialized character form has a suitable representation.
+              When working with manuscripts, older editions, or unusual variants,
+              the exact form a scholar needs may be absent from ordinary text fonts—
+              or may not be encoded at all.
+            </p>
+            <p>
+              The marinaMoji <em>input method</em> provides tools for composing
+              character forms and inserting them as inline vector graphics. This
+              allows a specialized glyph to appear directly within running text, even
+              when it cannot be entered as an ordinary Unicode character. The
+              LibreOffice typography tools work without the IME; composition and
+              insertion belong to that broader environment.
+            </p>
+            <p>
+              Chinese characters have always invited ingenious combinations. Three
+              dragons make 龘; three fish make 鱻. But what might two dreams make?
+            </p>
+            <p class="fine-print">
+              A vector graphic is not a Unicode text character. Searching, copying,
+              accessibility, and interchange may therefore behave differently from
+              ordinary text.
+            </p>
+            <div class="finale-link">
+              <a href="https://marinamoji.crcao.fr">Discover marinaMoji ↗</a>
+              <p class="url">marinamoji.crcao.fr</p>
+            </div>
+          </div>
+          <figure class="spread-figure specimen--composer">
+            <img src="specimens/composer.png"
+                 alt="Character composition examples including complex and invented glyphs in running text"/>
+          </figure>
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="book-nav" aria-label="Handbook pages">
+      <button type="button" class="nav-prev" disabled>← Previous</button>
+      <button type="button" class="nav-next">Begin reading →</button>
+    </nav>
+  </div>
+  <script src="book.js"></script>
+</body>
+</html>
