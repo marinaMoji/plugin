@@ -57,33 +57,23 @@ def is_cjk_jidori_text(text):
     if "\n" in text or "\r" in text:
         return False
     n = 0
-    i = 0
-    s = str(text)
-    while i < len(s):
-        o = ord(s[i])
-        if 0xFE00 <= o <= 0xFE0F:
-            i += 1
+    prev_base = False
+    for ch in str(text):
+        if prev_base and _math.is_grapheme_extender(ch):
             continue
-        if not _codepoint_ok_for_jidori(o):
+        if not _codepoint_ok_for_jidori(ord(ch)):
             return False
         n += 1
-        i += 1
-        while i < len(s) and 0xFE00 <= ord(s[i]) <= 0xFE0F:
-            i += 1
-        # skip common combining marks attached to base
-        while i < len(s) and _is_combining(ord(s[i])):
-            i += 1
+        prev_base = True
     return n >= 1
 
 
-def _is_combining(o):
-    # Mn/Mc rough: combining diacritical blocks used with CJK
-    return (0x0300 <= o <= 0x036F) or (0x1AB0 <= o <= 0x1AFF) or (0x20D0 <= o <= 0x20FF)
-
-
 def _codepoint_ok_for_jidori(o):
-    """CJK ideographs / kana / select fullwidth punctuation; not Latin/digits."""
-    # Hiragana, Katakana, CJK Unified + extensions (BMP samples)
+    """Fullwidth CJK: ideographs, kana, iteration marks, select punctuation.
+
+    Not Latin/digits, and not halfwidth katakana (U+FF66–FF9D): those are
+    about half an em wide, so the one-em-per-character plan would be wrong.
+    """
     if 0x3040 <= o <= 0x309F:  # Hiragana
         return True
     if 0x30A0 <= o <= 0x30FF:  # Katakana
@@ -96,31 +86,19 @@ def _codepoint_ok_for_jidori(o):
         return True
     if 0xF900 <= o <= 0xFAFF:  # Compatibility ideographs
         return True
-    if 0xFF66 <= o <= 0xFF9D:  # Halfwidth katakana (treat as kana)
-        return True
     # Ideographic space — allow but rare in short jidori
     if o == 0x3000:
         return True
-    # Common CJK punctuation (fullwidth-ish frames)
-    if o in (
-        0x3001,
-        0x3002,
-        0x300C,
-        0x300D,
-        0x300E,
-        0x300F,
-        0x3010,
-        0x3011,
-        0x30FB,
-        0xFF01,
-        0xFF08,
-        0xFF09,
-        0xFF0C,
-        0xFF0E,
-        0xFF1A,
-        0xFF1B,
-        0xFF1F,
-    ):
+    # Ideographic iteration/closing marks: 々 〆 〇 (U+3005–3007), 〃 (U+3003)
+    if o in (0x3003, 0x3005, 0x3006, 0x3007):
+        return True
+    # CJK Symbols and Punctuation: 、。 〈〉《》「」『』【】 〔〕 〜
+    if 0x3001 <= o <= 0x3002 or 0x3008 <= o <= 0x3011 or o in (0x3014, 0x3015, 0x301C):
+        return True
+    if o in (0x30FB, 0x2015, 0x2025, 0x2026):  # ・ ― ‥ …
+        return True
+    # Fullwidth forms: ！（），．：；？
+    if o in (0xFF01, 0xFF08, 0xFF09, 0xFF0C, 0xFF0E, 0xFF1A, 0xFF1B, 0xFF1F):
         return True
     # SIP / TIP ideographs (e.g. 𠮷 U+20BB7)
     if 0x20000 <= o <= 0x2CEAF:
@@ -227,6 +205,21 @@ def _get_document():
     return doc
 
 
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
+
+
 def _range_text(text_range):
     if text_range is None:
         return ""
@@ -271,7 +264,7 @@ def _get_selection_range(doc, *, allow_collapsed=False):
         return first
     # Merge multi-range into one cursor when possible
     try:
-        text = doc.Text
+        text = _text_of(doc, first)
         cursor = text.createTextCursorByRange(first)
         for i in range(1, count):
             cursor.gotoRange(sel.getByIndex(i).getEnd(), True)
@@ -755,7 +748,7 @@ def apply_jidori(*_args):
     global _session_last_n
     try:
         doc = _get_document()
-    except RuntimeError as exc:
+    except RuntimeError:
         return
     cursor = _get_selection_range(doc, allow_collapsed=False)
     if cursor is None or _is_collapsed(cursor):

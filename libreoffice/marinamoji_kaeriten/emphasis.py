@@ -88,6 +88,51 @@ def short_name(style_id, lang="en"):
     return style_id or ""
 
 
+def _ui_lang():
+    """ja / fr / en from the LibreOffice UI locale (en if unavailable)."""
+    try:
+        import typography_inspector as _insp
+
+        return _insp._ui_lang()
+    except Exception:
+        return "en"
+
+
+_MENU_STRINGS = {
+    "en": {
+        "apply_default": "Apply default — %s",
+        "remove": "Remove emphasis",
+        "set_default": "Set default emphasis mark…",
+        "choose": "Choose an emphasis action:",
+        "title_menu": "Emphasis marks",
+        "title_default": "Set default emphasis mark",
+        "default_label": "Document default (existing marks are not changed):",
+    },
+    "ja": {
+        "apply_default": "既定の圏点を付ける — %s",
+        "remove": "圏点を外す",
+        "set_default": "既定の圏点を設定…",
+        "choose": "圏点の操作を選んでください:",
+        "title_menu": "圏点",
+        "title_default": "既定の圏点を設定",
+        "default_label": "文書の既定（既存の圏点は変えません）:",
+    },
+    "fr": {
+        "apply_default": "Appliquer le défaut — %s",
+        "remove": "Retirer les points d'emphase",
+        "set_default": "Définir le point d'emphase par défaut…",
+        "choose": "Choisissez une action d'emphase :",
+        "title_menu": "Points d'emphase",
+        "title_default": "Point d'emphase par défaut",
+        "default_label": "Défaut du document (marques existantes inchangées) :",
+    },
+}
+
+
+def _ms(lang, key):
+    return (_MENU_STRINGS.get(lang) or _MENU_STRINGS["en"])[key]
+
+
 def _get_document():
     try:
         doc = XSCRIPTCONTEXT.getDocument()  # noqa: F821
@@ -105,6 +150,21 @@ def _get_document():
     if doc is None or not hasattr(doc, "Text"):
         raise RuntimeError("Open a Writer document first.")
     return doc
+
+
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
 
 
 def _range_text(text_range):
@@ -150,7 +210,7 @@ def _get_selection_range(doc, *, allow_collapsed=False):
             return None
         return first
     last = sel.getByIndex(count - 1)
-    text = doc.Text
+    text = _text_of(doc, first)
     merged = text.createTextCursorByRange(first.getStart())
     merged.gotoRange(last.getEnd(), True)
     if len(_range_text(merged)) == 0 and not allow_collapsed:
@@ -350,7 +410,7 @@ def _apply_style_to_selection(doc, style_id):
         )
         return False
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     cursor = text.createTextCursorByRange(selection)
     before = _range_text(cursor)
     if not _apply_emphasis_uno(cursor, uno_value):
@@ -414,7 +474,7 @@ def remove_emphasis(*_args):
         )
         return
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     span = expand_to_emphasis_span(text, selection)
     if span is None:
         if not _is_collapsed(selection) and selection_has_emphasis(selection):
@@ -456,7 +516,8 @@ def _ask_default_style(doc, current):
         dialog_model = smgr.createInstanceWithContext(
             "com.sun.star.awt.UnoControlDialogModel", ctx
         )
-        dialog_model.Title = "Set default emphasis mark"
+        lang = _ui_lang()
+        dialog_model.Title = _ms(lang, "title_default")
         dialog_model.Width = 200
         dialog_model.Height = 95
         dialog_model.Closeable = True
@@ -477,11 +538,11 @@ def _ask_default_style(doc, current):
             PositionY=6,
             Width=180,
             Height=12,
-            Label="Document default (既存の圏点は変えません):",
+            Label=_ms(lang, "default_label"),
         )
         items = tuple(
-            "%s  %s / %s" % (preview, ja, en)
-            for _sid, preview, en, ja, _fr in _STYLE_LABELS
+            "%s  %s" % (preview, short_name(sid, lang))
+            for sid, preview, _en, _ja, _fr in _STYLE_LABELS
         )
         selected = 0
         for i, sid in enumerate(style_ids()):
@@ -614,13 +675,14 @@ def _choose_emphasis_action_dialog(doc):
     import uno
 
     default = document_default_style(doc)
+    lang = _ui_lang()
     try:
         ctx = uno.getComponentContext()
         smgr = ctx.ServiceManager
         dialog_model = smgr.createInstanceWithContext(
             "com.sun.star.awt.UnoControlDialogModel", ctx
         )
-        dialog_model.Title = "Emphasis marks"
+        dialog_model.Title = _ms(lang, "title_menu")
         dialog_model.Width = 210
         dialog_model.Height = 110
         dialog_model.Closeable = True
@@ -635,12 +697,15 @@ def _choose_emphasis_action_dialog(doc):
             dialog_model.insertByName(name, m)
 
         actions = [
-            ("APPLY_DEFAULT", "Apply default — %s" % short_name(default, "en")),
+            (
+                "APPLY_DEFAULT",
+                _ms(lang, "apply_default") % short_name(default, lang),
+            ),
         ]
-        for sid, preview, en, ja, _fr in _STYLE_LABELS:
-            actions.append((sid, "%s  %s  %s" % (preview, en, ja)))
-        actions.append(("REMOVE", "Remove emphasis  圏点を外す"))
-        actions.append(("SET_DEFAULT", "Set default emphasis mark…"))
+        for sid, preview, _en, _ja, _fr in _STYLE_LABELS:
+            actions.append((sid, "%s  %s" % (preview, short_name(sid, lang))))
+        actions.append(("REMOVE", _ms(lang, "remove")))
+        actions.append(("SET_DEFAULT", _ms(lang, "set_default")))
 
         _insert(
             "lbl",
@@ -649,7 +714,7 @@ def _choose_emphasis_action_dialog(doc):
             PositionY=6,
             Width=190,
             Height=12,
-            Label="Choose an emphasis action:",
+            Label=_ms(lang, "choose"),
         )
         _insert(
             "list",
@@ -735,6 +800,8 @@ def show_emphasis_menu(*_args):
         return
     import uno
 
+    lang = _ui_lang()
+    action = None
     try:
         ctx = uno.getComponentContext()
         smgr = ctx.ServiceManager
@@ -748,30 +815,30 @@ def show_emphasis_menu(*_args):
         default = document_default_style(doc)
         popup.insertItem(
             ID_APPLY_DEFAULT,
-            "Apply default — %s" % short_name(default, "en"),
+            _ms(lang, "apply_default") % short_name(default, lang),
             0,
             0,
         )
         popup.insertSeparator(1)
         pos = 2
-        for sid, preview, en, ja, _fr in _STYLE_LABELS:
+        for sid, preview, _en, _ja, _fr in _STYLE_LABELS:
             item_id = 10 + pos
             style_item_ids[item_id] = sid
             mark = "* " if sid == default else "  "
             popup.insertItem(
                 item_id,
-                "%s%s  %s  %s" % (mark, preview, en, ja),
+                "%s%s  %s" % (mark, preview, short_name(sid, lang)),
                 0,
                 pos,
             )
             pos += 1
         popup.insertSeparator(pos)
         pos += 1
-        popup.insertItem(ID_REMOVE, "Remove emphasis", 0, pos)
+        popup.insertItem(ID_REMOVE, _ms(lang, "remove"), 0, pos)
         pos += 1
         popup.insertSeparator(pos)
         pos += 1
-        popup.insertItem(ID_SET_DEFAULT, "Set default emphasis mark...", 0, pos)
+        popup.insertItem(ID_SET_DEFAULT, _ms(lang, "set_default"), 0, pos)
 
         frame = doc.getCurrentController().getFrame()
         window = frame.getContainerWindow()
@@ -780,18 +847,16 @@ def show_emphasis_menu(*_args):
         if not chosen:
             return
         if chosen == ID_APPLY_DEFAULT:
-            apply_emphasis()
-            return
-        if chosen == ID_REMOVE:
-            remove_emphasis()
-            return
-        if chosen == ID_SET_DEFAULT:
-            set_emphasis_default()
-            return
-        if chosen in style_item_ids:
-            apply_emphasis_style(style_item_ids[chosen])
-            return
+            action = "APPLY_DEFAULT"
+        elif chosen == ID_REMOVE:
+            action = "REMOVE"
+        elif chosen == ID_SET_DEFAULT:
+            action = "SET_DEFAULT"
+        elif chosen in style_item_ids:
+            action = style_item_ids[chosen]
     except Exception:
+        # Only a failure to *show* the popup falls back to the dialog; the
+        # chosen action runs below, outside this handler.
         action = _choose_emphasis_action_dialog(doc)
         if action is None:
             _message(
@@ -801,4 +866,4 @@ def show_emphasis_menu(*_args):
                 kind="error",
             )
             return
-        _dispatch_emphasis_action(action)
+    _dispatch_emphasis_action(action)

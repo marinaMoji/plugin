@@ -78,6 +78,21 @@ def _get_document():
     return doc
 
 
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
+
+
 def _range_text(text_range):
     if text_range is None:
         return ""
@@ -121,7 +136,7 @@ def _get_selection_range(doc, *, allow_collapsed=False):
             return None
         return first
     last = sel.getByIndex(count - 1)
-    text = doc.Text
+    text = _text_of(doc, first)
     merged = text.createTextCursorByRange(first.getStart())
     merged.gotoRange(last.getEnd(), True)
     if len(_range_text(merged)) == 0 and not allow_collapsed:
@@ -267,6 +282,14 @@ def _clear_ruby(cursor):
     # Leave adjust/position alone after clear; empty RubyText removes the guide.
 
 
+def _selection_has_tate(cursor):
+    try:
+        rot = int(_get(cursor, "CharRotation", 0) or 0)
+    except (TypeError, ValueError):
+        rot = 0
+    return rot == 900 and _get(cursor, "CharRotationIsFitToLine", False) is True
+
+
 def _selection_has_warichu(cursor):
     return _get(cursor, "CharCombineIsOn", False) is True
 
@@ -409,7 +432,7 @@ def apply_ruby(*_args):
         )
         return
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     cursor = text.createTextCursorByRange(selection)
     if _selection_has_warichu(cursor):
         _message(
@@ -418,6 +441,25 @@ def apply_ruby(*_args):
             "This selection is warichū (combined). "
             "Remove warichū first, or apply ruby to a separate base span.\n\n"
             "Nesting ruby inside warichū is unreliable in Writer.",
+            kind="warning",
+        )
+        return
+
+    if _selection_has_tate(cursor):
+        _message(
+            doc,
+            "marinaMoji ruby",
+            "This selection is tate-chū-yoko. Remove it first, or apply ruby "
+            "to a separate base span.",
+            kind="warning",
+        )
+        return
+    if "\n" in base or "\r" in base:
+        _message(
+            doc,
+            "marinaMoji ruby",
+            "A ruby reading belongs to one base run. "
+            "Select text within a single paragraph.",
             kind="warning",
         )
         return
@@ -472,7 +514,7 @@ def remove_ruby(*_args):
         )
         return
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     span = expand_to_ruby_span(text, selection)
     if span is None:
         if not _is_collapsed(selection) and selection_has_ruby(selection):

@@ -34,6 +34,21 @@ def _get_document():
     return doc
 
 
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
+
+
 def _range_text(text_range):
     if text_range is None:
         return ""
@@ -82,7 +97,7 @@ def _get_selection_range(doc, *, allow_collapsed=False):
             return None
         return first
     last = sel.getByIndex(count - 1)
-    text = doc.Text
+    text = _text_of(doc, first)
     merged = text.createTextCursorByRange(first.getStart())
     merged.gotoRange(last.getEnd(), True)
     if len(_range_text(merged)) == 0 and not allow_collapsed:
@@ -158,6 +173,14 @@ def _clear_combine(cursor):
     # Clearing empty brackets is safe on remove; do not set them on apply.
     _set(cursor, "CharCombinePrefix", "")
     _set(cursor, "CharCombineSuffix", "")
+
+
+def _selection_has_tate(cursor):
+    try:
+        rot = int(_get(cursor, "CharRotation", 0) or 0)
+    except (TypeError, ValueError):
+        rot = 0
+    return rot == 900 and _get(cursor, "CharRotationIsFitToLine", False) is True
 
 
 def _selection_has_ruby(cursor):
@@ -309,7 +332,7 @@ def apply_warichu(*_args):
             kind="info",
         )
         return
-    text = doc.Text
+    text = _text_of(doc, selection)
     if _selection_is_whole_paragraph(text, selection):
         _message(
             doc,
@@ -333,7 +356,25 @@ def apply_warichu(*_args):
             kind="warning",
         )
         return
+    if _selection_has_tate(cursor):
+        _message(
+            doc,
+            "marinaMoji warichū",
+            "This selection is tate-chū-yoko. Remove it first, or apply "
+            "warichū to a separate note span.",
+            kind="warning",
+        )
+        return
     before = _range_text(cursor)
+    if "\n" in before or "\r" in before:
+        _message(
+            doc,
+            "marinaMoji warichū",
+            "Warichū is one note inside a paragraph. "
+            "Select text within a single paragraph.",
+            kind="warning",
+        )
+        return
     if not _apply_combine(cursor):
         _message(
             doc,
@@ -377,7 +418,7 @@ def remove_warichu(*_args):
         )
         return
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     span = expand_to_warichu_span(text, selection)
     if span is None:
         # Fallback: non-empty selection that already reports combine

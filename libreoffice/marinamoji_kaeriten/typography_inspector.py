@@ -253,6 +253,21 @@ def _get_document():
     return doc
 
 
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
+
+
 def _get_prop(obj, name, default=None):
     try:
         return obj.getPropertyValue(name)
@@ -389,7 +404,7 @@ def _enum_paragraphs_in_range(text, text_range):
 
 
 def _paragraph_cursor_at_caret(doc, selection):
-    text = doc.Text
+    text = _text_of(doc, selection)
     cursor = text.createTextCursorByRange(selection)
     cursor.gotoStartOfParagraph(False)
     cursor.gotoEndOfParagraph(True)
@@ -430,6 +445,15 @@ def _lang_from_cursor(cursor) -> tuple:
     return asian, western
 
 
+def _is_tate(cursor) -> bool:
+    """90° rotation fitted to the line = tate-chū-yoko (plain rotation is not)."""
+    try:
+        rot = int(_get_prop(cursor, "CharRotation", 0) or 0)
+    except Exception:
+        rot = 0
+    return rot == 900 and bool(_get_prop(cursor, "CharRotationIsFitToLine", False))
+
+
 def _annotation_flags(cursor) -> dict:
     """Presence flags only — inspection does not interpret annotation contents."""
     flags = {"has_ruby": False, "has_warichu": False, "has_tatechuyoko": False}
@@ -444,11 +468,8 @@ def _annotation_flags(cursor) -> dict:
             flags["has_warichu"] = True
     except Exception:
         pass
-    try:
-        if int(_get_prop(cursor, "CharRotation", 0) or 0) != 0:
-            flags["has_tatechuyoko"] = True
-    except Exception:
-        pass
+    if _is_tate(cursor):
+        flags["has_tatechuyoko"] = True
     # Light portion sample (step by run) for mixed formatting inside the paragraph
     try:
         text = cursor.getText()
@@ -471,11 +492,8 @@ def _annotation_flags(cursor) -> dict:
                     flags["has_warichu"] = True
             except Exception:
                 pass
-            try:
-                if int(_get_prop(probe, "CharRotation", 0) or 0) != 0:
-                    flags["has_tatechuyoko"] = True
-            except Exception:
-                pass
+            if _is_tate(probe):
+                flags["has_tatechuyoko"] = True
             # Advance by formatting run when possible
             moved = False
             try:
@@ -554,7 +572,7 @@ def extract_scope(doc) -> "_analysis.InspectionScope":
     except Exception:
         text_range = selection
 
-    text = doc.Text
+    text = _text_of(doc, text_range)
     document_snap = _read_document_settings(doc)
 
     if _is_collapsed(text_range):

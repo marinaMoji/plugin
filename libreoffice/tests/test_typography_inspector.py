@@ -129,6 +129,26 @@ def test_soft_break_offsets_detection():
     assert find_soft_break_offsets("ab") == ()
 
 
+def _mixed_hits(text):
+    rep = _run([_para(text=text)])
+    return [d for d in rep.diagnostics if d.rule_id == RULE_PUNCTUATION_MIXED_WIDTH]
+
+
+def test_thousands_comma_and_year_parens_not_reported():
+    assert not _mixed_hits("売上は1,000万円に達した。次の年も続いた。")
+    assert not _mixed_hits("山田（2020）が論じた(2020)ように、結果は明らかである。")
+    assert not _mixed_hits("第(1)案と第(a)案を比べて、結果を述べる。")
+
+
+def test_western_paren_around_japanese_still_reported():
+    assert _mixed_hits("これは(日本語の注)である。そうである。そして続く。")
+
+
+def test_url_only_suppresses_nearby_marks():
+    far = "日本語の文章がここにあります.続きの文章もあります。" + "あ" * 60 + " https://example.com/a"
+    assert _mixed_hits(far)
+
+
 def test_settings_mixed_across_paragraphs():
     report = _run(
         [

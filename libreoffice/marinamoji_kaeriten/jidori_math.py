@@ -12,6 +12,7 @@ Shrink → CharScaleWidth (percent).
 
 from __future__ import annotations
 
+import unicodedata
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -28,27 +29,35 @@ class JidoriPlan:
     note: str
 
 
-def count_graphemes(text: str) -> int:
-    """Approximate grapheme count without unicodedata.normalize changes.
+def is_grapheme_extender(ch: str) -> bool:
+    """True for code points that attach to the preceding base character.
 
-    Uses a simple code-point walk; skips VS (U+FE00–FE0F). Good enough for
-    CJK spike strings; not a full GraphemeBreak implementation.
+    Variation selectors (standard U+FE00–FE0F and ideographic U+E0100–E01EF,
+    e.g. 葛󠄀) and combining marks.
+    """
+    o = ord(ch)
+    return (
+        0xFE00 <= o <= 0xFE0F
+        or 0xE0100 <= o <= 0xE01EF
+        or unicodedata.combining(ch) != 0
+    )
+
+
+def count_graphemes(text: str) -> int:
+    """Approximate grapheme count (base + variation selectors / combining marks).
+
+    Not a full GraphemeBreak implementation; good enough for short CJK runs.
+    A leading extender with no base counts as its own cluster.
     """
     if not text:
         return 0
     n = 0
-    i = 0
-    while i < len(text):
-        o = ord(text[i])
-        # Skip variation selectors
-        if 0xFE00 <= o <= 0xFE0F:
-            i += 1
+    prev_base = False
+    for ch in text:
+        if prev_base and is_grapheme_extender(ch):
             continue
         n += 1
-        i += 1
-        # Skip following VS attached to this base
-        while i < len(text) and 0xFE00 <= ord(text[i]) <= 0xFE0F:
-            i += 1
+        prev_base = True
     return n
 
 

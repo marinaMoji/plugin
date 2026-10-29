@@ -8,7 +8,7 @@ No UNO imports. LibreOffice / future Word adapters feed plain data structures.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 # Bundled ja_JP locale defaults (LibreOffice i18npool ja_JP.xml). Used only when
 # the host cannot supply ForbiddenCharacters for the applicable locale.
@@ -270,10 +270,31 @@ def _context_snippet(text: str, index: int, radius: int = 8) -> str:
 
 
 def _is_decimal_dot(text: str, index: int) -> bool:
-    """True for digit.digit (Western decimal), which we leave alone."""
+    """True for digit.digit or digit,digit (decimal / thousands), left alone."""
     if index <= 0 or index + 1 >= len(text):
         return False
     return text[index - 1].isdigit() and text[index + 1].isdigit()
+
+
+def _is_western_paren_content(text: str, index: int, ch: str) -> bool:
+    """True for a Western paren pair around plain ASCII, e.g. (2020), (1), (a).
+
+    Citations, numbering and years are normally written this way even in
+    Japanese prose, so they are not reported.
+    """
+    if ch == "(":
+        j = text.find(")", index + 1)
+        if j < 0 or j - index > 17:
+            return False
+        content = text[index + 1 : j]
+    elif ch == ")":
+        k = text.rfind("(", 0, index)
+        if k < 0 or index - k > 17:
+            return False
+        content = text[k + 1 : index]
+    else:
+        return False
+    return bool(content.strip()) and all(ord(c) < 128 for c in content)
 
 
 def analyze_mixed_width(
@@ -303,10 +324,14 @@ def analyze_mixed_width(
                     start = i + 1
                     if len(findings) >= _MAX_PUNCT_OCCURRENCES:
                         return findings
-                    # Skip URL-ish passages for Western marks only
-                    if variant == "western" and _is_urlish(text):
+                    # Skip marks near a URL (not the whole paragraph)
+                    if variant == "western" and _is_urlish(
+                        text[max(0, i - 40) : i + 40]
+                    ):
                         continue
-                    if ch == "." and _is_decimal_dot(text, i):
+                    if ch in ".," and _is_decimal_dot(text, i):
+                        continue
+                    if ch in "()" and _is_western_paren_content(text, i, ch):
                         continue
                     # Western marks in a Latin-heavy local window are allowed
                     if variant == "western" and _latin_window_ratio(text, i) >= 0.35:
@@ -367,12 +392,11 @@ def _following_grapheme(text: str, break_index: int) -> Tuple[str, int, int]:
         i += 1
     if i >= len(text):
         return "", i, i
-    # Include a following VS if present (U+FE00–FE0F, U+E0100–E01EF surrogate pair).
-    ch = text[i]
+    # Include a following variation selector (U+FE00–FE0F, U+E0100–E01EF).
     j = i + 1
     if j < len(text):
         o = ord(text[j])
-        if 0xFE00 <= o <= 0xFE0F:
+        if 0xFE00 <= o <= 0xFE0F or 0xE0100 <= o <= 0xE01EF:
             j += 1
     return text[i:j], i, j
 

@@ -10,7 +10,7 @@ Not CharCombineIsOn (that is warichū / text-combine=lines).
 Not kumimoji. Not CSS text-combine-upright / Word’s dedicated feature.
 
 Selection policy (marinaMoji usability — not a JLREQ hard limit):
-  - Recommended: 2-grapheme digits or Latin → apply in vertical writing
+  - Recommended: 2-grapheme digits, Latin, or a letter/digit mix (A4, 5G)
   - Extended: 3–4 grapheme digit/Latin/numeric → confirm override
   - Inappropriate Japanese / mixed prose / 5+ → refuse (no silent shrink)
   - Caret (no selection): detect an exact 2-grapheme digit/Latin run only
@@ -136,8 +136,9 @@ def classify_run(text):
     """Classify a candidate run (already the intended span, not surrounding prose).
 
     Returns (kind, n) where kind is one of:
-      digits | latin | numeric | japanese | mixed | empty | other
-    and n is grapheme length.
+      digits | latin | alnum | numeric | japanese | mixed | empty | other
+    and n is grapheme length. ``alnum`` is a digit/Latin mix with no
+    punctuation (A4, 5G); ``numeric`` also allows . , %.
     """
     raw = text or ""
     # Keep internal spaces as disqualifying for recommended runs.
@@ -153,6 +154,8 @@ def classify_run(text):
         return "digits", n
     if all(_is_latin_grapheme(g) for g in clusters):
         return "latin", n
+    if all(_is_digit_grapheme(g) or _is_latin_grapheme(g) for g in clusters):
+        return "alnum", n
     if all(
         _is_digit_grapheme(g) or _is_latin_grapheme(g) or _is_numeric_extra(g)
         for g in clusters
@@ -205,9 +208,9 @@ def classify_selection(text):
             "A single character is not conventional tate-chū-yoko. "
             "Select a short sequence such as two digits.",
         )
-    if n == 2 and kind in ("digits", "latin"):
+    if n == 2 and kind in ("digits", "latin", "alnum"):
         return _verdict(OK, "recommended", kind, n, "")
-    if 3 <= n <= 4 and kind in ("digits", "latin", "numeric"):
+    if 3 <= n <= 4 and kind in ("digits", "latin", "alnum", "numeric"):
         return _verdict(
             CONFIRM,
             "extended",
@@ -260,8 +263,12 @@ def _is_latin_char(ch):
     )
 
 
+def _is_alnum_char(ch):
+    return _is_digit_char(ch) or _is_latin_char(ch)
+
+
 def find_recommended_run_at_caret(paragraph_text, caret_index):
-    """Find an exact 2-character digit or Latin run at the caret.
+    """Find an exact 2-character digit, Latin or letter/digit run at the caret.
 
     caret_index is a code-point offset (0..len). Does **not** pick a 2-digit
     slice out of a longer number (e.g. caret in `2026` → None).
@@ -292,7 +299,7 @@ def find_recommended_run_at_caret(paragraph_text, caret_index):
             end += 1
         return (start, end)
 
-    for pred in (_is_digit_char, _is_latin_char):
+    for pred in (_is_digit_char, _is_latin_char, _is_alnum_char):
         span = expand(pred)
         if span is None:
             continue
@@ -301,7 +308,7 @@ def find_recommended_run_at_caret(paragraph_text, caret_index):
         # Exact length 2 in graphemes and code points for these repertoires.
         if grapheme_len(run) == 2 and (end - start) == 2:
             kind, _n = classify_run(run)
-            if kind in ("digits", "latin"):
+            if kind in ("digits", "latin", "alnum"):
                 return (start, end)
     return None
 
@@ -359,6 +366,21 @@ def _get_document():
     return doc
 
 
+def _text_of(doc, text_range):
+    """XText that contains text_range (table cell, footnote, frame, header…).
+
+    ``doc.Text`` is the body text only; a cursor made from it cannot cover a
+    range that lives in another text.
+    """
+    try:
+        text = text_range.getText()
+        if text is not None:
+            return text
+    except Exception:
+        pass
+    return doc.Text
+
+
 def _range_text(text_range):
     if text_range is None:
         return ""
@@ -402,7 +424,7 @@ def _get_selection_range(doc, *, allow_collapsed=False):
             return None
         return first
     last = sel.getByIndex(count - 1)
-    text = doc.Text
+    text = _text_of(doc, first)
     merged = text.createTextCursorByRange(first.getStart())
     merged.gotoRange(last.getEnd(), True)
     if len(_range_text(merged)) == 0 and not allow_collapsed:
@@ -525,7 +547,7 @@ def _page_writing_mode(doc, text_range):
     """WritingMode of the page style that contains text_range (or the view)."""
     name = None
     try:
-        cursor = doc.Text.createTextCursorByRange(text_range.getStart())
+        cursor = _text_of(doc, text_range).createTextCursorByRange(text_range.getStart())
         name = cursor.getPropertyValue("PageStyleName")
     except Exception:
         name = None
@@ -547,7 +569,7 @@ def _page_writing_mode(doc, text_range):
 
 def _paragraph_writing_mode(doc, text_range):
     try:
-        cursor = doc.Text.createTextCursorByRange(text_range.getStart())
+        cursor = _text_of(doc, text_range).createTextCursorByRange(text_range.getStart())
         return cursor.getPropertyValue("WritingMode")
     except Exception:
         return None
@@ -563,7 +585,7 @@ def _paragraph_is_vertical(doc, text_range):
 
 def _paragraph_text_and_offset(doc, text_range):
     """Return (paragraph_string, caret_offset_in_paragraph) for a collapsed range."""
-    text = doc.Text
+    text = _text_of(doc, text_range)
     para = text.createTextCursorByRange(text_range.getStart())
     para.gotoStartOfParagraph(False)
     para_start = text.createTextCursorByRange(para.getStart())
@@ -581,7 +603,7 @@ def _paragraph_text_and_offset(doc, text_range):
 
 def _cursor_for_paragraph_slice(doc, text_range, start, end):
     """Build a cursor covering [start, end) code points in the paragraph of text_range."""
-    text = doc.Text
+    text = _text_of(doc, text_range)
     para_start = text.createTextCursorByRange(text_range.getStart())
     para_start.gotoStartOfParagraph(False)
     para_start.collapseToStart()
@@ -685,7 +707,7 @@ def _resolve_apply_target(doc):
         cursor = _cursor_for_paragraph_slice(doc, selection, start, end)
         return cursor, "caret"
 
-    cursor = doc.Text.createTextCursorByRange(selection)
+    cursor = _text_of(doc, selection).createTextCursorByRange(selection)
     return cursor, "selection"
 
 
@@ -790,7 +812,7 @@ def remove_tatechuyoko(*_args):
         )
         return
 
-    text = doc.Text
+    text = _text_of(doc, selection)
     span = expand_to_tatechuyoko_span(text, selection)
     if span is None:
         if not _is_collapsed(selection) and selection_has_tatechuyoko(selection):

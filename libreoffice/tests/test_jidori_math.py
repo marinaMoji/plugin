@@ -58,6 +58,13 @@ def test_vertical_shrink_refused():
     assert p.mode == "invalid"
 
 
+def test_ivs_and_combining_attach_to_base():
+    assert count_graphemes("葛\U000E0100城") == 2
+    assert count_graphemes("葛\uFE00城") == 2
+    assert count_graphemes("か\u3099") == 1
+    assert count_graphemes("\U000E0100") == 1  # orphan selector counts once
+
+
 if __name__ == "__main__":
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):

@@ -138,6 +138,18 @@ def test_resolve_vertical_trusts_page_over_stale_lr_tb():
     assert resolve_is_vertical(_WM_LR_TB, None) is False
 
 
+def test_alnum_pairs_are_recommended():
+    from tatechuyoko import classify_selection, find_recommended_run_at_caret
+
+    for run in ("A4", "5G", "H2"):
+        assert classify_selection(run)["verdict"] == "ok", run
+    assert classify_selection("A4B")["verdict"] == "confirm"
+    assert classify_selection("A4B5C")["verdict"] == "refuse"
+    # caret detection picks up a letter/digit pair but not a slice of a longer run
+    assert find_recommended_run_at_caret("用紙A4判", 3) == (2, 4)
+    assert find_recommended_run_at_caret("西暦2026年", 4) is None
+
+
 def main():
     test_grapheme_len_basic()
     test_classify_recommended()
@@ -154,6 +166,7 @@ def main():
     test_base_preserved()
     test_rotation_constant()
     test_classify_run_kinds()
+    test_alnum_pairs_are_recommended()
     test_resolve_vertical_trusts_page_over_stale_lr_tb()
     print("All tate-chū-yoko helper tests passed.")
 

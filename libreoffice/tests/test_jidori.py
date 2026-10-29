@@ -75,6 +75,21 @@ def test_horizontal_shrink_ok():
     assert p.scale_width_percent == 60
 
 
+def test_iteration_marks_and_closing_punct_allowed():
+    for t in ("人々", "〆切", "〇〇", "あ…", "〈題〉"):
+        assert is_cjk_jidori_text(t), t
+
+
+def test_ideographic_variation_selector_stays_one_grapheme():
+    ivs = "葛\U000E0100城"
+    assert is_cjk_jidori_text(ivs)
+
+
+def test_halfwidth_katakana_rejected():
+    # About half an em wide: the one-em-per-character plan would be wrong.
+    assert not is_cjk_jidori_text("ｱｲｳ")
+
+
 if __name__ == "__main__":
     for name, fn in sorted(globals().items()):
         if name.startswith("test_") and callable(fn):
