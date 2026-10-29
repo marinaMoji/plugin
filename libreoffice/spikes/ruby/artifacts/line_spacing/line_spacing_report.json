@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-10-29T12:12:04.125123+00:00",
+  "started_at": "2026-10-29T12:15:20.738658+00:00",
   "purpose": "Measure whether ruby expands fixed ParaLineSpacing; compare ParaVertAlignment BASELINE vs AUTOMATIC vs CENTER (Paragraph dialog Text-to-text).",
   "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing",
   "uno_map": {

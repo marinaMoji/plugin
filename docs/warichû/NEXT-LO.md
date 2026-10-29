@@ -1,10 +1,11 @@
 # LibreOffice next steps
 
-## Phase 3 in progress (0.3.17)
+## Phase 3 — ruby + warichū coexistence (**0.3.22** smoked)
 
 - Native **group-ruby** Apply / Remove (`ruby.py`) — see [`20-PHASE3-RUBY.md`](20-PHASE3-RUBY.md).
-- Manual coexistence smoke: ruby + warichū + kaeriten + vertical page.
-- Still deferred: jukugo / mono auto-split / ruby metrics UI / shared rules engine / Word.
+- Manual coexistence smoke **passed** (user 2026-10-29): ruby + warichū + vertical; Text-to-text Base line; Fixed line spacing.
+- Package: `plugin/libreoffice/dist/MarinaMojiKaeriten.oxt` — **ready to publish** when you choose.
+- Still deferred: jukugo / mono auto-split / ruby metrics UI / stretch-mode UI (INDENT_BLOCK/BLOCK) / shared rules engine / Word.
 
 ## Parked upstream
 
@@ -14,5 +15,5 @@
 
 ## Release
 
-- **0.3.16** warichū validated (publish when you choose).
-- **0.3.17** = 0.3.16 + ruby toolbar (build locally; manual smoke before publish).
+- **0.3.16** warichū validated.
+- **0.3.22** = warichū + ruby coexistence (LEFT ruby adjust; paragraph Text-to-text Base line on apply; bare combine). Smoke OK — publish when ready.
