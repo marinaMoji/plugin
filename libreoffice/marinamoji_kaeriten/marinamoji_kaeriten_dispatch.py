@@ -25,6 +25,10 @@ _COMMANDS = frozenset(
         "remove_warichu",
         "apply_ruby",
         "remove_ruby",
+        "apply_emphasis",
+        "emphasis_menu",
+        "remove_emphasis",
+        "set_emphasis_default",
     )
 )
 
@@ -96,8 +100,18 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.apply_ruby()
         elif path == "remove_ruby":
             macros.remove_ruby()
+        elif path == "apply_emphasis":
+            macros.apply_emphasis()
+        elif path == "emphasis_menu":
+            macros.emphasis_menu()
+        elif path == "remove_emphasis":
+            macros.remove_emphasis()
+        elif path == "set_emphasis_default":
+            macros.set_emphasis_default()
 
     def addStatusListener(self, control, url):
+        # Title/tooltip comes from Addons.xcu. Document-default name is shown
+        # live in the emphasis menu ("Apply default — …").
         pass
 
     def removeStatusListener(self, control, url):

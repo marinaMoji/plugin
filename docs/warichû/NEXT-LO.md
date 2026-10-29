@@ -1,5 +1,20 @@
 # LibreOffice next steps
 
+## Ordered typography roadmap
+
+Knock off in this order (feasibility vs native UNO, 2026-10-29):
+
+| # | Feature | Status |
+|---|---|---|
+| 1 | **Emphasis marks 圏点・傍点** | **0.3.24 coded — smoke pending** — [`../emphasis/`](../emphasis/) |
+| 2 | Tate-chū-yoko 縦中横 | pending |
+| 3 | Scholarly typography presets | pending |
+| 4 | Kinsoku shori 禁則処理 (diagnostics) | pending |
+| 5 | Document-wide validation | pending |
+| 6 | Punctuation and spacing | pending |
+| 7 | Jidori 字取り | pending |
+| 8 | Furiwake 振り分け | pending |
+
 ## Phase 3 — ruby + warichū coexistence (**0.3.22** smoked)
 
 - Native **group-ruby** Apply / Remove (`ruby.py`) — see [`20-PHASE3-RUBY.md`](20-PHASE3-RUBY.md).
@@ -17,3 +32,4 @@
 
 - **0.3.16** warichū validated.
 - **0.3.22** = warichū + ruby coexistence (LEFT ruby adjust; paragraph Text-to-text Base line on apply; bare combine). Smoke OK — publish when ready.
+- **0.3.24** = emphasis (黒ゴマ default, menu overrides, doc preference). Smoke pending.

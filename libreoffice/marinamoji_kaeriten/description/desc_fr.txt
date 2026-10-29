@@ -6,4 +6,6 @@ Prend aussi en charge le warichū (割注) : sélectionnez uniquement le texte d
 
 Ruby de groupe : sélectionnez le texte de base → Appliquer le ruby → saisissez la lecture (alignement par défaut LEFT, natif Writer). Retirer fonctionne aussi avec le curseur. Le texte de base est conservé. Pas d’imbrication avec le warichū.
 
+Points d’emphase (圏点) : sélectionnez le texte → Appliquer (défaut du document, sésame noir) ou menu pour disque / cercle / point, Retirer, ou Définir le signe par défaut. Changer le défaut ne réécrit pas les marques existantes.
+
 Fonctionne hors ligne. Aucune télémétrie. L’IME marinaMoji n’est pas requis à l’exécution (toute saisie produisant les marques Unicode convient). LibreOffice 6.4 ou plus récent.

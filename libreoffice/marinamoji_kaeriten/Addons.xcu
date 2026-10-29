@@ -4,8 +4,13 @@
                     oor:name="Addons"
                     oor:package="org.openoffice.Office">
   <node oor:name="AddonUI">
+    <!--
+      Toolbar id bumped to .v2 so Writer drops stale user customizations that
+      scrambled button order across 0.3.23–0.3.25 upgrades.
+      Order: kaeriten → warichū pair → emphasis trio → ruby pair → copy
+    -->
     <node oor:name="OfficeToolBar">
-      <node oor:name="org.marinaMoji.kaeriten.toolbar" oor:op="replace">
+      <node oor:name="org.marinaMoji.kaeriten.toolbar.v2" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
           <value>marinaMoji</value>
           <value xml:lang="en-US">marinaMoji</value>
@@ -13,7 +18,8 @@
         <prop oor:name="Context" oor:type="xs:string">
           <value>com.sun.star.text.TextDocument</value>
         </prop>
-        <node oor:name="t1" oor:op="replace">
+
+        <node oor:name="i01_render" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:render_kaeriten</value>
           </prop>
@@ -28,7 +34,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t2" oor:op="replace">
+        <node oor:name="i02_unrender" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:unrender_kaeriten</value>
           </prop>
@@ -43,7 +49,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_dir" oor:op="replace">
+        <node oor:name="i03_toggle_dir" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:toggle_page_writing_mode</value>
           </prop>
@@ -58,12 +64,13 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_sep_w" oor:op="replace">
+
+        <node oor:name="i04_sep_warichu" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="t_warichu_on" oor:op="replace">
+        <node oor:name="i05_apply_warichu" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_warichu</value>
           </prop>
@@ -80,7 +87,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_warichu_off" oor:op="replace">
+        <node oor:name="i06_remove_warichu" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_warichu</value>
           </prop>
@@ -97,12 +104,70 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_sep_r" oor:op="replace">
+
+        <node oor:name="i07_sep_emphasis" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="t_ruby_on" oor:op="replace">
+        <node oor:name="i08_apply_emphasis" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:apply_emphasis</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Apply emphasis marks — Black sesame</value>
+            <value xml:lang="en-US">Apply emphasis marks — Black sesame</value>
+            <value xml:lang="ja">圏点を付ける — 黒ゴマ</value>
+            <value xml:lang="fr">Appliquer des points d’emphase — points sésame noirs</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="i09_emphasis_menu" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:emphasis_menu</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Emphasis marks menu</value>
+            <value xml:lang="en-US">Emphasis marks menu</value>
+            <value xml:lang="ja">圏点メニュー</value>
+            <value xml:lang="fr">Menu des points d’emphase</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="i10_remove_emphasis" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:remove_emphasis</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Remove emphasis</value>
+            <value xml:lang="en-US">Remove emphasis</value>
+            <value xml:lang="ja">圏点を外す</value>
+            <value xml:lang="fr">Retirer les points d’emphase</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+
+        <node oor:name="i11_sep_ruby" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>private:separator</value>
+          </prop>
+        </node>
+        <node oor:name="i12_apply_ruby" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:apply_ruby</value>
           </prop>
@@ -119,7 +184,7 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_ruby_off" oor:op="replace">
+        <node oor:name="i13_remove_ruby" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:remove_ruby</value>
           </prop>
@@ -136,12 +201,13 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
-        <node oor:name="t_sep" oor:op="replace">
+
+        <node oor:name="i14_sep_copy" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
           </prop>
         </node>
-        <node oor:name="t3" oor:op="replace">
+        <node oor:name="i15_copy_plain" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:copy_plain_text</value>
           </prop>
@@ -158,6 +224,7 @@
         </node>
       </node>
     </node>
+
     <node oor:name="Images">
       <node oor:name="org.marinaMoji.kaeriten.render" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">
@@ -234,6 +301,45 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/remove_warichu.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.apply_emphasis" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:apply_emphasis</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_emphasis.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_emphasis.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.emphasis_menu" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:emphasis_menu</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/emphasis_menu.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/emphasis_menu.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.remove_emphasis" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:remove_emphasis</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_emphasis.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_emphasis.svg</value>
           </prop>
         </node>
       </node>

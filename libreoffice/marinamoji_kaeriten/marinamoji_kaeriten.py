@@ -37,6 +37,16 @@ try:
 except ImportError:
     _ruby = None
 
+try:
+    import emphasis as _emphasis
+except ImportError:
+    _emphasis = None
+
+try:
+    import typography_prefs as _typography_prefs  # noqa: F401 — packed with OXT
+except ImportError:
+    _typography_prefs = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1809,6 +1819,45 @@ def remove_ruby(*_args):
     _ruby.remove_ruby()
 
 
+def apply_emphasis(*_args):
+    """Apply the document-default emphasis mark to the selection."""
+    if _emphasis is None:
+        return
+    _emphasis.apply_emphasis()
+
+
+def emphasis_menu(*_args):
+    """Open the emphasis marks menu (styles / remove / set default)."""
+    if _emphasis is None:
+        return
+    _emphasis.show_emphasis_menu()
+
+
+def remove_emphasis(*_args):
+    """Remove emphasis marks from the selection or caret-inside span."""
+    if _emphasis is None:
+        return
+    _emphasis.remove_emphasis()
+
+
+def set_emphasis_default(*_args):
+    """Set the per-document emphasis default (does not rewrite passages)."""
+    if _emphasis is None:
+        return
+    _emphasis.set_emphasis_default()
+
+
+def emphasis_apply_tooltip(*_args):
+    """Localized tooltip reflecting the current document default."""
+    if _emphasis is None:
+        return ""
+    try:
+        doc = _get_document()
+    except RuntimeError:
+        return "Apply emphasis marks — Black sesame"
+    return _emphasis.apply_style_tooltip(doc, "en")
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1825,6 +1874,10 @@ g_exportedScripts = (
     remove_warichu,
     apply_ruby,
     remove_ruby,
+    apply_emphasis,
+    emphasis_menu,
+    remove_emphasis,
+    set_emphasis_default,
     format_selection,
     format_paragraph,
     format_document,
