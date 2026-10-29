@@ -1,5 +1,23 @@
 # E. Plugin corrections
 
+## Extension **0.3.22**
+
+### Paragraph Text-to-text → Base line on Apply ruby
+
+**UI:** Format → Paragraph → Alignment → Text-to-text → **Base line**  
+**UNO:** `ParaVertAlignment = ParagraphVertAlign.BASELINE` (1)
+
+User-confirmed: this (not `RubyAdjust`) stabilises ruby beside vertical warichū. Apply ruby now sets it on the containing paragraph.
+
+Also: spike + measurements for whether ruby inflates **fixed** line pitch (`docs/ruby/09-PARA-VERT-AND-LINE-SPACING.md`). Horizontal FIX spacing: **ruby does not change line pitch** (Δ≈0). Single/100% spacing does inflate — use Fixed line spacing for scholarly layout.
+
+## Extension **0.3.21**
+
+### Default `RubyAdjust` → LEFT
+
+Writer-native `SvxRubyItem` default. Stretch modes kept as internal alternatives.  
+*(Earlier note wrongly equated user “baseline” with LEFT — that referred to paragraph Text-to-text; see 0.3.22.)*
+
 ## Extension **0.3.20**
 
 ### Warichū regression: do not clear `RubyText` on combine apply

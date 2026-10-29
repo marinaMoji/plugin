@@ -12,6 +12,7 @@ from ruby import (  # noqa: E402
     _RUBY_ADJUST_CENTER,
     _RUBY_ADJUST_DEFAULT,
     _RUBY_ADJUST_INDENT_BLOCK,
+    _RUBY_ADJUST_LEFT,
     _adjust_for_base,
     expand_ruby_span_indices,
     text_unchanged_after_ruby_change,
@@ -38,19 +39,19 @@ def test_base_preserved_contract():
     assert text_unchanged_after_ruby_change("漢字", "漢 字") is False
 
 
-def test_default_adjust_is_indent_block():
-    """Group-ruby product default: Fig.124 → ODF distribute-space."""
-    assert _RUBY_ADJUST_DEFAULT == _RUBY_ADJUST_INDENT_BLOCK
-    assert _RUBY_ADJUST_INDENT_BLOCK == 4
+def test_default_adjust_is_left():
+    """LEFT = Writer native default; stable beside vertical warichū."""
+    assert _RUBY_ADJUST_DEFAULT == _RUBY_ADJUST_LEFT
+    assert _RUBY_ADJUST_LEFT == 0
+    assert _RUBY_ADJUST_INDENT_BLOCK == 4  # kept for future Fig.124 UI
     assert _RUBY_ADJUST_BLOCK == 3
     assert _RUBY_ADJUST_CENTER == 1
 
 
-def test_adjust_for_base_mono_vs_group():
-    assert _adjust_for_base("文") == _RUBY_ADJUST_CENTER
-    assert _adjust_for_base("本") == _RUBY_ADJUST_CENTER
-    assert _adjust_for_base("本文") == _RUBY_ADJUST_INDENT_BLOCK
-    assert _adjust_for_base("国際") == _RUBY_ADJUST_INDENT_BLOCK
+def test_adjust_for_base_uses_left():
+    assert _adjust_for_base("文") == _RUBY_ADJUST_LEFT
+    assert _adjust_for_base("本文") == _RUBY_ADJUST_LEFT
+    assert _adjust_for_base("国際") == _RUBY_ADJUST_LEFT
 
 
 def main():
@@ -58,8 +59,8 @@ def main():
     test_expand_caret_after()
     test_expand_outside()
     test_base_preserved_contract()
-    test_default_adjust_is_indent_block()
-    test_adjust_for_base_mono_vs_group()
+    test_default_adjust_is_left()
+    test_adjust_for_base_uses_left()
     print("All ruby helper tests passed.")
 
 

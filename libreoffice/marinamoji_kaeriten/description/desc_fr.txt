@@ -4,6 +4,6 @@ Met en forme les kaeriten Unicode (signes de lecture kanbun, U+3190–U+319F) da
 
 Prend aussi en charge le warichū (割注) : sélectionnez uniquement le texte de la note, puis Appliquer. Retirer fonctionne aussi avec le curseur dans l’annotation (pas tout le paragraphe ; pas de propriétés UNO de parenthèses ; coupure et taille gérées par Writer).
 
-Ruby de groupe : sélectionnez le texte de base → Appliquer le ruby → saisissez la lecture (alignement par défaut INDENT_BLOCK / Fig.124). Retirer fonctionne aussi avec le curseur. Le texte de base est conservé. Pas d’imbrication avec le warichū.
+Ruby de groupe : sélectionnez le texte de base → Appliquer le ruby → saisissez la lecture (alignement par défaut LEFT, natif Writer). Retirer fonctionne aussi avec le curseur. Le texte de base est conservé. Pas d’imbrication avec le warichū.
 
 Fonctionne hors ligne. Aucune télémétrie. L’IME marinaMoji n’est pas requis à l’exécution (toute saisie produisant les marques Unicode convient). LibreOffice 6.4 ou plus récent.

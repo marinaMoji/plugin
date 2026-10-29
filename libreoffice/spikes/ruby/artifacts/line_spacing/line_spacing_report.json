@@ -1,0 +1,416 @@
+{
+  "started_at": "2026-10-29T12:12:04.125123+00:00",
+  "purpose": "Measure whether ruby expands fixed ParaLineSpacing; compare ParaVertAlignment BASELINE vs AUTOMATIC vs CENTER (Paragraph dialog Text-to-text).",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing",
+  "uno_map": {
+    "Text-to-text Base line": "ParaVertAlignment = ParagraphVertAlign.BASELINE (1)",
+    "Text-to-text Automatic": "ParaVertAlignment = AUTOMATIC (0)",
+    "Text-to-text Center": "ParaVertAlignment = CENTER (3)",
+    "Fixed line spacing": "ParaLineSpacing Mode=FIXED Height=twips"
+  },
+  "documents": [
+    {
+      "tag": "horizontal_baseline",
+      "writing": "horizontal",
+      "ParaVertAlignment": 1,
+      "align_name": "BASELINE",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_horizontal_baseline.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 1,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 1,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    },
+    {
+      "tag": "horizontal_automatic",
+      "writing": "horizontal",
+      "ParaVertAlignment": 0,
+      "align_name": "AUTOMATIC",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_horizontal_automatic.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 0,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 0,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    },
+    {
+      "tag": "horizontal_center",
+      "writing": "horizontal",
+      "ParaVertAlignment": 3,
+      "align_name": "CENTER",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_horizontal_center.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 3,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 3,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    },
+    {
+      "tag": "vertical_baseline",
+      "writing": "vertical",
+      "ParaVertAlignment": 1,
+      "align_name": "BASELINE",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_vertical_baseline.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 1,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 1,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    },
+    {
+      "tag": "vertical_automatic",
+      "writing": "vertical",
+      "ParaVertAlignment": 0,
+      "align_name": "AUTOMATIC",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_vertical_automatic.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 0,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 0,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    },
+    {
+      "tag": "vertical_center",
+      "writing": "vertical",
+      "ParaVertAlignment": 3,
+      "align_name": "CENTER",
+      "fixed_line_pt": 28.0,
+      "body_pt": 14.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/linespace_vertical_center.odt",
+      "plain": {
+        "kind": "plain",
+        "lines": [
+          "あいうえお一",
+          "かきくけこ二",
+          "さしすせそ三",
+          "たちつてと四"
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 3,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      },
+      "ruby": {
+        "kind": "ruby",
+        "lines": [
+          {
+            "pre": "",
+            "base": "漢字",
+            "reading": "かんじ",
+            "suf": "一"
+          },
+          {
+            "pre": "",
+            "base": "日本",
+            "reading": "にほん",
+            "suf": "二"
+          },
+          {
+            "pre": "",
+            "base": "文字",
+            "reading": "もじ",
+            "suf": "三"
+          },
+          {
+            "pre": "",
+            "base": "試験",
+            "reading": "しけん",
+            "suf": "四"
+          }
+        ],
+        "para_props": {
+          "ParaLineSpacing_set": true,
+          "ParaVertAlignment_set": true,
+          "ParaVertAlignment": 3,
+          "ParaLineSpacing": {
+            "Mode": 3,
+            "Height": 988
+          },
+          "ParaSnapToGrid": null
+        }
+      }
+    }
+  ],
+  "ok": true
+}

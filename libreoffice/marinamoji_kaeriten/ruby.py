@@ -6,11 +6,11 @@ Phase 3:
   - Apply group-ruby on the selected base text (reading via dialog).
   - Remove ruby from selection or caret-inside ruby span.
   - Preserve base characters exactly; only clear/set Ruby* properties.
-  - Default RubyAdjust for multi-character (group) bases: INDENT_BLOCK
-    (ODF distribute-space) — marinaMoji’s Fig.124 / JIS 1:2:1 choice.
-  - Single-character (mono) bases: CENTER — solid reading centred on the
-    character frame (JLREQ mono); stretch modes falsely gap 2 kana on 1 kanji.
-  - BLOCK (Fig.125) kept internally for future advanced controls.
+  - Default RubyAdjust: LEFT (ODF left) — same as Writer’s native SvxRubyItem
+    default. Stretch modes (INDENT_BLOCK / BLOCK) can corrupt adjacent vertical
+    warichū multiportions in current LibreOffice; LEFT keeps coexistence stable
+    (user-confirmed “baseline” / start alignment). Fig.124/125 remain available
+    as internal alternatives for future advanced controls.
   - RubyPosition ABOVE (right side in vertical writing).
   - Refuses apply when the selection already has CharCombineIsOn (warichū).
   - No jukugo auto-split; no size/font UI yet (host/char-style owns metrics).
@@ -21,29 +21,42 @@ Does not replace kaeriten rendering. Prefer adjacent spans, not nested ruby⊂wa
 from __future__ import annotations
 
 # com.sun.star.text.RubyAdjust
-_RUBY_ADJUST_LEFT = 0
+_RUBY_ADJUST_LEFT = 0  # native LO default; stable beside warichū
 _RUBY_ADJUST_CENTER = 1
 _RUBY_ADJUST_RIGHT = 2
-_RUBY_ADJUST_BLOCK = 3  # Fig.125 / distribute-letter — kept for future controls
-_RUBY_ADJUST_INDENT_BLOCK = 4  # Fig.124 / distribute-space
-# Group-ruby product default (multi-character base).
-_RUBY_ADJUST_DEFAULT = _RUBY_ADJUST_INDENT_BLOCK
+_RUBY_ADJUST_BLOCK = 3  # Fig.125 / distribute-letter — future controls
+_RUBY_ADJUST_INDENT_BLOCK = 4  # Fig.124 / distribute-space — future controls
+# Product default: coexistence with warichū over Fig.124 stretch (for now).
+_RUBY_ADJUST_DEFAULT = _RUBY_ADJUST_LEFT
 # com.sun.star.text.RubyPosition (LO 6.1+)
 _RUBY_POSITION_ABOVE = 0
+# com.sun.star.text.ParagraphVertAlign — Paragraph dialog → Alignment →
+# Text-to-text → Base line (user-confirmed; helps ruby/warichū layout).
+_PARA_VERT_BASELINE = 1
 
 
 def _adjust_for_base(base):
-    """Choose RubyAdjust from base span length (characters, not optical).
+    """RubyAdjust for apply. Currently LEFT for all bases (LO-native / warichū-safe).
 
-    Mono (one base character): CENTER — equal-length half-size readings stay solid.
-    Group (two or more): INDENT_BLOCK — marinaMoji Fig.124 default.
+    INDENT_BLOCK / BLOCK / CENTER remain module constants for a future UI.
+    ``base`` is accepted for API stability with callers.
     """
-    if base is None:
-        return _RUBY_ADJUST_DEFAULT
-    # Strip only for emptiness checks elsewhere; length uses the real selection.
-    if len(base) <= 1:
-        return _RUBY_ADJUST_CENTER
-    return _RUBY_ADJUST_INDENT_BLOCK
+    return _RUBY_ADJUST_DEFAULT
+
+
+def _ensure_para_text_to_text_baseline(text, selection):
+    """Set paragraph Text-to-text alignment to Base line (ParaVertAlignment).
+
+    Does not change RubyAdjust. Uses a *separate* paragraph cursor so the
+    caller's selection/range cursor is not expanded.
+    """
+    try:
+        para = text.createTextCursorByRange(selection.getStart())
+        para.gotoStartOfParagraph(False)
+        para.gotoEndOfParagraph(True)
+        _set(para, "ParaVertAlignment", _PARA_VERT_BASELINE)
+    except Exception:
+        pass
 
 
 def _get_document():
@@ -424,6 +437,9 @@ def apply_ruby(*_args):
             kind="error",
         )
         return
+    # Paragraph Text-to-text → Base line (not RubyAdjust). Stabilises layout
+    # beside warichū; ruby should then sit in the line gap under fixed pitch.
+    _ensure_para_text_to_text_baseline(text, cursor)
     after = _range_text(cursor)
     if after != before:
         _message(

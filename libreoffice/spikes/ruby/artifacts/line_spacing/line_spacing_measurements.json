@@ -1,0 +1,159 @@
+{
+  "based_on": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/line_spacing/line_spacing_report.json",
+  "measurements": [
+    {
+      "axis": "y",
+      "plain_pos": [
+        100.78,
+        128.78,
+        156.78,
+        184.78
+      ],
+      "ruby_pos": [
+        240.78,
+        268.78,
+        296.78,
+        324.78
+      ],
+      "plain_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "ruby_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": 28.0,
+      "ruby_mean_gap": 28.0,
+      "ruby_inflates": 0.0,
+      "tag": "horizontal_baseline",
+      "writing": "horizontal",
+      "align_name": "BASELINE"
+    },
+    {
+      "axis": "y",
+      "plain_pos": [
+        100.78,
+        128.78,
+        156.78,
+        184.78
+      ],
+      "ruby_pos": [
+        240.78,
+        268.78,
+        296.78,
+        324.78
+      ],
+      "plain_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "ruby_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": 28.0,
+      "ruby_mean_gap": 28.0,
+      "ruby_inflates": 0.0,
+      "tag": "horizontal_automatic",
+      "writing": "horizontal",
+      "align_name": "AUTOMATIC"
+    },
+    {
+      "axis": "y",
+      "plain_pos": [
+        100.78,
+        128.78,
+        156.78,
+        184.78
+      ],
+      "ruby_pos": [
+        238.68,
+        266.68,
+        294.68,
+        322.68
+      ],
+      "plain_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "ruby_gaps_pt": [
+        28.0,
+        28.0,
+        28.0
+      ],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": 28.0,
+      "ruby_mean_gap": 28.0,
+      "ruby_inflates": 0.0,
+      "tag": "horizontal_center",
+      "writing": "horizontal",
+      "align_name": "CENTER"
+    },
+    {
+      "axis": "x",
+      "plain_pos": [
+        497.48
+      ],
+      "ruby_pos": [
+        510.55
+      ],
+      "plain_gaps_pt": [],
+      "ruby_gaps_pt": [],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": null,
+      "ruby_mean_gap": null,
+      "ruby_inflates": null,
+      "tag": "vertical_baseline",
+      "writing": "vertical",
+      "align_name": "BASELINE"
+    },
+    {
+      "axis": "x",
+      "plain_pos": [
+        497.48
+      ],
+      "ruby_pos": [
+        510.55
+      ],
+      "plain_gaps_pt": [],
+      "ruby_gaps_pt": [],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": null,
+      "ruby_mean_gap": null,
+      "ruby_inflates": null,
+      "tag": "vertical_automatic",
+      "writing": "vertical",
+      "align_name": "AUTOMATIC"
+    },
+    {
+      "axis": "x",
+      "plain_pos": [
+        497.48
+      ],
+      "ruby_pos": [
+        510.55
+      ],
+      "plain_gaps_pt": [],
+      "ruby_gaps_pt": [],
+      "expected_fixed_pt": 28.0,
+      "plain_mean_gap": null,
+      "ruby_mean_gap": null,
+      "ruby_inflates": null,
+      "tag": "vertical_center",
+      "writing": "vertical",
+      "align_name": "CENTER"
+    }
+  ],
+  "verdict_notes": [
+    "Positive ruby_inflates ⇒ ruby lines sit farther apart than plain under same fixed spacing.",
+    "Ideal scholarly result: ruby_inflates ≈ 0 (ruby in the gap, pitch unchanged)."
+  ]
+}

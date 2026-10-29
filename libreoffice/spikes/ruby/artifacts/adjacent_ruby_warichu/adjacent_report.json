@@ -1,0 +1,136 @@
+{
+  "started_at": "2026-10-29T12:03:43.079308+00:00",
+  "purpose": "Vertical adjacent 文/モン + warichū 割り注 corruption",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/adjacent_ruby_warichu",
+  "horizontal": {
+    "writing": "horizontal",
+    "vertical_ok": null,
+    "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/adjacent_ruby_warichu/adjacent_horizontal.odt",
+    "cases": [
+      {
+        "label": "[screenshot] ruby then warichū adjacent",
+        "base_文": "文",
+        "ruby": {
+          "RubyText": "モン",
+          "RubyAdjust": 1
+        },
+        "字_combine": false,
+        "字_ruby": "",
+        "warichu": {
+          "set_ok": true,
+          "CharCombineIsOn": true,
+          "RubyText": "",
+          "text": "割り注"
+        }
+      },
+      {
+        "label": "[control] warichū only (文字 + 割り注)",
+        "set_ok": true,
+        "CharCombineIsOn": true,
+        "text": "割り注"
+      },
+      {
+        "label": "[control] ruby only",
+        "base_文": "文",
+        "ruby": {
+          "RubyText": "モン",
+          "RubyAdjust": 1
+        },
+        "字_combine": false,
+        "字_ruby": "",
+        "warichu": {
+          "applied": false,
+          "text": "割り注"
+        }
+      },
+      {
+        "label": "[sticky] after ruby type+combine",
+        "sticky_RubyText_on_tail": "",
+        "combine_before": false,
+        "combine_set_ok": true,
+        "combine_after": true,
+        "tail": "字割り注"
+      }
+    ],
+    "odf": {
+      "combine_lines": 3,
+      "empty_ruby": 0,
+      "ruby_mon": true,
+      "paras": [
+        "<text:p text:style-name=\"P1\">Adjacent ruby+warichū — horizontal — 文/モン + 字 + warichū(割り注)</text:p>",
+        "<text:p text:style-name=\"P2\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T1\">字</text:span><text:span text:style-name=\"T2\">割り注</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">[control] warichū only (文字 + 割り注)</text:p>",
+        "<text:p text:style-name=\"P4\">文字割り注</text:p>",
+        "<text:p text:style-name=\"P4\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T1\">字割り注</text:span></text:p>",
+        "<text:p text:style-name=\"P5\">[sticky] ruby on 文, then type 字割り注, then combine note</text:p>",
+        "<text:p text:style-name=\"P6\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T2\">字割り注</text:span></text:p>"
+      ]
+    }
+  },
+  "vertical": {
+    "writing": "vertical",
+    "vertical_ok": true,
+    "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/adjacent_ruby_warichu/adjacent_vertical.odt",
+    "cases": [
+      {
+        "label": "[screenshot] ruby then warichū adjacent",
+        "base_文": "文",
+        "ruby": {
+          "RubyText": "モン",
+          "RubyAdjust": 1
+        },
+        "字_combine": false,
+        "字_ruby": "",
+        "warichu": {
+          "set_ok": true,
+          "CharCombineIsOn": true,
+          "RubyText": "",
+          "text": "割り注"
+        }
+      },
+      {
+        "label": "[control] warichū only (文字 + 割り注)",
+        "set_ok": true,
+        "CharCombineIsOn": true,
+        "text": "割り注"
+      },
+      {
+        "label": "[control] ruby only",
+        "base_文": "文",
+        "ruby": {
+          "RubyText": "モン",
+          "RubyAdjust": 1
+        },
+        "字_combine": false,
+        "字_ruby": "",
+        "warichu": {
+          "applied": false,
+          "text": "割り注"
+        }
+      },
+      {
+        "label": "[sticky] after ruby type+combine",
+        "sticky_RubyText_on_tail": "",
+        "combine_before": false,
+        "combine_set_ok": true,
+        "combine_after": true,
+        "tail": "字割り注"
+      }
+    ],
+    "odf": {
+      "combine_lines": 3,
+      "empty_ruby": 0,
+      "ruby_mon": true,
+      "paras": [
+        "<text:p text:style-name=\"P1\">Adjacent ruby+warichū — vertical — 文/モン + 字 + warichū(割り注)</text:p>",
+        "<text:p text:style-name=\"P2\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T1\">字</text:span><text:span text:style-name=\"T2\">割り注</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">[control] warichū only (文字 + 割り注)</text:p>",
+        "<text:p text:style-name=\"P4\">文字割り注</text:p>",
+        "<text:p text:style-name=\"P4\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T1\">字割り注</text:span></text:p>",
+        "<text:p text:style-name=\"P5\">[sticky] ruby on 文, then type 字割り注, then combine note</text:p>",
+        "<text:p text:style-name=\"P6\"><text:ruby text:style-name=\"Ru1\"><text:ruby-base>文</text:ruby-base><text:ruby-text>モン</text:ruby-text></text:ruby><text:span text:style-name=\"T2\">字割り注</text:span></text:p>"
+      ]
+    }
+  },
+  "ok": true
+}

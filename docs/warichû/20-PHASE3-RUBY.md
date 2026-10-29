@@ -1,6 +1,6 @@
 # Phase 3 — LibreOffice ruby + coexistence
 
-**Extension target:** **0.3.20** (0.3.19 INDENT_BLOCK; 0.3.20 warichū empty-ruby fix + mono CENTER)  
+**Extension target:** **0.3.21** (LEFT default for ruby↔warichū coexistence)  
 **Scope:** native **group-ruby** apply/remove; coexistence with warichū / kaeriten / vertical.  
 **Out of scope:** jukugo-ruby, mono auto-segmentation, ruby size/font UI, Word.
 
@@ -10,7 +10,7 @@ Full investigation: [`docs/ruby/`](../ruby/README.md).
 
 | Action | Behaviour |
 |---|---|
-| Apply ruby | Select base → dialog → `RubyText` + adjust + ABOVE; **group** → INDENT_BLOCK, **mono** (1 char) → CENTER; refuse if selection is warichū |
+| Apply ruby | Select base → dialog → `RubyText` + **LEFT** + ABOVE; refuse if selection is warichū |
 | Remove ruby | Selection or caret inside ruby span → clear `RubyText`; base unchanged |
 | Warichū | Bare `CharCombineIsOn` only; refuse if selection has non-empty ruby (**do not** set `RubyText=""`) |
 | Kaeriten / vertical page | Existing toolbar; smoke coexistence manually |
