@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "description": "Warichū (CharCombine) test corpus for LibreOffice Writer. Exact Unicode strings for reproducible experiments.",
+  "hostHint": "LibreOffice Writer; UNO CharCombineIsOn / Prefix / Suffix",
+  "cases": [
+    {
+      "id": "even_short",
+      "label": "Even-length short CJK",
+      "text": "割注試験",
+      "brackets": {"prefix": "（", "suffix": "）"},
+      "experiments": ["T01", "T02", "T08"]
+    },
+    {
+      "id": "odd_short",
+      "label": "Odd-length short CJK",
+      "text": "割注の試験",
+      "brackets": {"prefix": "(", "suffix": ")"},
+      "experiments": ["T01", "T04"]
+    },
+    {
+      "id": "unequal_long",
+      "label": "Strongly unequal potential split",
+      "text": "これは非常に長い割注の本文である",
+      "brackets": {"prefix": "（", "suffix": "）"},
+      "experiments": ["T04"]
+    },
+    {
+      "id": "punct_mid",
+      "label": "Japanese comma near mid",
+      "text": "上段、下段",
+      "brackets": {"prefix": "（", "suffix": "）"},
+      "experiments": ["T04", "T10"]
+    },
+    {
+      "id": "punct_edges",
+      "label": "Begins and ends with punctuation",
+      "text": "「注記。」",
+      "brackets": {"prefix": "", "suffix": ""},
+      "experiments": ["T01", "T05"]
+    },
+    {
+      "id": "mixed_scripts",
+      "label": "Kanji/kana/Latin/digits",
+      "text": "AB漢字12かな",
+      "brackets": {"prefix": "(", "suffix": ")"},
+      "experiments": ["T01", "T04"]
+    },
+    {
+      "id": "iteration_mark",
+      "label": "Iteration mark",
+      "text": "様々な注",
+      "brackets": {"prefix": "（", "suffix": "）"},
+      "experiments": ["T01"]
+    },
+    {
+      "id": "no_brackets",
+      "label": "Combine without delimiters",
+      "text": "括弧なし",
+      "brackets": {"prefix": "", "suffix": ""},
+      "experiments": ["T01", "T05"]
+    }
+  ]
+}

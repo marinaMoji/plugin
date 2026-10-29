@@ -30,3 +30,6 @@ venv/
 .env
 .env.*
 packaging/word-release.env
+
+# LibreOffice lock files from local spike runs
+libreoffice/spikes/warichu/artifacts/.~lock.*

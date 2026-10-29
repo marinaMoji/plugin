@@ -1,0 +1,273 @@
+{
+  "started_at": "2026-10-29T10:22:07.863053+00:00",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/span_spike",
+  "purpose": "Span combine WITHOUT brackets (known-good) vs WITH brackets (suspect). User reported 本文括弧なし worked.",
+  "cases": [
+    {
+      "body": "本文",
+      "note": "括弧なし",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "括弧なし",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 4,
+      "id": "A_known_good"
+    },
+    {
+      "body": "本文",
+      "note": "割注試験",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割注試験",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 4,
+      "id": "A_even4"
+    },
+    {
+      "body": "本文",
+      "note": "割注の試験",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割注の試験",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 5,
+      "id": "A_odd5"
+    },
+    {
+      "body": "割り注",
+      "note": "割り注は、良いです。",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割り注は、良いです。",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 10,
+      "id": "A_classic"
+    },
+    {
+      "body": "本文",
+      "note": "これは非常に長い割注の本文である",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "これは非常に長い割注の本文である",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 16,
+      "id": "A_long"
+    },
+    {
+      "body": "本文",
+      "note": "AB漢字12かな",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "AB漢字12かな",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 8,
+      "id": "A_mixed"
+    },
+    {
+      "body": "本文",
+      "note": "割注",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割注",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 2,
+      "id": "A_two"
+    },
+    {
+      "body": "本文",
+      "note": "一二三四五六",
+      "with_brackets": false,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "一二三四五六",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": ""
+      },
+      "source_preserved": true,
+      "note_len": 6,
+      "id": "A_six"
+    },
+    {
+      "body": "本文",
+      "note": "割注試験",
+      "with_brackets": true,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割注試験",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）"
+      },
+      "source_preserved": true,
+      "note_len": 4,
+      "id": "B_even4_br"
+    },
+    {
+      "body": "本文",
+      "note": "括弧なし",
+      "with_brackets": true,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "括弧なし",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）"
+      },
+      "source_preserved": true,
+      "note_len": 4,
+      "id": "B_known_br"
+    },
+    {
+      "body": "割り注",
+      "note": "割り注は、良いです。",
+      "with_brackets": true,
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        }
+      },
+      "after": {
+        "string": "割り注は、良いです。",
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）"
+      },
+      "source_preserved": true,
+      "note_len": 10,
+      "id": "B_classic_br"
+    }
+  ],
+  "errors": [],
+  "font": "Hiragino Mincho ProN",
+  "save_odt": {
+    "ok": true,
+    "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/span_spike/warichu_span_spike.odt"
+  },
+  "odf": {
+    "combine_text_styles": [
+      {
+        "name": "T1",
+        "has_brackets": false,
+        "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+      },
+      {
+        "name": "T2",
+        "has_brackets": true,
+        "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+      }
+    ],
+    "paragraph_combine_lines": [],
+    "sample_paras": [
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">括弧なし</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注試験</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注の試験</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">割り注<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">これは非常に長い割注の本文である</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">AB漢字12かな</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">一二三四五六</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">括弧なし</text:span></text:p>",
+      "<text:p text:style-name=\"P3\">割り注<text:span text:style-name=\"T2\">割り注は、良いです。</text:span></text:p>"
+    ],
+    "ok": true,
+    "bare_combine_styles": 1,
+    "bracket_combine_styles": 1
+  },
+  "finished_at": "2026-10-29T10:22:09.017195+00:00"
+}

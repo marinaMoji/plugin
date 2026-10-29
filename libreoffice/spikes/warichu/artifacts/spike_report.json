@@ -1,0 +1,342 @@
+{
+  "started_at": "2026-10-29T10:01:52.996957+00:00",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "fixtures_path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/fixtures.json",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts",
+  "cases": [
+    {
+      "id": "even_short",
+      "label": "Even-length short CJK",
+      "source_text": "割注試験",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "string": "割注試験"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）",
+        "string": "割注試験"
+      },
+      "source_preserved": true,
+      "got_string": "割注試験"
+    },
+    {
+      "id": "odd_short",
+      "label": "Odd-length short CJK",
+      "source_text": "割注の試験",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")",
+          "string": "割注の試験"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "(",
+        "CharCombineSuffix": ")",
+        "string": "割注の試験"
+      },
+      "source_preserved": true,
+      "got_string": "割注の試験"
+    },
+    {
+      "id": "unequal_long",
+      "label": "Strongly unequal potential split",
+      "source_text": "これは非常に長い割注の本文である",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "string": "これは非常に長い割注の本文である"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）",
+        "string": "これは非常に長い割注の本文である"
+      },
+      "source_preserved": true,
+      "got_string": "これは非常に長い割注の本文である"
+    },
+    {
+      "id": "punct_mid",
+      "label": "Japanese comma near mid",
+      "source_text": "上段、下段",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "string": "上段、下段"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）",
+        "string": "上段、下段"
+      },
+      "source_preserved": true,
+      "got_string": "上段、下段"
+    },
+    {
+      "id": "punct_edges",
+      "label": "Begins and ends with punctuation",
+      "source_text": "「注記。」",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": "",
+          "string": "「注記。」"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": "",
+        "string": "「注記。」"
+      },
+      "source_preserved": true,
+      "got_string": "「注記。」"
+    },
+    {
+      "id": "mixed_scripts",
+      "label": "Kanji/kana/Latin/digits",
+      "source_text": "AB漢字12かな",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")",
+          "string": "AB漢字12かな"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "(",
+        "CharCombineSuffix": ")",
+        "string": "AB漢字12かな"
+      },
+      "source_preserved": true,
+      "got_string": "AB漢字12かな"
+    },
+    {
+      "id": "iteration_mark",
+      "label": "Iteration mark",
+      "source_text": "様々な注",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "string": "様々な注"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "（",
+        "CharCombineSuffix": "）",
+        "string": "様々な注"
+      },
+      "source_preserved": true,
+      "got_string": "様々な注"
+    },
+    {
+      "id": "no_brackets",
+      "label": "Combine without delimiters",
+      "source_text": "括弧なし",
+      "apply": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": "",
+          "string": "括弧なし"
+        }
+      },
+      "inspect": {
+        "CharCombineIsOn": true,
+        "CharCombinePrefix": "",
+        "CharCombineSuffix": "",
+        "string": "括弧なし"
+      },
+      "source_preserved": true,
+      "got_string": "括弧なし"
+    }
+  ],
+  "roundtrip": {
+    "reopen_odt": [
+      {
+        "index": 0,
+        "string": "割注試験",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        }
+      },
+      {
+        "index": 1,
+        "string": "割注の試験",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")"
+        }
+      },
+      {
+        "index": 2,
+        "string": "これは非常に長い割注の本文である",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        }
+      },
+      {
+        "index": 3,
+        "string": "上段、下段",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        }
+      },
+      {
+        "index": 4,
+        "string": "「注記。」",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        }
+      },
+      {
+        "index": 5,
+        "string": "AB漢字12かな",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")"
+        }
+      },
+      {
+        "index": 6,
+        "string": "様々な注",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        }
+      },
+      {
+        "index": 7,
+        "string": "括弧なし",
+        "combine": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        }
+      }
+    ]
+  },
+  "errors": [],
+  "save_odt": {
+    "ok": true,
+    "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/warichu_spike.odt",
+    "filter": "writer8"
+  },
+  "save_docx": {
+    "ok": true,
+    "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/warichu_spike.docx",
+    "filter": "MS Word 2007 XML"
+  },
+  "odf_extract": {
+    "ok": true,
+    "hit_count": 3,
+    "extract": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/odf_combine_snippets.json"
+  },
+  "note": "Reopened ODT left open for visual T04/T07 checks. Use marinaMoji Toggle vertical page for vertical test.",
+  "finished_at": "2026-10-29T10:01:55.784854+00:00"
+}

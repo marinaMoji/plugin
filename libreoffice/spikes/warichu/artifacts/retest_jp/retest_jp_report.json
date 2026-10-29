@@ -1,0 +1,421 @@
+{
+  "started_at": "2026-10-29T10:10:42.742720+00:00",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/retest_jp",
+  "purpose": "Controlled re-test: Hiragino/JP locale + optional 200% line spacing. Please screenshot each labeled block.",
+  "sections": [
+    {
+      "id": "A_even_short",
+      "text": "割注試験",
+      "combine": false,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": null,
+      "source_preserved": true
+    },
+    {
+      "id": "A_odd_short",
+      "text": "割注の試験",
+      "combine": false,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": null,
+      "source_preserved": true
+    },
+    {
+      "id": "A_unequal",
+      "text": "これは非常に長い割注の本文である",
+      "combine": false,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": null,
+      "source_preserved": true
+    },
+    {
+      "id": "B_even_short",
+      "text": "割注試験",
+      "combine": true,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "B_odd_short",
+      "text": "割注の試験",
+      "combine": true,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "B_unequal",
+      "text": "これは非常に長い割注の本文である",
+      "combine": true,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "B_mixed",
+      "text": "AB漢字12かな",
+      "combine": true,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "B_no_brackets",
+      "text": "括弧なし",
+      "combine": true,
+      "roomy_lines": false,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": null,
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": "",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "C_even_short",
+      "text": "割注試験",
+      "combine": true,
+      "roomy_lines": true,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": {
+        "ok": true
+      },
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "C_odd_short",
+      "text": "割注の試験",
+      "combine": true,
+      "roomy_lines": true,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": {
+        "ok": true
+      },
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "C_unequal",
+      "text": "これは非常に長い割注の本文である",
+      "combine": true,
+      "roomy_lines": true,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": {
+        "ok": true
+      },
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "C_mixed",
+      "text": "AB漢字12かな",
+      "combine": true,
+      "roomy_lines": true,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": {
+        "ok": true
+      },
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "(",
+          "CharCombineSuffix": ")",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    },
+    {
+      "id": "C_no_brackets",
+      "text": "括弧なし",
+      "combine": true,
+      "roomy_lines": true,
+      "locale": {
+        "ok": true
+      },
+      "font_requested": "Hiragino Mincho ProN",
+      "font_got": "Hiragino Mincho ProN",
+      "height": {
+        "ok": true
+      },
+      "spacing": {
+        "ok": true
+      },
+      "combine_result": {
+        "CharCombineIsOn": {
+          "ok": true
+        },
+        "CharCombinePrefix": {
+          "ok": true
+        },
+        "CharCombineSuffix": {
+          "ok": true
+        },
+        "after": {
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": "",
+          "CharFontNameAsian": "Hiragino Mincho ProN",
+          "CharLocaleAsian": "(com.sun.star.lang.Locale){ Language = (string)\"ja\", Country = (string)\"JP\", Variant = (string)\"\" }"
+        }
+      },
+      "source_preserved": true
+    }
+  ],
+  "errors": [],
+  "font_selected": "Hiragino Mincho ProN",
+  "font_probe": "Hiragino Mincho ProN",
+  "save_odt": {
+    "ok": true,
+    "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/retest_jp/warichu_retest_jp.odt"
+  },
+  "odf": {
+    "ok": true,
+    "hit_count": 9
+  },
+  "finished_at": "2026-10-29T10:10:44.494969+00:00"
+}

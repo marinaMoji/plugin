@@ -1,0 +1,31 @@
+{
+  "combine_text_styles": [
+    {
+      "name": "T1",
+      "has_brackets": false,
+      "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+    },
+    {
+      "name": "T2",
+      "has_brackets": true,
+      "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+    }
+  ],
+  "paragraph_combine_lines": [],
+  "sample_paras": [
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">括弧なし</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注試験</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注の試験</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">割り注<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">これは非常に長い割注の本文である</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">AB漢字12かな</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">一二三四五六</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">括弧なし</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">割り注<text:span text:style-name=\"T2\">割り注は、良いです。</text:span></text:p>"
+  ],
+  "ok": true,
+  "bare_combine_styles": 1,
+  "bracket_combine_styles": 1
+}
