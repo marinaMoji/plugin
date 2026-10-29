@@ -43,6 +43,10 @@
                        manifest:full-path="Scripts/python/typography_prefs.py"/>
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="Scripts/python/tatechuyoko.py"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="Scripts/python/typography_analysis.py"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="Scripts/python/typography_inspector.py"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/render_kaeriten.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
@@ -73,4 +77,6 @@
                        manifest:full-path="icons/apply_tatechuyoko.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/remove_tatechuyoko.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/inspect_typography.svg"/>
 </manifest:manifest>

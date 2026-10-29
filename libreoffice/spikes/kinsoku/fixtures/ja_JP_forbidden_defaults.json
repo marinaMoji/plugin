@@ -1,0 +1,8 @@
+{
+  "source": "LibreOffice core i18npool/source/localedata/data/ja_JP.xml",
+  "fetched": "2026-10-29",
+  "branch_note": "identical on master and libreoffice-26-8 raw fetch",
+  "ForbiddenLineBeginCharacters": "!%),.:;?]}¢°’”‰′″℃、。々〉》」』】〕ぁぃぅぇぉっゃゅょゎ゛゜ゝゞァィゥェォッャュョヮヵヶ・ーヽヾ！％），．：；？］｝｡｣､･ｧｨｩｪｫｬｭｮｯｰﾞﾟ¢",
+  "ForbiddenLineEndCharacters": "$([¥{£¥‘“〈《「『【〔＄（［｛｢£￥",
+  "LineBreakHangingCharacters": "、。，．"
+}

@@ -5,13 +5,13 @@
                     oor:package="org.openoffice.Office">
   <node oor:name="AddonUI">
     <!--
-      Toolbar id .v4. Item nodes MUST be equal-length names (m01..m18):
+      Toolbar id .v5. Item nodes MUST be equal-length names (m01..m19):
       LibreOffice configmgr sorts set members by LengthContentsCompare
       (shorter names first), which scrambled i01_render / i18_copy_plain.
-      Order: kaeriten → warichū → tate-chū-yoko → emphasis → ruby → copy
+      Order: kaeriten → warichū → tate → emphasis → ruby → inspect → copy
     -->
     <node oor:name="OfficeToolBar">
-      <node oor:name="org.marinaMoji.kaeriten.toolbar.v4" oor:op="replace">
+      <node oor:name="org.marinaMoji.kaeriten.toolbar.v5" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
           <value>marinaMoji</value>
           <value xml:lang="en-US">marinaMoji</value>
@@ -250,6 +250,23 @@
         </node>
         <node oor:name="m18" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:inspect_typography</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Inspect Japanese Typography</value>
+            <value xml:lang="en-US">Inspect Japanese Typography</value>
+            <value xml:lang="ja">日本語組版を点検</value>
+            <value xml:lang="fr">Vérifier la typographie japonaise</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="m19" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
             <value>org.marinaMoji.kaeriten:copy_plain_text</value>
           </prop>
           <prop oor:name="Title" oor:type="xs:string">
@@ -433,6 +450,19 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/remove_ruby.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.inspect_typography" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:inspect_typography</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/inspect_typography.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/inspect_typography.svg</value>
           </prop>
         </node>
       </node>

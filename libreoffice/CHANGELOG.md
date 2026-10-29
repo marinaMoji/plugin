@@ -5,6 +5,19 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.32 - 2026-10-29
+
+* Typography inspector: list **each** Western / halfwidth-JP punctuation
+  occurrence (distinguish `｡` from `.`); clearer inspect toolbar icon; taller report dialog.
+
+## 0.3.31 - 2026-10-29
+
+* **Japanese Typography Inspector (Stage E2):** read-only Inspect command.
+  Reports paragraph/document Asian composition settings; conservative diagnostics
+  (`PARA_FORBIDDEN_RULES_OFF`, `PUNCTUATION_MIXED_WIDTH`,
+  `EXPLICIT_BREAK_BEFORE_NOTSTART`). EN/JA/FR. Toolbar `.v5` (`m18` inspect).
+* Docs: [`docs/kinsoku/e2/`](../docs/kinsoku/e2/).
+
 ## 0.3.30 - 2026-10-29
 
 * **Tate-chū-yoko (縦中横):** Apply / Remove via native `CharRotation` 90° + fit-to-line.

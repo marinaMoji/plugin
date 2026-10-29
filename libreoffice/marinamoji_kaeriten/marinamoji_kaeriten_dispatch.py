@@ -31,6 +31,7 @@ _COMMANDS = frozenset(
         "set_emphasis_default",
         "apply_tatechuyoko",
         "remove_tatechuyoko",
+        "inspect_typography",
     )
 )
 
@@ -114,6 +115,8 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.apply_tatechuyoko()
         elif path == "remove_tatechuyoko":
             macros.remove_tatechuyoko()
+        elif path == "inspect_typography":
+            macros.inspect_japanese_typography()
 
     def addStatusListener(self, control, url):
         # Title/tooltip comes from Addons.xcu. Document-default name is shown

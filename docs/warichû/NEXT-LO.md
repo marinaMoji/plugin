@@ -7,7 +7,7 @@
 | 1 | Emphasis marks 圏点・傍点 | **0.3.26** — [`../emphasis/`](../emphasis/) |
 | 2 | **Tate-chū-yoko 縦中横** | **0.3.30** (toolbar.v4) — smoke pending — [`../tatechuyoko/`](../tatechuyoko/) |
 | 3 | Scholarly typography presets | pending |
-| 4 | Kinsoku shori 禁則処理 (diagnostics) | pending |
+| 4 | Kinsoku shori 禁則処理 (diagnostics) | **0.3.31 inspector (E2)** — [`../kinsoku/e2/`](../kinsoku/e2/) |
 | 5 | Document-wide validation | pending |
 | 6 | Punctuation and spacing | pending |
 | 7 | Jidori 字取り | pending |

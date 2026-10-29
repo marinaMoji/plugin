@@ -52,6 +52,11 @@ try:
 except ImportError:
     _tatechuyoko = None
 
+try:
+    import typography_inspector as _typography_inspector
+except ImportError:
+    _typography_inspector = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1877,6 +1882,13 @@ def remove_tatechuyoko(*_args):
     _tatechuyoko.remove_tatechuyoko()
 
 
+def inspect_japanese_typography(*_args):
+    """Read-only Japanese typography inspection for the current paragraph/selection."""
+    if _typography_inspector is None:
+        return
+    _typography_inspector.inspect_japanese_typography()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1899,6 +1911,7 @@ g_exportedScripts = (
     set_emphasis_default,
     apply_tatechuyoko,
     remove_tatechuyoko,
+    inspect_japanese_typography,
     format_selection,
     format_paragraph,
     format_document,
