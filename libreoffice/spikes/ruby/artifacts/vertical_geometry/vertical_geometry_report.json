@@ -1,0 +1,960 @@
+{
+  "started_at": "2026-10-29T11:43:30.269827+00:00",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "purpose": "Measure vertical ruby frame geometry for CENTER/BLOCK/INDENT_BLOCK; distinguish character-frame alignment from optical glyph centres; no product default change.",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry",
+  "documents": [
+    {
+      "tag": "mincho_gridoff",
+      "font_key": "mincho",
+      "font_resolved": "Hiragino Mincho ProN",
+      "grid": {
+        "requested": false,
+        "GridMode_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridMode": 0,
+        "GridBaseHeight": 706,
+        "GridRubyHeight": 353
+      },
+      "vertical": {
+        "ok": true,
+        "WritingMode": "RL_TB"
+      },
+      "body_pt": 28.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridoff.odt",
+      "cases": [
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=CENTER",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 1,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        },
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=BLOCK",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 3,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        },
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=INDENT_BLOCK",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 4,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        }
+      ],
+      "theory_em": {
+        "assumptions": {
+          "base_advance_em": 1.0,
+          "ruby_advance_em": 0.5,
+          "base_len_em": 2.0,
+          "ruby_solid_em": 1.0,
+          "free_em": 1.0,
+          "note": "Advances = square character frames (JLREQ), not ink bbox."
+        },
+        "base_frames": [
+          {
+            "ch": "本",
+            "start": 0.0,
+            "end": 1.0,
+            "centre": 0.5
+          },
+          {
+            "ch": "文",
+            "start": 1.0,
+            "end": 2.0,
+            "centre": 1.5
+          }
+        ],
+        "layouts": {
+          "CENTER": {
+            "mode": "CENTER",
+            "lead": 0.5,
+            "inter": 0.0,
+            "trail": 0.5,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.5,
+                "end": 1.0,
+                "centre": 0.75
+              },
+              {
+                "ch": "と",
+                "start": 1.0,
+                "end": 1.5,
+                "centre": 1.25
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.75,
+                "delta_centre": 0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.25,
+                "delta_centre": -0.25
+              }
+            ],
+            "notes": "Solid ruby block centred on base span (no letter distribution)."
+          },
+          "BLOCK": {
+            "mode": "BLOCK",
+            "lead": 0.0,
+            "inter": 1.0,
+            "trail": 0.0,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.0,
+                "end": 0.5,
+                "centre": 0.25
+              },
+              {
+                "ch": "と",
+                "start": 1.5,
+                "end": 2.0,
+                "centre": 1.75
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.25,
+                "delta_centre": -0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.75,
+                "delta_centre": 0.25
+              }
+            ],
+            "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+          },
+          "INDENT_BLOCK": {
+            "mode": "INDENT_BLOCK",
+            "lead": 0.25,
+            "inter": 0.5,
+            "trail": 0.25,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.25,
+                "end": 0.75,
+                "centre": 0.5
+              },
+              {
+                "ch": "と",
+                "start": 1.25,
+                "end": 1.75,
+                "centre": 1.5
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.5,
+                "delta_centre": 0.0
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.5,
+                "delta_centre": 0.0
+              }
+            ],
+            "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+          }
+        }
+      }
+    },
+    {
+      "tag": "mincho_gridon",
+      "font_key": "mincho",
+      "font_resolved": "Hiragino Mincho ProN",
+      "grid": {
+        "requested": true,
+        "GridMode_set": true,
+        "GridBaseHeight_set": true,
+        "GridRubyHeight_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridLines_set": true,
+        "GridMode": 2,
+        "GridBaseHeight": 988,
+        "GridRubyHeight": 492
+      },
+      "vertical": {
+        "ok": true,
+        "WritingMode": "RL_TB"
+      },
+      "body_pt": 28.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridon.odt",
+      "cases": [
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=CENTER",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 1,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        },
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=BLOCK",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 3,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        },
+        {
+          "label": "[mincho] 本文/もと RubyAdjust=INDENT_BLOCK",
+          "font": "Hiragino Mincho ProN",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 4,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Mincho ProN"
+        }
+      ],
+      "theory_em": {
+        "assumptions": {
+          "base_advance_em": 1.0,
+          "ruby_advance_em": 0.5,
+          "base_len_em": 2.0,
+          "ruby_solid_em": 1.0,
+          "free_em": 1.0,
+          "note": "Advances = square character frames (JLREQ), not ink bbox."
+        },
+        "base_frames": [
+          {
+            "ch": "本",
+            "start": 0.0,
+            "end": 1.0,
+            "centre": 0.5
+          },
+          {
+            "ch": "文",
+            "start": 1.0,
+            "end": 2.0,
+            "centre": 1.5
+          }
+        ],
+        "layouts": {
+          "CENTER": {
+            "mode": "CENTER",
+            "lead": 0.5,
+            "inter": 0.0,
+            "trail": 0.5,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.5,
+                "end": 1.0,
+                "centre": 0.75
+              },
+              {
+                "ch": "と",
+                "start": 1.0,
+                "end": 1.5,
+                "centre": 1.25
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.75,
+                "delta_centre": 0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.25,
+                "delta_centre": -0.25
+              }
+            ],
+            "notes": "Solid ruby block centred on base span (no letter distribution)."
+          },
+          "BLOCK": {
+            "mode": "BLOCK",
+            "lead": 0.0,
+            "inter": 1.0,
+            "trail": 0.0,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.0,
+                "end": 0.5,
+                "centre": 0.25
+              },
+              {
+                "ch": "と",
+                "start": 1.5,
+                "end": 2.0,
+                "centre": 1.75
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.25,
+                "delta_centre": -0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.75,
+                "delta_centre": 0.25
+              }
+            ],
+            "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+          },
+          "INDENT_BLOCK": {
+            "mode": "INDENT_BLOCK",
+            "lead": 0.25,
+            "inter": 0.5,
+            "trail": 0.25,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.25,
+                "end": 0.75,
+                "centre": 0.5
+              },
+              {
+                "ch": "と",
+                "start": 1.25,
+                "end": 1.75,
+                "centre": 1.5
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.5,
+                "delta_centre": 0.0
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.5,
+                "delta_centre": 0.0
+              }
+            ],
+            "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+          }
+        }
+      }
+    },
+    {
+      "tag": "gothic_gridoff",
+      "font_key": "gothic",
+      "font_resolved": "Hiragino Sans",
+      "grid": {
+        "requested": false,
+        "GridMode_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridMode": 0,
+        "GridBaseHeight": 706,
+        "GridRubyHeight": 353
+      },
+      "vertical": {
+        "ok": true,
+        "WritingMode": "RL_TB"
+      },
+      "body_pt": 28.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridoff.odt",
+      "cases": [
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=CENTER",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 1,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        },
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=BLOCK",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 3,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        },
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=INDENT_BLOCK",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 4,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        }
+      ],
+      "theory_em": {
+        "assumptions": {
+          "base_advance_em": 1.0,
+          "ruby_advance_em": 0.5,
+          "base_len_em": 2.0,
+          "ruby_solid_em": 1.0,
+          "free_em": 1.0,
+          "note": "Advances = square character frames (JLREQ), not ink bbox."
+        },
+        "base_frames": [
+          {
+            "ch": "本",
+            "start": 0.0,
+            "end": 1.0,
+            "centre": 0.5
+          },
+          {
+            "ch": "文",
+            "start": 1.0,
+            "end": 2.0,
+            "centre": 1.5
+          }
+        ],
+        "layouts": {
+          "CENTER": {
+            "mode": "CENTER",
+            "lead": 0.5,
+            "inter": 0.0,
+            "trail": 0.5,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.5,
+                "end": 1.0,
+                "centre": 0.75
+              },
+              {
+                "ch": "と",
+                "start": 1.0,
+                "end": 1.5,
+                "centre": 1.25
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.75,
+                "delta_centre": 0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.25,
+                "delta_centre": -0.25
+              }
+            ],
+            "notes": "Solid ruby block centred on base span (no letter distribution)."
+          },
+          "BLOCK": {
+            "mode": "BLOCK",
+            "lead": 0.0,
+            "inter": 1.0,
+            "trail": 0.0,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.0,
+                "end": 0.5,
+                "centre": 0.25
+              },
+              {
+                "ch": "と",
+                "start": 1.5,
+                "end": 2.0,
+                "centre": 1.75
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.25,
+                "delta_centre": -0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.75,
+                "delta_centre": 0.25
+              }
+            ],
+            "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+          },
+          "INDENT_BLOCK": {
+            "mode": "INDENT_BLOCK",
+            "lead": 0.25,
+            "inter": 0.5,
+            "trail": 0.25,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.25,
+                "end": 0.75,
+                "centre": 0.5
+              },
+              {
+                "ch": "と",
+                "start": 1.25,
+                "end": 1.75,
+                "centre": 1.5
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.5,
+                "delta_centre": 0.0
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.5,
+                "delta_centre": 0.0
+              }
+            ],
+            "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+          }
+        }
+      }
+    },
+    {
+      "tag": "gothic_gridon",
+      "font_key": "gothic",
+      "font_resolved": "Hiragino Sans",
+      "grid": {
+        "requested": true,
+        "GridMode_set": true,
+        "GridBaseHeight_set": true,
+        "GridRubyHeight_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridLines_set": true,
+        "GridMode": 2,
+        "GridBaseHeight": 988,
+        "GridRubyHeight": 492
+      },
+      "vertical": {
+        "ok": true,
+        "WritingMode": "RL_TB"
+      },
+      "body_pt": 28.0,
+      "odt": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridon.odt",
+      "cases": [
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=CENTER",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 1,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        },
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=BLOCK",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 3,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        },
+        {
+          "label": "[gothic] 本文/もと RubyAdjust=INDENT_BLOCK",
+          "font": "Hiragino Sans",
+          "base": "本文",
+          "reading": "もと",
+          "RubyAdjust": 4,
+          "RubyText": "もと",
+          "RubyPosition": 0,
+          "set_text_ok": true,
+          "set_adjust_ok": true,
+          "base_preserved": true,
+          "CharHeightAsian": 28.0,
+          "CharFontNameAsian": "Hiragino Sans"
+        }
+      ],
+      "theory_em": {
+        "assumptions": {
+          "base_advance_em": 1.0,
+          "ruby_advance_em": 0.5,
+          "base_len_em": 2.0,
+          "ruby_solid_em": 1.0,
+          "free_em": 1.0,
+          "note": "Advances = square character frames (JLREQ), not ink bbox."
+        },
+        "base_frames": [
+          {
+            "ch": "本",
+            "start": 0.0,
+            "end": 1.0,
+            "centre": 0.5
+          },
+          {
+            "ch": "文",
+            "start": 1.0,
+            "end": 2.0,
+            "centre": 1.5
+          }
+        ],
+        "layouts": {
+          "CENTER": {
+            "mode": "CENTER",
+            "lead": 0.5,
+            "inter": 0.0,
+            "trail": 0.5,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.5,
+                "end": 1.0,
+                "centre": 0.75
+              },
+              {
+                "ch": "と",
+                "start": 1.0,
+                "end": 1.5,
+                "centre": 1.25
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.75,
+                "delta_centre": 0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.25,
+                "delta_centre": -0.25
+              }
+            ],
+            "notes": "Solid ruby block centred on base span (no letter distribution)."
+          },
+          "BLOCK": {
+            "mode": "BLOCK",
+            "lead": 0.0,
+            "inter": 1.0,
+            "trail": 0.0,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.0,
+                "end": 0.5,
+                "centre": 0.25
+              },
+              {
+                "ch": "と",
+                "start": 1.5,
+                "end": 2.0,
+                "centre": 1.75
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.25,
+                "delta_centre": -0.25
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.75,
+                "delta_centre": 0.25
+              }
+            ],
+            "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+          },
+          "INDENT_BLOCK": {
+            "mode": "INDENT_BLOCK",
+            "lead": 0.25,
+            "inter": 0.5,
+            "trail": 0.25,
+            "ruby_frames": [
+              {
+                "ch": "も",
+                "start": 0.25,
+                "end": 0.75,
+                "centre": 0.5
+              },
+              {
+                "ch": "と",
+                "start": 1.25,
+                "end": 1.75,
+                "centre": 1.5
+              }
+            ],
+            "pair_offsets": [
+              {
+                "base": "本",
+                "ruby": "も",
+                "base_centre": 0.5,
+                "ruby_centre": 0.5,
+                "delta_centre": 0.0
+              },
+              {
+                "base": "文",
+                "ruby": "と",
+                "base_centre": 1.5,
+                "ruby_centre": 1.5,
+                "delta_centre": 0.0
+              }
+            ],
+            "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+          }
+        }
+      }
+    }
+  ],
+  "fonts_resolved": {
+    "mincho": "Hiragino Mincho ProN",
+    "gothic": "Hiragino Sans"
+  },
+  "theory_em": {
+    "assumptions": {
+      "base_advance_em": 1.0,
+      "ruby_advance_em": 0.5,
+      "base_len_em": 2.0,
+      "ruby_solid_em": 1.0,
+      "free_em": 1.0,
+      "note": "Advances = square character frames (JLREQ), not ink bbox."
+    },
+    "base_frames": [
+      {
+        "ch": "本",
+        "start": 0.0,
+        "end": 1.0,
+        "centre": 0.5
+      },
+      {
+        "ch": "文",
+        "start": 1.0,
+        "end": 2.0,
+        "centre": 1.5
+      }
+    ],
+    "layouts": {
+      "CENTER": {
+        "mode": "CENTER",
+        "lead": 0.5,
+        "inter": 0.0,
+        "trail": 0.5,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.5,
+            "end": 1.0,
+            "centre": 0.75
+          },
+          {
+            "ch": "と",
+            "start": 1.0,
+            "end": 1.5,
+            "centre": 1.25
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.75,
+            "delta_centre": 0.25
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.25,
+            "delta_centre": -0.25
+          }
+        ],
+        "notes": "Solid ruby block centred on base span (no letter distribution)."
+      },
+      "BLOCK": {
+        "mode": "BLOCK",
+        "lead": 0.0,
+        "inter": 1.0,
+        "trail": 0.0,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.0,
+            "end": 0.5,
+            "centre": 0.25
+          },
+          {
+            "ch": "と",
+            "start": 1.5,
+            "end": 2.0,
+            "centre": 1.75
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.25,
+            "delta_centre": -0.25
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.75,
+            "delta_centre": 0.25
+          }
+        ],
+        "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+      },
+      "INDENT_BLOCK": {
+        "mode": "INDENT_BLOCK",
+        "lead": 0.25,
+        "inter": 0.5,
+        "trail": 0.25,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.25,
+            "end": 0.75,
+            "centre": 0.5
+          },
+          {
+            "ch": "と",
+            "start": 1.25,
+            "end": 1.75,
+            "centre": 1.5
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.5,
+            "delta_centre": 0.0
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.5,
+            "delta_centre": 0.0
+          }
+        ],
+        "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+      }
+    }
+  },
+  "ok": true
+}

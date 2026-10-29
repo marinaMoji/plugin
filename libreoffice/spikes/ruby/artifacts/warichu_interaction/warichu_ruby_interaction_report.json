@@ -1,0 +1,75 @@
+{
+  "started_at": "2026-10-29T12:00:12.647603+00:00",
+  "purpose": "Warichū first / empty RubyText regression; mono vs group adjust",
+  "cases": [
+    {
+      "id": "A_bare_h",
+      "CharCombineIsOn": true,
+      "RubyText": "",
+      "set_ok": true
+    },
+    {
+      "id": "B_clear_ruby_h",
+      "CharCombineIsOn": true,
+      "RubyText": "",
+      "set_ok": true
+    },
+    {
+      "id": "C_user_seq_h",
+      "warichu_CharCombineIsOn": false,
+      "warichu_set_ok": true,
+      "ruby_text": "ほん",
+      "ruby_adjust": 1,
+      "base": "文字割り注",
+      "note": "字割り注"
+    },
+    {
+      "id": "D_group_h",
+      "RubyAdjust": 4,
+      "RubyText": "もと"
+    },
+    {
+      "id": "odf_h",
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/warichu_interaction/warichu_ruby_interaction_h.odt",
+      "text_combine_lines": 3,
+      "empty_ruby_text": 1,
+      "has_ruby_text_hon": true,
+      "has_note": true
+    },
+    {
+      "id": "A_bare_v",
+      "CharCombineIsOn": true,
+      "RubyText": "",
+      "set_ok": true
+    },
+    {
+      "id": "B_clear_ruby_v",
+      "CharCombineIsOn": true,
+      "RubyText": "",
+      "set_ok": true
+    },
+    {
+      "id": "C_user_seq_v",
+      "warichu_CharCombineIsOn": false,
+      "warichu_set_ok": true,
+      "ruby_text": "ほん",
+      "ruby_adjust": 1,
+      "base": "文字割り注",
+      "note": "字割り注"
+    },
+    {
+      "id": "D_group_v",
+      "RubyAdjust": 4,
+      "RubyText": "もと"
+    },
+    {
+      "id": "odf_v",
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/warichu_interaction/warichu_ruby_interaction_v.odt",
+      "text_combine_lines": 3,
+      "empty_ruby_text": 1,
+      "has_ruby_text_hon": true,
+      "has_note": true
+    }
+  ],
+  "ok": true
+}

@@ -32,6 +32,8 @@ copy_lo_icon export_tex.svg
 copy_lo_icon toggle_page_writing_mode.svg
 copy_lo_icon apply_warichu.svg
 copy_lo_icon remove_warichu.svg
+copy_lo_icon apply_ruby.svg
+copy_lo_icon remove_ruby.svg
 
 # Extension Manager icon (recommended 42×42 PNG in description.xml)
 IMG_DST="${ROOT}/marinamoji_kaeriten/images"

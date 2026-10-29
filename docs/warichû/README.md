@@ -37,6 +37,7 @@ Extend marinaMoji's existing Microsoft Word and LibreOffice integrations with a 
 20. [upstream/U1-BUGZILLA-REVIEW.md](upstream/U1-BUGZILLA-REVIEW.md) — final U1 report for review before filing.
 21. [upstream/lo-build-vm/](upstream/lo-build-vm/) — Ubuntu VM build scripts (no provision until approved).
 22. [upstream/SCHOLARLY-MAINTAINER-SUMMARY.md](upstream/SCHOLARLY-MAINTAINER-SUMMARY.md) — short design summary (do not post yet).
+23. [20-PHASE3-RUBY.md](20-PHASE3-RUBY.md) — Phase 3 group-ruby MVP + coexistence notes.
 
 **LO spike (throwaway):** [`libreoffice/spikes/warichu/`](../../libreoffice/spikes/warichu/) · Stage B: [`artifacts/stage_b/`](../../libreoffice/spikes/warichu/artifacts/stage_b/).
 

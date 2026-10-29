@@ -4,4 +4,6 @@ Formats Unicode kaeriten (Kanbun reading marks, U+3190–U+319F) in LibreOffice 
 
 Also formats native warichū (割注): select the note text (not the whole paragraph), then Apply warichū. Remove warichū works with a selection or with the caret inside the annotation. Uses Writer’s character-span combine — no UNO bracket props (host owns line split and size).
 
+Native group-ruby (振り仮名): select base text → Apply ruby → enter the reading (default alignment INDENT_BLOCK / distribute-space, JLREQ Fig.124). Remove ruby works from a selection or caret inside the ruby span. Base characters are preserved. Do not nest on warichū.
+
 Works offline. No telemetry. Does not require the marinaMoji IME at runtime (any input that produces the Unicode marks is fine). LibreOffice 6.4 or newer.

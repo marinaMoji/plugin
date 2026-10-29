@@ -35,6 +35,8 @@
                        manifest:full-path="Scripts/python/export_core.py"/>
   <manifest:file-entry manifest:media-type="text/plain"
                        manifest:full-path="Scripts/python/warichu.py"/>
+  <manifest:file-entry manifest:media-type="text/plain"
+                       manifest:full-path="Scripts/python/ruby.py"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/render_kaeriten.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
@@ -51,4 +53,8 @@
                        manifest:full-path="icons/apply_warichu.svg"/>
   <manifest:file-entry manifest:media-type="image/svg+xml"
                        manifest:full-path="icons/remove_warichu.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/apply_ruby.svg"/>
+  <manifest:file-entry manifest:media-type="image/svg+xml"
+                       manifest:full-path="icons/remove_ruby.svg"/>
 </manifest:manifest>

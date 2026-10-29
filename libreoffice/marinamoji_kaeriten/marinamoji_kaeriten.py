@@ -32,6 +32,11 @@ try:
 except ImportError:
     _warichu = None
 
+try:
+    import ruby as _ruby
+except ImportError:
+    _ruby = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1790,6 +1795,20 @@ def remove_warichu(*_args):
     _warichu.remove_warichu()
 
 
+def apply_ruby(*_args):
+    """Apply native group-ruby to the selection."""
+    if _ruby is None:
+        return
+    _ruby.apply_ruby()
+
+
+def remove_ruby(*_args):
+    """Remove native ruby from the selection or caret-inside span."""
+    if _ruby is None:
+        return
+    _ruby.remove_ruby()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1804,6 +1823,8 @@ g_exportedScripts = (
     copy_plain_text,
     apply_warichu,
     remove_warichu,
+    apply_ruby,
+    remove_ruby,
     format_selection,
     format_paragraph,
     format_document,

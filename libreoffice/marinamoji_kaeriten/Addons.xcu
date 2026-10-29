@@ -97,6 +97,45 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
+        <node oor:name="t_sep_r" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>private:separator</value>
+          </prop>
+        </node>
+        <node oor:name="t_ruby_on" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:apply_ruby</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Apply ruby</value>
+            <value xml:lang="en-US">Apply ruby</value>
+            <value xml:lang="ja">ルビを適用</value>
+            <value xml:lang="fr">Appliquer le ruby</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="t_ruby_off" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:remove_ruby</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Remove ruby</value>
+            <value xml:lang="en-US">Remove ruby</value>
+            <value xml:lang="ja">ルビを解除</value>
+            <value xml:lang="fr">Retirer le ruby</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
         <node oor:name="t_sep" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
@@ -195,6 +234,32 @@
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
             <value>%origin%/icons/remove_warichu.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.apply_ruby" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:apply_ruby</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_ruby.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_ruby.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.remove_ruby" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:remove_ruby</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_ruby.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_ruby.svg</value>
           </prop>
         </node>
       </node>

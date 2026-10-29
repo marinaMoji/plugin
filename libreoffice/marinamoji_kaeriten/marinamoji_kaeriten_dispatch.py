@@ -23,6 +23,8 @@ _COMMANDS = frozenset(
         "toggle_page_writing_mode",
         "apply_warichu",
         "remove_warichu",
+        "apply_ruby",
+        "remove_ruby",
     )
 )
 
@@ -90,6 +92,10 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.apply_warichu()
         elif path == "remove_warichu":
             macros.remove_warichu()
+        elif path == "apply_ruby":
+            macros.apply_ruby()
+        elif path == "remove_ruby":
+            macros.remove_ruby()
 
     def addStatusListener(self, control, url):
         pass

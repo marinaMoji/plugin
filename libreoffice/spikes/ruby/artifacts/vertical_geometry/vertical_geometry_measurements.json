@@ -1,0 +1,979 @@
+{
+  "based_on": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/vertical_geometry_report.json",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "font_metrics": {
+    "mincho": {
+      "font_path": "/System/Library/Fonts/ヒラギノ明朝 ProN.ttc",
+      "unitsPerEm": 1000,
+      "glyphs": {
+        "本": {
+          "glyph": "cid03722",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.023,
+            "tsb_em": 0.042,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "文": {
+          "glyph": "cid03592",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.046,
+            "tsb_em": 0.042,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "も": {
+          "glyph": "cid00907",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.203,
+            "tsb_em": 0.067,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "と": {
+          "glyph": "cid00881",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.258,
+            "tsb_em": 0.089,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        }
+      }
+    },
+    "gothic": {
+      "font_path": "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc",
+      "unitsPerEm": 1000,
+      "glyphs": {
+        "本": {
+          "glyph": "cid03722",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.037,
+            "tsb_em": 0.05,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "文": {
+          "glyph": "cid03592",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.04,
+            "tsb_em": 0.056,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "も": {
+          "glyph": "cid00907",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.125,
+            "tsb_em": 0.079,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        },
+        "と": {
+          "glyph": "cid00881",
+          "frame": {
+            "advance_h_em": 1.0,
+            "advance_v_em": 1.0,
+            "lsb_em": 0.18,
+            "tsb_em": 0.08,
+            "frame_centre_x_em": 0.5,
+            "frame_centre_y_em": 0.5
+          },
+          "ink": null,
+          "optical_vs_frame_em": null
+        }
+      }
+    }
+  },
+  "pdf_measurements": [
+    {
+      "tag": "mincho_gridoff",
+      "font_key": "mincho",
+      "font_resolved": "Hiragino Mincho ProN",
+      "grid": {
+        "requested": false,
+        "GridMode_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridMode": 0,
+        "GridBaseHeight": 706,
+        "GridRubyHeight": 353
+      },
+      "pdf": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridoff.pdf",
+      "png": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridoff.pdf.png",
+      "n_chars_extracted": 316,
+      "n_clusters": 3,
+      "by_adjust": [
+        {
+          "RubyAdjust": "CENTER",
+          "pdf_points": {
+            "base_top": 121.82079315185547,
+            "base_bot": 132.82080078125,
+            "base_len": 11.000007629394531,
+            "cell_h": 11.000007629394531,
+            "hon_centre_y": 127.32079696655273,
+            "bun_centre_y": 127.32079696655273,
+            "mo_centre_y": 127.32079696655273,
+            "to_centre_y": 127.32079696655273,
+            "mo_dx_from_base_col": 20.800018310546875,
+            "to_dx_from_base_col": 31.800018310546875,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "文_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "も_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "と_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "BLOCK",
+          "pdf_points": {
+            "base_top": 183.47076416015625,
+            "base_bot": 194.47076416015625,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 188.97076416015625,
+            "bun_centre_y": 188.97076416015625,
+            "mo_centre_y": 188.97076416015625,
+            "to_centre_y": 188.97076416015625,
+            "mo_dx_from_base_col": 20.79998779296875,
+            "to_dx_from_base_col": 31.79998779296875,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "INDENT_BLOCK",
+          "pdf_points": {
+            "base_top": 245.12078857421875,
+            "base_bot": 256.12078857421875,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 250.62078857421875,
+            "bun_centre_y": 250.62078857421875,
+            "mo_centre_y": 250.62078857421875,
+            "to_centre_y": 250.62078857421875,
+            "mo_dx_from_base_col": 20.800018310546875,
+            "to_dx_from_base_col": 31.800018310546875,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        }
+      ]
+    },
+    {
+      "tag": "mincho_gridon",
+      "font_key": "mincho",
+      "font_resolved": "Hiragino Mincho ProN",
+      "grid": {
+        "requested": true,
+        "GridMode_set": true,
+        "GridBaseHeight_set": true,
+        "GridRubyHeight_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridLines_set": true,
+        "GridMode": 2,
+        "GridBaseHeight": 988,
+        "GridRubyHeight": 492
+      },
+      "pdf": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridon.pdf",
+      "png": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_mincho_gridon.pdf.png",
+      "n_chars_extracted": 315,
+      "n_clusters": 3,
+      "by_adjust": [
+        {
+          "RubyAdjust": "CENTER",
+          "pdf_points": {
+            "base_top": 251.87078857421875,
+            "base_bot": 262.87078857421875,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 257.37078857421875,
+            "bun_centre_y": 257.37078857421875,
+            "mo_centre_y": 257.37078857421875,
+            "to_centre_y": 257.37078857421875,
+            "mo_dx_from_base_col": -74.2919921875,
+            "to_dx_from_base_col": -46.3079833984375,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "BLOCK",
+          "pdf_points": {
+            "base_top": 377.72076416015625,
+            "base_bot": 388.72076416015625,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 383.22076416015625,
+            "bun_centre_y": 383.22076416015625,
+            "mo_centre_y": 383.22076416015625,
+            "to_centre_y": 383.22076416015625,
+            "mo_dx_from_base_col": -74.29202270507812,
+            "to_dx_from_base_col": -46.308013916015625,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "INDENT_BLOCK",
+          "pdf_points": {
+            "base_top": 503.57073974609375,
+            "base_bot": 514.5707397460938,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 509.07073974609375,
+            "bun_centre_y": 509.07073974609375,
+            "mo_centre_y": 509.07073974609375,
+            "to_centre_y": 509.07073974609375,
+            "mo_dx_from_base_col": -74.29199981689453,
+            "to_dx_from_base_col": -46.30799102783203,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.000030517578125,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        }
+      ]
+    },
+    {
+      "tag": "gothic_gridoff",
+      "font_key": "gothic",
+      "font_resolved": "Hiragino Sans",
+      "grid": {
+        "requested": false,
+        "GridMode_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridMode": 0,
+        "GridBaseHeight": 706,
+        "GridRubyHeight": 353
+      },
+      "pdf": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridoff.pdf",
+      "png": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridoff.pdf.png",
+      "n_chars_extracted": 309,
+      "n_clusters": 3,
+      "by_adjust": [
+        {
+          "RubyAdjust": "CENTER",
+          "pdf_points": {
+            "base_top": 121.82079315185547,
+            "base_bot": 132.82080078125,
+            "base_len": 11.000007629394531,
+            "cell_h": 11.000007629394531,
+            "hon_centre_y": 127.32079696655273,
+            "bun_centre_y": 127.32079696655273,
+            "mo_centre_y": 127.32079696655273,
+            "to_centre_y": 127.32079696655273,
+            "mo_dx_from_base_col": 21.699981689453125,
+            "to_dx_from_base_col": 32.699981689453125,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "文_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "も_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "と_wh": [
+              11.0,
+              11.000007629394531
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "BLOCK",
+          "pdf_points": {
+            "base_top": 183.47076416015625,
+            "base_bot": 194.47076416015625,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 188.97076416015625,
+            "bun_centre_y": 188.97076416015625,
+            "mo_centre_y": 188.97076416015625,
+            "to_centre_y": 188.97076416015625,
+            "mo_dx_from_base_col": 21.70001220703125,
+            "to_dx_from_base_col": 32.70001220703125,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "INDENT_BLOCK",
+          "pdf_points": {
+            "base_top": 245.12078857421875,
+            "base_bot": 256.12078857421875,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 250.62078857421875,
+            "bun_centre_y": 250.62078857421875,
+            "mo_centre_y": 250.62078857421875,
+            "to_centre_y": 250.62078857421875,
+            "mo_dx_from_base_col": 21.70001220703125,
+            "to_dx_from_base_col": 32.70001220703125,
+            "dx_mo_minus_to": -11.0
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        }
+      ]
+    },
+    {
+      "tag": "gothic_gridon",
+      "font_key": "gothic",
+      "font_resolved": "Hiragino Sans",
+      "grid": {
+        "requested": true,
+        "GridMode_set": true,
+        "GridBaseHeight_set": true,
+        "GridRubyHeight_set": true,
+        "GridDisplay_set": true,
+        "GridPrint_set": true,
+        "GridLines_set": true,
+        "GridMode": 2,
+        "GridBaseHeight": 988,
+        "GridRubyHeight": 492
+      },
+      "pdf": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridon.pdf",
+      "png": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/ruby/artifacts/vertical_geometry/ruby_vert_geom_gothic_gridon.pdf.png",
+      "n_chars_extracted": 308,
+      "n_clusters": 3,
+      "by_adjust": [
+        {
+          "RubyAdjust": "CENTER",
+          "pdf_points": {
+            "base_top": 251.87078857421875,
+            "base_bot": 262.87078857421875,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 257.37078857421875,
+            "bun_centre_y": 257.37078857421875,
+            "mo_centre_y": 257.37078857421875,
+            "to_centre_y": 257.37078857421875,
+            "mo_dx_from_base_col": -75.19198608398438,
+            "to_dx_from_base_col": -47.207977294921875,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "BLOCK",
+          "pdf_points": {
+            "base_top": 377.72076416015625,
+            "base_bot": 388.72076416015625,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 383.22076416015625,
+            "bun_centre_y": 383.22076416015625,
+            "mo_centre_y": 383.22076416015625,
+            "to_centre_y": 383.22076416015625,
+            "mo_dx_from_base_col": -75.1920166015625,
+            "to_dx_from_base_col": -47.2080078125,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        },
+        {
+          "RubyAdjust": "INDENT_BLOCK",
+          "pdf_points": {
+            "base_top": 503.57073974609375,
+            "base_bot": 514.5707397460938,
+            "base_len": 11.0,
+            "cell_h": 11.0,
+            "hon_centre_y": 509.07073974609375,
+            "bun_centre_y": 509.07073974609375,
+            "mo_centre_y": 509.07073974609375,
+            "to_centre_y": 509.07073974609375,
+            "mo_dx_from_base_col": -75.1920166015625,
+            "to_dx_from_base_col": -47.2080078125,
+            "dx_mo_minus_to": -27.9840087890625
+          },
+          "frame_em_along_column": {
+            "本_centre": 0.5,
+            "文_centre": 0.5,
+            "も_centre": 0.5,
+            "と_centre": 0.5,
+            "delta_も_vs_本": 0.0,
+            "delta_と_vs_文": 0.0
+          },
+          "sizes": {
+            "本_wh": [
+              11.0,
+              11.0
+            ],
+            "文_wh": [
+              11.0,
+              11.0
+            ],
+            "も_wh": [
+              11.0,
+              11.0
+            ],
+            "と_wh": [
+              11.0,
+              11.0
+            ],
+            "ruby_over_base_h": 1.0
+          },
+          "interpretation": {
+            "cross_axis_note": "dx_mo_minus_to ≠ 0 means も and と sit at different distances from the base column — often optical side-bearing / ink, while PDF bbox centres still track layout frames.",
+            "block_axis_note": "delta_*_vs_* near 0 ⇒ ruby frame centre matches base frame centre (INDENT_BLOCK theory for 2×½ on 2×1). BLOCK theory expects ≈ −0.25em for も vs 本 and ≈ +0.25em for と vs 文."
+          },
+          "layout_guess": "matches_INDENT_BLOCK_frames"
+        }
+      ]
+    }
+  ],
+  "theory_em": {
+    "assumptions": {
+      "base_advance_em": 1.0,
+      "ruby_advance_em": 0.5,
+      "base_len_em": 2.0,
+      "ruby_solid_em": 1.0,
+      "free_em": 1.0,
+      "note": "Advances = square character frames (JLREQ), not ink bbox."
+    },
+    "base_frames": [
+      {
+        "ch": "本",
+        "start": 0.0,
+        "end": 1.0,
+        "centre": 0.5
+      },
+      {
+        "ch": "文",
+        "start": 1.0,
+        "end": 2.0,
+        "centre": 1.5
+      }
+    ],
+    "layouts": {
+      "CENTER": {
+        "mode": "CENTER",
+        "lead": 0.5,
+        "inter": 0.0,
+        "trail": 0.5,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.5,
+            "end": 1.0,
+            "centre": 0.75
+          },
+          {
+            "ch": "と",
+            "start": 1.0,
+            "end": 1.5,
+            "centre": 1.25
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.75,
+            "delta_centre": 0.25
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.25,
+            "delta_centre": -0.25
+          }
+        ],
+        "notes": "Solid ruby block centred on base span (no letter distribution)."
+      },
+      "BLOCK": {
+        "mode": "BLOCK",
+        "lead": 0.0,
+        "inter": 1.0,
+        "trail": 0.0,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.0,
+            "end": 0.5,
+            "centre": 0.25
+          },
+          {
+            "ch": "と",
+            "start": 1.5,
+            "end": 2.0,
+            "centre": 1.75
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.25,
+            "delta_centre": -0.25
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.75,
+            "delta_centre": 0.25
+          }
+        ],
+        "notes": "JLREQ Fig.125 / ODF distribute-letter: align first/last edges; space only between ruby characters."
+      },
+      "INDENT_BLOCK": {
+        "mode": "INDENT_BLOCK",
+        "lead": 0.25,
+        "inter": 0.5,
+        "trail": 0.25,
+        "ruby_frames": [
+          {
+            "ch": "も",
+            "start": 0.25,
+            "end": 0.75,
+            "centre": 0.5
+          },
+          {
+            "ch": "と",
+            "start": 1.25,
+            "end": 1.75,
+            "centre": 1.5
+          }
+        ],
+        "pair_offsets": [
+          {
+            "base": "本",
+            "ruby": "も",
+            "base_centre": 0.5,
+            "ruby_centre": 0.5,
+            "delta_centre": 0.0
+          },
+          {
+            "base": "文",
+            "ruby": "と",
+            "base_centre": 1.5,
+            "ruby_centre": 1.5,
+            "delta_centre": 0.0
+          }
+        ],
+        "notes": "JLREQ Fig.124 / JIS X 4051 ratio 1:2:1 (ODF distribute-space). For 2×½em ruby on 2×1em base, ruby frame centres coincide with base centres."
+      }
+    }
+  },
+  "verdict_draft": {
+    "jlreq_for_本文_もと": "Group-ruby shorter than base: JLREQ permits (1) Fig.124 / JIS 1:2:1 end spacing ≈ INDENT_BLOCK, and (2) Fig.125 edge-align ≈ BLOCK. Rules operate on character frames / advances, not glyph ink centres.",
+    "theory_2x2_half": {
+      "INDENT_BLOCK": "ruby frame centres == base frame centres (Δ≈0)",
+      "BLOCK": "も Δ≈−0.25em vs 本; と Δ≈+0.25em vs 文 (edge stretch)",
+      "CENTER": "solid ruby; も Δ≈+0.25em; と Δ≈−0.25em"
+    },
+    "uno_fixable": "Choosing among CENTER/BLOCK/INDENT_BLOCK is UNO-fixable. Correcting optical ink within frames is NOT exposed via UNO — that is font design + Writer's use of advances/frames.",
+    "do_not_change_default_yet": true
+  },
+  "optical_vs_frame_summary": {
+    "mincho": {
+      "本": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "文": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "も": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "と": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      }
+    },
+    "gothic": {
+      "本": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "文": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "も": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      },
+      "と": {
+        "advance_h_em": 1.0,
+        "dx_ink_frame": null,
+        "dy_ink_frame": null
+      }
+    }
+  }
+}

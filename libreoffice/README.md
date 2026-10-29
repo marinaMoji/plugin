@@ -53,6 +53,8 @@ The **Toggle vertical page** button switches the current page style between hori
 
 **Apply warichū / Remove warichū** use Writer’s native character-span combine (`CharCombineIsOn` only — no UNO bracket props). Select the *note* text inside a paragraph (leave some body text outside the selection), then Apply. Selecting the whole paragraph is refused (that paints badly in Writer).
 
+**Apply ruby / Remove ruby** (0.3.20+) use Writer’s native `RubyText`. Multi-character bases default to `RubyAdjust` **INDENT_BLOCK** (Fig.124); single-character (mono) bases use **CENTER**. Nesting ruby and warichū on the same span is refused. Warichū apply is bare `CharCombineIsOn` only again (0.3.18–0.3.19 briefly cleared `RubyText` on combine and could break warichū even when applied *before* ruby).
+
 ### How the bundle works
 
 | Piece | Role |

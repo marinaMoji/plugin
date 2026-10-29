@@ -22,7 +22,7 @@ if [[ -f "${SRC}/Office/UI/WriterWindowState.xcu" ]]; then
   cp "${SRC}/Office/UI/WriterWindowState.xcu" "${BUILD}/Office/UI/"
 fi
 cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_handoff.py" \
-   "${SRC}/warichu.py" "${BUILD}/Scripts/python/"
+   "${SRC}/warichu.py" "${SRC}/ruby.py" "${BUILD}/Scripts/python/"
 cp "${PLUGIN}/mapping.json" "${BUILD}/Scripts/python/marinamoji_mapping.json"
 
 # License: keep registration/license_en.txt in sync with repo LICENSE

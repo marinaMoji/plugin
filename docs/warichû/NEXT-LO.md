@@ -1,20 +1,18 @@
-# LibreOffice next steps (release + upstream prep)
+# LibreOffice next steps
 
-## Waiting on you
+## Phase 3 in progress (0.3.17)
 
-1. **Manual test 0.3.16** — [`RELEASE-0.3.16-CHECKLIST.md`](RELEASE-0.3.16-CHECKLIST.md). Do not publish until signed off.
-2. **Review U1 Bugzilla draft** — [`upstream/U1-BUGZILLA-REVIEW.md`](upstream/U1-BUGZILLA-REVIEW.md) + native ODT in `upstream/u1-reproducer/`. File only after approval.
-3. **Approve Ubuntu VM** — [`upstream/lo-build-vm/`](upstream/lo-build-vm/) (150–200 GiB). No paid provision / full `make` until you say so.
+- Native **group-ruby** Apply / Remove (`ruby.py`) — see [`20-PHASE3-RUBY.md`](20-PHASE3-RUBY.md).
+- Manual coexistence smoke: ruby + warichū + kaeriten + vertical page.
+- Still deferred: jukugo / mono auto-split / ruby metrics UI / shared rules engine / Word.
 
-## Deferred
+## Parked upstream
 
-| Item | Status |
-|---|---|
-| File U2 kinsoku | After independent re-verify of B11/B19/B20 (not filed) |
-| Implement scholarly mode | After maintainer discussion; summary ready |
-| U1 patch compile | After VM build exists; keep separate from U2 |
+- [tdf#174224](https://bugs.documentfoundation.org/show_bug.cgi?id=174224) delimiter paint — patch deferred.
+- U2 kinsoku — re-verify before filing.
+- Scholarly manual division — maintainer discussion only.
 
-## Shipped locally
+## Release
 
-- Extension **0.3.16** with caret-aware remove (`warichu.py`).
-- Build: `libreoffice/./build.sh` → `dist/MarinaMojiKaeriten.oxt`.
+- **0.3.16** warichū validated (publish when you choose).
+- **0.3.17** = 0.3.16 + ruby toolbar (build locally; manual smoke before publish).

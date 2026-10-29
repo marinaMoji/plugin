@@ -160,8 +160,23 @@ def _clear_combine(cursor):
     _set(cursor, "CharCombineSuffix", "")
 
 
+def _selection_has_ruby(cursor):
+    val = _get(cursor, "RubyText", "")
+    if val is None:
+        return False
+    if isinstance(val, dict) and "error" in val:
+        return False
+    return bool(str(val))
+
+
 def _apply_combine(cursor):
-    """Bare CharCombineIsOn only — never Prefix/Suffix."""
+    """Bare CharCombineIsOn only — never Prefix/Suffix.
+
+    Do **not** set RubyText="" here. Clearing ruby on a span that never had a
+    reading still attaches an empty text:ruby wrapper in Writer, which can
+    suppress text-combine=lines painting. Nesting is refused before apply when
+    RubyText is non-empty.
+    """
     return _set(cursor, "CharCombineIsOn", True)
 
 
@@ -308,6 +323,16 @@ def apply_warichu(*_args):
 
     # Work on a cursor over the selection so property changes stick to a span.
     cursor = text.createTextCursorByRange(selection)
+    if _selection_has_ruby(cursor):
+        _message(
+            doc,
+            "marinaMoji warichū",
+            "This selection already has ruby. "
+            "Remove ruby first, or apply warichū to a separate note span.\n\n"
+            "Nesting warichū on ruby base characters is unreliable in Writer.",
+            kind="warning",
+        )
+        return
     before = _range_text(cursor)
     if not _apply_combine(cursor):
         _message(
