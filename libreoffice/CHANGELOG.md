@@ -5,6 +5,30 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.35 - 2026-10-29
+
+* **Tables, footnotes, headers and frames:** ruby, warichū, tate-chū-yoko,
+  emphasis, jidori and the inspector now work on a selection that lives in
+  those texts, not only in the body.
+* **Ruby:** Remove stops at a change of reading, so adjacent words are no
+  longer cleared together; selecting several words removes each. Apply is
+  refused on tate-chū-yoko and on selections spanning paragraphs.
+* **Warichū:** Apply is refused on tate-chū-yoko and across paragraphs.
+* **Jidori:** accepts 々 〆 〇 and common CJK punctuation; rejects halfwidth
+  katakana; ideographic variation selectors and combining marks count as part
+  of their base character.
+* **Tate-chū-yoko:** letter/digit pairs such as A4 and 5G are recommended, and
+  the caret finds them.
+* **Emphasis menu:** an error while applying no longer opens a second dialog;
+  menu and dialogs follow the UI language (English, Japanese, French).
+* **Inspector:** thousands commas and Western parentheses around plain ASCII
+  (2020), (1) are no longer reported; the URL exemption applies only near the
+  URL; the tate-chū-yoko flag requires fit-to-line.
+* **Toolbar logo:** SVG icons are built without a fixed width/height so the
+  logo renders sharp.
+* Rolls up 0.3.15–0.3.34 (warichū, ruby, emphasis marks, tate-chū-yoko,
+  jidori, inspector, About handbook), which were never tagged separately.
+
 ## 0.3.34 - 2026-10-29
 
 * **About marinaMoji:** square logo button at the far left of toolbar `.v7`

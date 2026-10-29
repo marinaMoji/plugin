@@ -18,7 +18,7 @@ authors:
     affiliation: >-
       Centre de recherche sur les civilisations de l'Asie orientale (CRCAO),
       École pratique des hautes études (EPHE)
-version: 0.3.13
+version: 0.3.35
 repository-code: https://github.com/marinaMoji/plugin
 url: https://norbert.huma-num.fr/marinamoji
 license: GPL-3.0-only
