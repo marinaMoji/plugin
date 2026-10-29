@@ -12,7 +12,27 @@ Extend marinaMoji's existing Microsoft Word and LibreOffice integrations with a 
 3. [warichu-investigation-marinamoji.md](warichu-investigation-marinamoji.md) — concrete experiments and evidence required before implementation (doc “03”).
 4. [04-IMPLEMENTATION-ROADMAP.md](04-IMPLEMENTATION-ROADMAP.md) — phases, milestones, deliverables, and acceptance gates.
 
-**LO spike (throwaway):** [`libreoffice/spikes/warichu/`](../../libreoffice/spikes/warichu/).
+### Stage A — JLREQ / LO rendering audit (2026-10-29)
+5. [05-JLREQ-WARICHU-REFERENCE.md](05-JLREQ-WARICHU-REFERENCE.md) — JLREQ warichū requirements vs LO/plugin influence.
+6. [06-LO-RENDERING-ANALYSIS.md](06-LO-RENDERING-ANALYSIS.md) — baseline example, environment, open measurements.
+7. [07-NATIVE-CAPABILITY-MATRIX.md](07-NATIVE-CAPABILITY-MATRIX.md) — N/L/U/W/C/X for each desired feature.
+8. [08-LO-SOURCE-NOTES.md](08-LO-SOURCE-NOTES.md) — `SwDoubleLinePortion` vs `SwCombinedPortion`; `BuildMultiPortion`.
+9. [09-PRIORITIZED-CORRECTIONS.md](09-PRIORITIZED-CORRECTIONS.md) — plugin vs upstream ranking (no big impl yet).
+
+### Stage B — Empirical validation / upstream feasibility (2026-10-29)
+10. [10-TEST-CORPUS-AND-METHODOLOGY.md](10-TEST-CORPUS-AND-METHODOLOGY.md) — corpus, fonts, LO version, procedures.
+11. [11-JLREQ-CONFORMANCE.md](11-JLREQ-CONFORMANCE.md) — rule-by-rule assessment with evidence.
+12. [12-RENDERER-ANALYSIS-STAGE-B.md](12-RENDERER-ANALYSIS-STAGE-B.md) — division, `CalcNewBlock`, vertical.
+13. [13-BRACKET-RENDERING-INVESTIGATION.md](13-BRACKET-RENDERING-INVESTIGATION.md) — confirmed horizontal delimiter collapse.
+14. [14-UPSTREAM-FEASIBILITY.md](14-UPSTREAM-FEASIBILITY.md) — U1–U5, manual division architecture.
+15. [15-STAGE-B-DECISION.md](15-STAGE-B-DECISION.md) — ten decision questions.
+16. [NEXT-LO.md](NEXT-LO.md) — plugin vs upstream next steps.
+
+### Stage C — Implementation / upstream prep (2026-10-29)
+17. [16-LO-BUILD-ENVIRONMENT.md](16-LO-BUILD-ENVIRONMENT.md) — no local LO source build; cost estimate.
+18. [upstream/](upstream/) — U1/U2 notes, scholarly proposal, draft bug reports (do not file yet).
+
+**LO spike (throwaway):** [`libreoffice/spikes/warichu/`](../../libreoffice/spikes/warichu/) · Stage B: [`artifacts/stage_b/`](../../libreoffice/spikes/warichu/artifacts/stage_b/).
 
 ## Non-negotiable principles
 - **Inspect the existing marinaMoji repositories and plugins first.** Reuse architecture, conventions, UI, release/test pipelines; do not create parallel plugins or assume directory names.

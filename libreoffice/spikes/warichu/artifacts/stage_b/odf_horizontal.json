@@ -1,0 +1,124 @@
+{
+  "combine_text_styles": [
+    {
+      "name": "T1",
+      "has_brackets": false,
+      "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+    },
+    {
+      "name": "T2",
+      "has_brackets": true,
+      "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+    }
+  ],
+  "paragraph_combine_lines": [],
+  "sample_paras": [
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地玄黄、宇宙洪荒。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">此書不知何人所撰、疑為後世偽作。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">一二三四五</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">あいうえおかきくけこさ</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">これは割注の試験としてかなり長い文字列を用意した例である</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">甲乙丙、丁戊己。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">曰「天地」なり。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地」宇宙。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">（甲乙）丙丁。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">『書』・甲―乙…。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">AB漢字12かな</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">ゐゑをゝゞ</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">葛󠄀飾区試験</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割り注は、良いです。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>"
+  ],
+  "notes_from_spans": [
+    {
+      "style": "T1",
+      "text": "割り注は、良いです。",
+      "len": 10
+    },
+    {
+      "style": "T1",
+      "text": "天地玄黄、宇宙洪荒。",
+      "len": 10
+    },
+    {
+      "style": "T1",
+      "text": "此書不知何人所撰、疑為後世偽作。",
+      "len": 16
+    },
+    {
+      "style": "T1",
+      "text": "一二三四五",
+      "len": 5
+    },
+    {
+      "style": "T1",
+      "text": "割注",
+      "len": 2
+    },
+    {
+      "style": "T1",
+      "text": "あいうえおかきくけこさ",
+      "len": 11
+    },
+    {
+      "style": "T1",
+      "text": "これは割注の試験としてかなり長い文字列を用意した例である",
+      "len": 28
+    },
+    {
+      "style": "T1",
+      "text": "甲乙丙、丁戊己。",
+      "len": 8
+    },
+    {
+      "style": "T1",
+      "text": "曰「天地」なり。",
+      "len": 8
+    },
+    {
+      "style": "T1",
+      "text": "天地」宇宙。",
+      "len": 6
+    },
+    {
+      "style": "T1",
+      "text": "（甲乙）丙丁。",
+      "len": 7
+    },
+    {
+      "style": "T1",
+      "text": "『書』・甲―乙…。",
+      "len": 9
+    },
+    {
+      "style": "T1",
+      "text": "AB漢字12かな",
+      "len": 8
+    },
+    {
+      "style": "T1",
+      "text": "ゐゑをゝゞ",
+      "len": 5
+    },
+    {
+      "style": "T1",
+      "text": "葛󠄀飾区試験",
+      "len": 6
+    },
+    {
+      "style": "T2",
+      "text": "割り注は、良いです。",
+      "len": 10
+    },
+    {
+      "style": "T2",
+      "text": "割注試験",
+      "len": 4
+    }
+  ],
+  "ok": true,
+  "bare_combine_styles": 1,
+  "bracket_combine_styles": 1
+}

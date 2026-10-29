@@ -161,7 +161,12 @@ required_members = [
     "description/desc_fr.txt",
     "description/desc_ja.txt",
     "images/extension_icon.png",
-    "icons/render_kaeriten.png",
+    "icons/render_kaeriten.svg",
+    "icons/unrender_kaeriten.svg",
+    "icons/export_txt.svg",
+    "icons/toggle_page_writing_mode.svg",
+    "icons/apply_warichu.svg",
+    "icons/remove_warichu.svg",
 ]
 with zipfile.ZipFile(oxt_path) as zf:
     names = set(zf.namelist())

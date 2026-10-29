@@ -1,0 +1,924 @@
+{
+  "started_at": "2026-10-29T10:45:16.069391+00:00",
+  "lo_version": "LibreOffice 26.8.0.3 26.8",
+  "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b",
+  "fixture_path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/fixtures_stage_b.json",
+  "stage": "B",
+  "purpose": "Empirical warichū corpus: balance, punct, mixed, vertical, brackets",
+  "source_tree_examined_stage_a": "LibreOffice/core master (web) — binary is 26.8.0.3",
+  "errors": [],
+  "font_selected": "Hiragino Mincho ProN",
+  "horizontal": {
+    "writing": "horizontal",
+    "font": "Hiragino Mincho ProN",
+    "cases": [
+      {
+        "body": "本文",
+        "note": "割り注は、良いです。",
+        "note_codepoints": [
+          "U+5272",
+          "U+308A",
+          "U+6CE8",
+          "U+306F",
+          "U+3001",
+          "U+826F",
+          "U+3044",
+          "U+3067",
+          "U+3059",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割り注は、良いです。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 10,
+        "id": "B01_classic",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "天地玄黄、宇宙洪荒。",
+        "note_codepoints": [
+          "U+5929",
+          "U+5730",
+          "U+7384",
+          "U+9EC4",
+          "U+3001",
+          "U+5B87",
+          "U+5B99",
+          "U+6D2A",
+          "U+8352",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "天地玄黄、宇宙洪荒。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 10,
+        "id": "B02_equal_qianziwen",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "此書不知何人所撰、疑為後世偽作。",
+        "note_codepoints": [
+          "U+6B64",
+          "U+66F8",
+          "U+4E0D",
+          "U+77E5",
+          "U+4F55",
+          "U+4EBA",
+          "U+6240",
+          "U+64B0",
+          "U+3001",
+          "U+7591",
+          "U+70BA",
+          "U+5F8C",
+          "U+4E16",
+          "U+507D",
+          "U+4F5C",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "此書不知何人所撰、疑為後世偽作。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 16,
+        "id": "B03_long_classical",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "一二三四五",
+        "note_codepoints": [
+          "U+4E00",
+          "U+4E8C",
+          "U+4E09",
+          "U+56DB",
+          "U+4E94"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "一二三四五",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 5,
+        "id": "B04_odd_length",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "割注",
+        "note_codepoints": [
+          "U+5272",
+          "U+6CE8"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割注",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 2,
+        "id": "B05_short_two",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "あいうえおかきくけこさ",
+        "note_codepoints": [
+          "U+3042",
+          "U+3044",
+          "U+3046",
+          "U+3048",
+          "U+304A",
+          "U+304B",
+          "U+304D",
+          "U+304F",
+          "U+3051",
+          "U+3053",
+          "U+3055"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "あいうえおかきくけこさ",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 11,
+        "id": "B06_unequal_stretch",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "これは割注の試験としてかなり長い文字列を用意した例である",
+        "note_codepoints": [
+          "U+3053",
+          "U+308C",
+          "U+306F",
+          "U+5272",
+          "U+6CE8",
+          "U+306E",
+          "U+8A66",
+          "U+9A13",
+          "U+3068",
+          "U+3057",
+          "U+3066",
+          "U+304B",
+          "U+306A",
+          "U+308A",
+          "U+9577",
+          "U+3044",
+          "U+6587",
+          "U+5B57",
+          "U+5217",
+          "U+3092",
+          "U+7528",
+          "U+610F",
+          "U+3057",
+          "U+305F",
+          "U+4F8B",
+          "U+3067",
+          "U+3042",
+          "U+308B"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "これは割注の試験としてかなり長い文字列を用意した例である",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 28,
+        "id": "B07_very_long",
+        "group": "balance",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "甲乙丙、丁戊己。",
+        "note_codepoints": [
+          "U+7532",
+          "U+4E59",
+          "U+4E19",
+          "U+3001",
+          "U+4E01",
+          "U+620A",
+          "U+5DF1",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "甲乙丙、丁戊己。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 8,
+        "id": "B08_punct_comma_mid",
+        "group": "punctuation",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "曰「天地」なり。",
+        "note_codepoints": [
+          "U+66F0",
+          "U+300C",
+          "U+5929",
+          "U+5730",
+          "U+300D",
+          "U+306A",
+          "U+308A",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "曰「天地」なり。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 8,
+        "id": "B09_punct_open_bracket_risk",
+        "group": "punctuation",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "天地」宇宙。",
+        "note_codepoints": [
+          "U+5929",
+          "U+5730",
+          "U+300D",
+          "U+5B87",
+          "U+5B99",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "天地」宇宙。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 6,
+        "id": "B10_punct_close_start_risk",
+        "group": "punctuation",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "（甲乙）丙丁。",
+        "note_codepoints": [
+          "U+FF08",
+          "U+7532",
+          "U+4E59",
+          "U+FF09",
+          "U+4E19",
+          "U+4E01",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "（甲乙）丙丁。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 7,
+        "id": "B11_punct_paren",
+        "group": "punctuation",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "『書』・甲―乙…。",
+        "note_codepoints": [
+          "U+300E",
+          "U+66F8",
+          "U+300F",
+          "U+30FB",
+          "U+7532",
+          "U+2015",
+          "U+4E59",
+          "U+2026",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "『書』・甲―乙…。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 9,
+        "id": "B12_punct_various",
+        "group": "punctuation",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "AB漢字12かな",
+        "note_codepoints": [
+          "U+0041",
+          "U+0042",
+          "U+6F22",
+          "U+5B57",
+          "U+0031",
+          "U+0032",
+          "U+304B",
+          "U+306A"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "AB漢字12かな",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 8,
+        "id": "B13_mixed_latin_digits",
+        "group": "mixed",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "ゐゑをゝゞ",
+        "note_codepoints": [
+          "U+3090",
+          "U+3091",
+          "U+3092",
+          "U+309D",
+          "U+309E"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "ゐゑをゝゞ",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 5,
+        "id": "B14_historical_kana",
+        "group": "mixed",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "葛󠄀飾区試験",
+        "note_codepoints": [
+          "U+845B",
+          "U+E0100",
+          "U+98FE",
+          "U+533A",
+          "U+8A66",
+          "U+9A13"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "葛󠄀飾区試験",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 6,
+        "id": "B15_vs16",
+        "group": "mixed",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "割り注は、良いです。",
+        "note_codepoints": [
+          "U+5272",
+          "U+308A",
+          "U+6CE8",
+          "U+306F",
+          "U+3001",
+          "U+826F",
+          "U+3044",
+          "U+3067",
+          "U+3059",
+          "U+3002"
+        ],
+        "with_brackets": true,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          },
+          "CharCombinePrefix": {
+            "ok": true
+          },
+          "CharCombineSuffix": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割り注は、良いです。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        },
+        "source_preserved": true,
+        "note_len": 10,
+        "id": "B16_bracket_uno_classic",
+        "group": "brackets",
+        "writing": "horizontal"
+      },
+      {
+        "body": "本文",
+        "note": "割注試験",
+        "note_codepoints": [
+          "U+5272",
+          "U+6CE8",
+          "U+8A66",
+          "U+9A13"
+        ],
+        "with_brackets": true,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          },
+          "CharCombinePrefix": {
+            "ok": true
+          },
+          "CharCombineSuffix": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割注試験",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        },
+        "source_preserved": true,
+        "note_len": 4,
+        "id": "B17_bracket_uno_short",
+        "group": "brackets",
+        "writing": "horizontal"
+      }
+    ],
+    "errors": [],
+    "vertical_setup": null,
+    "save_odt": {
+      "ok": true,
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_horizontal.odt",
+      "filter": "writer8"
+    },
+    "save_pdf": {
+      "ok": false,
+      "error": "com.sun.star.task.ErrorCodeIOException",
+      "message": "SfxBaseModel::impl_store <file:///Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_horizontal.pdf> failed: 0x81a(Error Area:Io Class:Parameter Code:26)"
+    },
+    "save_docx": {
+      "ok": true,
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_horizontal.docx",
+      "filter": "MS Word 2007 XML"
+    },
+    "odf": {
+      "combine_text_styles": [
+        {
+          "name": "T1",
+          "has_brackets": false,
+          "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+        },
+        {
+          "name": "T2",
+          "has_brackets": true,
+          "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+        }
+      ],
+      "paragraph_combine_lines": [],
+      "sample_paras": [
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地玄黄、宇宙洪荒。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">此書不知何人所撰、疑為後世偽作。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">一二三四五</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割注</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">あいうえおかきくけこさ</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">これは割注の試験としてかなり長い文字列を用意した例である</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">甲乙丙、丁戊己。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">曰「天地」なり。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地」宇宙。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">（甲乙）丙丁。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">『書』・甲―乙…。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">AB漢字12かな</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">ゐゑをゝゞ</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">葛󠄀飾区試験</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割り注は、良いです。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>"
+      ],
+      "notes_from_spans": [
+        {
+          "style": "T1",
+          "text": "割り注は、良いです。",
+          "len": 10
+        },
+        {
+          "style": "T1",
+          "text": "天地玄黄、宇宙洪荒。",
+          "len": 10
+        },
+        {
+          "style": "T1",
+          "text": "此書不知何人所撰、疑為後世偽作。",
+          "len": 16
+        },
+        {
+          "style": "T1",
+          "text": "一二三四五",
+          "len": 5
+        },
+        {
+          "style": "T1",
+          "text": "割注",
+          "len": 2
+        },
+        {
+          "style": "T1",
+          "text": "あいうえおかきくけこさ",
+          "len": 11
+        },
+        {
+          "style": "T1",
+          "text": "これは割注の試験としてかなり長い文字列を用意した例である",
+          "len": 28
+        },
+        {
+          "style": "T1",
+          "text": "甲乙丙、丁戊己。",
+          "len": 8
+        },
+        {
+          "style": "T1",
+          "text": "曰「天地」なり。",
+          "len": 8
+        },
+        {
+          "style": "T1",
+          "text": "天地」宇宙。",
+          "len": 6
+        },
+        {
+          "style": "T1",
+          "text": "（甲乙）丙丁。",
+          "len": 7
+        },
+        {
+          "style": "T1",
+          "text": "『書』・甲―乙…。",
+          "len": 9
+        },
+        {
+          "style": "T1",
+          "text": "AB漢字12かな",
+          "len": 8
+        },
+        {
+          "style": "T1",
+          "text": "ゐゑをゝゞ",
+          "len": 5
+        },
+        {
+          "style": "T1",
+          "text": "葛󠄀飾区試験",
+          "len": 6
+        },
+        {
+          "style": "T2",
+          "text": "割り注は、良いです。",
+          "len": 10
+        },
+        {
+          "style": "T2",
+          "text": "割注試験",
+          "len": 4
+        }
+      ],
+      "ok": true,
+      "bare_combine_styles": 1,
+      "bracket_combine_styles": 1
+    }
+  },
+  "vertical": {
+    "writing": "vertical",
+    "font": "Hiragino Mincho ProN",
+    "cases": [
+      {
+        "body": "本文",
+        "note": "割り注は、良いです。",
+        "note_codepoints": [
+          "U+5272",
+          "U+308A",
+          "U+6CE8",
+          "U+306F",
+          "U+3001",
+          "U+826F",
+          "U+3044",
+          "U+3067",
+          "U+3059",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割り注は、良いです。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 10,
+        "id": "B18_classic_vertical",
+        "group": "vertical",
+        "writing": "vertical"
+      },
+      {
+        "body": "本文",
+        "note": "天地玄黄、宇宙洪荒。",
+        "note_codepoints": [
+          "U+5929",
+          "U+5730",
+          "U+7384",
+          "U+9EC4",
+          "U+3001",
+          "U+5B87",
+          "U+5B99",
+          "U+6D2A",
+          "U+8352",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "天地玄黄、宇宙洪荒。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 10,
+        "id": "B19_equal_vertical",
+        "group": "vertical",
+        "writing": "vertical"
+      },
+      {
+        "body": "本文",
+        "note": "曰「天地」なり。",
+        "note_codepoints": [
+          "U+66F0",
+          "U+300C",
+          "U+5929",
+          "U+5730",
+          "U+300D",
+          "U+306A",
+          "U+308A",
+          "U+3002"
+        ],
+        "with_brackets": false,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "曰「天地」なり。",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "",
+          "CharCombineSuffix": ""
+        },
+        "source_preserved": true,
+        "note_len": 8,
+        "id": "B20_punct_vertical",
+        "group": "vertical",
+        "writing": "vertical"
+      },
+      {
+        "body": "本文",
+        "note": "割注試験",
+        "note_codepoints": [
+          "U+5272",
+          "U+6CE8",
+          "U+8A66",
+          "U+9A13"
+        ],
+        "with_brackets": true,
+        "apply": {
+          "CharCombineIsOn": {
+            "ok": true
+          },
+          "CharCombinePrefix": {
+            "ok": true
+          },
+          "CharCombineSuffix": {
+            "ok": true
+          }
+        },
+        "after": {
+          "string": "割注試験",
+          "CharCombineIsOn": true,
+          "CharCombinePrefix": "（",
+          "CharCombineSuffix": "）"
+        },
+        "source_preserved": true,
+        "note_len": 4,
+        "id": "B21_bracket_vertical",
+        "group": "vertical",
+        "writing": "vertical"
+      }
+    ],
+    "errors": [],
+    "vertical_setup": {
+      "ok": true,
+      "WritingMode": "RL_TB"
+    },
+    "save_odt": {
+      "ok": true,
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_vertical.odt",
+      "filter": "writer8"
+    },
+    "save_pdf": {
+      "ok": false,
+      "error": "com.sun.star.task.ErrorCodeIOException",
+      "message": "SfxBaseModel::impl_store <file:///Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_vertical.pdf> failed: 0x81a(Error Area:Io Class:Parameter Code:26)"
+    },
+    "save_docx": {
+      "ok": true,
+      "path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/warichu_stage_b_vertical.docx",
+      "filter": "MS Word 2007 XML"
+    },
+    "odf": {
+      "combine_text_styles": [
+        {
+          "name": "T1",
+          "has_brackets": false,
+          "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+        },
+        {
+          "name": "T2",
+          "has_brackets": true,
+          "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+        }
+      ],
+      "paragraph_combine_lines": [],
+      "sample_paras": [
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地玄黄、宇宙洪荒。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">曰「天地」なり。</text:span></text:p>",
+        "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>"
+      ],
+      "notes_from_spans": [
+        {
+          "style": "T1",
+          "text": "割り注は、良いです。",
+          "len": 10
+        },
+        {
+          "style": "T1",
+          "text": "天地玄黄、宇宙洪荒。",
+          "len": 10
+        },
+        {
+          "style": "T1",
+          "text": "曰「天地」なり。",
+          "len": 8
+        },
+        {
+          "style": "T2",
+          "text": "割注試験",
+          "len": 4
+        }
+      ],
+      "ok": true,
+      "bare_combine_styles": 1,
+      "bracket_combine_styles": 1
+    }
+  },
+  "integrity_spotcheck": {
+    "reopen": true,
+    "full_text_len": 1027,
+    "classic_note_in_text": true,
+    "vs_candidate_in_text": true
+  },
+  "finished_at": "2026-10-29T10:45:21.825108+00:00",
+  "visual_checklist": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/VISUAL_CHECKLIST.md"
+}

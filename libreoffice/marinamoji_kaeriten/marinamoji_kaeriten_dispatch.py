@@ -21,6 +21,8 @@ _COMMANDS = frozenset(
         "unrender_kaeriten",
         "copy_plain_text",
         "toggle_page_writing_mode",
+        "apply_warichu",
+        "remove_warichu",
     )
 )
 
@@ -84,6 +86,10 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.copy_plain_text()
         elif path == "toggle_page_writing_mode":
             macros.toggle_page_writing_mode()
+        elif path == "apply_warichu":
+            macros.apply_warichu()
+        elif path == "remove_warichu":
+            macros.remove_warichu()
 
     def addStatusListener(self, control, url):
         pass

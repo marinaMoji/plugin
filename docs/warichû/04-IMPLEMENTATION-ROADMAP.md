@@ -6,7 +6,11 @@
 ## Phase 1 — Warichū feasibility spikes (mandatory)
 Follow [warichu-investigation-marinamoji.md](warichu-investigation-marinamoji.md). Build minimal throwaway prototypes in both hosts. Collect native document samples, XML, screenshots, versioned results, and failure cases. Distinguish API limitations from renderer limitations. Deliver a capability matrix and a recommendation before building product UI.
 
-**LibreOffice progress (2026-10-29):** Writer **26.8.0.3** native warichū **works** as a character-span with bare `CharCombineIsOn` (`artifacts/span_spike/VERDICT.md`). Broken: paragraph-level combine; UNO bracket Prefix/Suffix. Next: Phase 2 LO apply/remove in the existing extension (no UNO brackets in MVP); Word spike in parallel or after.
+**LibreOffice progress (2026-10-29):** Writer **26.8.0.3** Gate 1 passed (span + bare `CharCombineIsOn`). Phase 2 MVP in extension **0.3.15**: toolbar **Apply warichū** / **Remove warichū** (`warichu.py`; refuses whole-paragraph selection; no UNO brackets).
+
+**Stage A audit (same day):** JLREQ extract + LO source + capability matrix in docs `05`–`09`. Key finding: scholarly warichū is `SvxTwoLinesItem` → `SwDoubleLinePortion` with **hard-coded 50%** scale and **width-search** line split (`BuildMultiPortion`); shorter line stretched via `CalcNewBlock`. Manual division / alignment modes / size are **core** gaps — not plugin formatting. `SwCombinedPortion` (≤6) is a different feature.
+
+**Stage B (same day):** Corpus executed on LO **26.8.0.3** (docs `10`–`15`). Bare combine is a credible JLREQ baseline; **UNO brackets paint collapse confirmed**; kinsoku-unsafe inner breaks demonstrated (B11 H; B19/B20 V). Next: plugin smoke/polish ([NEXT-LO.md](NEXT-LO.md)); upstream prep **U1** then **U2** (no Bugzilla/PR without approval); Word still deferred.
 
 **Gate 1:** At least native insertion, inspection, edit/remove, save/reopen, and vertical/horizontal behaviour have evidence or explicitly documented blockers. If manual division/alignment cannot be demonstrated, omit those controls from MVP.
 

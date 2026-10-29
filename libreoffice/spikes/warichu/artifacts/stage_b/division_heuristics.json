@@ -1,0 +1,645 @@
+[
+  {
+    "id": "B01_classic",
+    "note": "割り注は、良いです。",
+    "len": 10,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+308A",
+      "U+6CE8",
+      "U+306F",
+      "U+3001",
+      "U+826F",
+      "U+3044",
+      "U+3067",
+      "U+3059",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B02_equal_qianziwen",
+    "note": "天地玄黄、宇宙洪荒。",
+    "len": 10,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5929",
+      "U+5730",
+      "U+7384",
+      "U+9EC4",
+      "U+3001",
+      "U+5B87",
+      "U+5B99",
+      "U+6D2A",
+      "U+8352",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "天地玄黄、",
+      "lower": "宇宙洪荒。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "天地玄黄、",
+      "lower": "宇宙洪荒。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B03_long_classical",
+    "note": "此書不知何人所撰、疑為後世偽作。",
+    "len": 16,
+    "nfc_same": true,
+    "codepoints": [
+      "U+6B64",
+      "U+66F8",
+      "U+4E0D",
+      "U+77E5",
+      "U+4F55",
+      "U+4EBA",
+      "U+6240",
+      "U+64B0",
+      "U+3001",
+      "U+7591",
+      "U+70BA",
+      "U+5F8C",
+      "U+4E16",
+      "U+507D",
+      "U+4F5C",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 8,
+      "upper": "此書不知何人所撰",
+      "lower": "、疑為後世偽作。"
+    },
+    "preferred_heuristic": {
+      "index": 9,
+      "upper": "此書不知何人所撰、",
+      "lower": "疑為後世偽作。",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_starts_kinsoku"
+    ]
+  },
+  {
+    "id": "B04_odd_length",
+    "note": "一二三四五",
+    "len": 5,
+    "nfc_same": true,
+    "codepoints": [
+      "U+4E00",
+      "U+4E8C",
+      "U+4E09",
+      "U+56DB",
+      "U+4E94"
+    ],
+    "naive_midpoint": {
+      "index": 2,
+      "upper": "一二",
+      "lower": "三四五"
+    },
+    "preferred_heuristic": {
+      "index": 3,
+      "upper": "一二三",
+      "lower": "四五",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_longer"
+    ]
+  },
+  {
+    "id": "B05_short_two",
+    "note": "割注",
+    "len": 2,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+6CE8"
+    ],
+    "naive_midpoint": {
+      "index": 1,
+      "upper": "割",
+      "lower": "注"
+    },
+    "preferred_heuristic": {
+      "index": 1,
+      "upper": "割",
+      "lower": "注",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B06_unequal_stretch",
+    "note": "あいうえおかきくけこさ",
+    "len": 11,
+    "nfc_same": true,
+    "codepoints": [
+      "U+3042",
+      "U+3044",
+      "U+3046",
+      "U+3048",
+      "U+304A",
+      "U+304B",
+      "U+304D",
+      "U+304F",
+      "U+3051",
+      "U+3053",
+      "U+3055"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "あいうえお",
+      "lower": "かきくけこさ"
+    },
+    "preferred_heuristic": {
+      "index": 6,
+      "upper": "あいうえおか",
+      "lower": "きくけこさ",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_longer"
+    ]
+  },
+  {
+    "id": "B07_very_long",
+    "note": "これは割注の試験としてかなり長い文字列を用意した例である",
+    "len": 28,
+    "nfc_same": true,
+    "codepoints": [
+      "U+3053",
+      "U+308C",
+      "U+306F",
+      "U+5272",
+      "U+6CE8",
+      "U+306E",
+      "U+8A66",
+      "U+9A13",
+      "U+3068",
+      "U+3057",
+      "U+3066",
+      "U+304B",
+      "U+306A",
+      "U+308A",
+      "U+9577",
+      "U+3044",
+      "U+6587",
+      "U+5B57",
+      "U+5217",
+      "U+3092",
+      "U+7528",
+      "U+610F",
+      "U+3057",
+      "U+305F",
+      "U+4F8B",
+      "U+3067",
+      "U+3042",
+      "U+308B"
+    ],
+    "naive_midpoint": {
+      "index": 14,
+      "upper": "これは割注の試験としてかなり",
+      "lower": "長い文字列を用意した例である"
+    },
+    "preferred_heuristic": {
+      "index": 14,
+      "upper": "これは割注の試験としてかなり",
+      "lower": "長い文字列を用意した例である",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B08_punct_comma_mid",
+    "note": "甲乙丙、丁戊己。",
+    "len": 8,
+    "nfc_same": true,
+    "codepoints": [
+      "U+7532",
+      "U+4E59",
+      "U+4E19",
+      "U+3001",
+      "U+4E01",
+      "U+620A",
+      "U+5DF1",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 4,
+      "upper": "甲乙丙、",
+      "lower": "丁戊己。"
+    },
+    "preferred_heuristic": {
+      "index": 4,
+      "upper": "甲乙丙、",
+      "lower": "丁戊己。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B09_punct_open_bracket_risk",
+    "note": "曰「天地」なり。",
+    "len": 8,
+    "nfc_same": true,
+    "codepoints": [
+      "U+66F0",
+      "U+300C",
+      "U+5929",
+      "U+5730",
+      "U+300D",
+      "U+306A",
+      "U+308A",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 4,
+      "upper": "曰「天地",
+      "lower": "」なり。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "曰「天地」",
+      "lower": "なり。",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_starts_kinsoku"
+    ]
+  },
+  {
+    "id": "B10_punct_close_start_risk",
+    "note": "天地」宇宙。",
+    "len": 6,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5929",
+      "U+5730",
+      "U+300D",
+      "U+5B87",
+      "U+5B99",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 3,
+      "upper": "天地」",
+      "lower": "宇宙。"
+    },
+    "preferred_heuristic": {
+      "index": 3,
+      "upper": "天地」",
+      "lower": "宇宙。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B11_punct_paren",
+    "note": "（甲乙）丙丁。",
+    "len": 7,
+    "nfc_same": true,
+    "codepoints": [
+      "U+FF08",
+      "U+7532",
+      "U+4E59",
+      "U+FF09",
+      "U+4E19",
+      "U+4E01",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 3,
+      "upper": "（甲乙",
+      "lower": "）丙丁。"
+    },
+    "preferred_heuristic": {
+      "index": 4,
+      "upper": "（甲乙）",
+      "lower": "丙丁。",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_starts_kinsoku",
+      "lower_longer"
+    ]
+  },
+  {
+    "id": "B12_punct_various",
+    "note": "『書』・甲―乙…。",
+    "len": 9,
+    "nfc_same": true,
+    "codepoints": [
+      "U+300E",
+      "U+66F8",
+      "U+300F",
+      "U+30FB",
+      "U+7532",
+      "U+2015",
+      "U+4E59",
+      "U+2026",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 4,
+      "upper": "『書』・",
+      "lower": "甲―乙…。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "『書』・甲",
+      "lower": "―乙…。",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_longer"
+    ]
+  },
+  {
+    "id": "B13_mixed_latin_digits",
+    "note": "AB漢字12かな",
+    "len": 8,
+    "nfc_same": true,
+    "codepoints": [
+      "U+0041",
+      "U+0042",
+      "U+6F22",
+      "U+5B57",
+      "U+0031",
+      "U+0032",
+      "U+304B",
+      "U+306A"
+    ],
+    "naive_midpoint": {
+      "index": 4,
+      "upper": "AB漢字",
+      "lower": "12かな"
+    },
+    "preferred_heuristic": {
+      "index": 4,
+      "upper": "AB漢字",
+      "lower": "12かな",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B14_historical_kana",
+    "note": "ゐゑをゝゞ",
+    "len": 5,
+    "nfc_same": true,
+    "codepoints": [
+      "U+3090",
+      "U+3091",
+      "U+3092",
+      "U+309D",
+      "U+309E"
+    ],
+    "naive_midpoint": {
+      "index": 2,
+      "upper": "ゐゑ",
+      "lower": "をゝゞ"
+    },
+    "preferred_heuristic": {
+      "index": 3,
+      "upper": "ゐゑを",
+      "lower": "ゝゞ",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_longer"
+    ]
+  },
+  {
+    "id": "B15_vs16",
+    "note": "葛󠄀飾区試験",
+    "len": 6,
+    "nfc_same": true,
+    "codepoints": [
+      "U+845B",
+      "U+E0100",
+      "U+98FE",
+      "U+533A",
+      "U+8A66",
+      "U+9A13"
+    ],
+    "naive_midpoint": {
+      "index": 3,
+      "upper": "葛󠄀飾",
+      "lower": "区試験"
+    },
+    "preferred_heuristic": {
+      "index": 3,
+      "upper": "葛󠄀飾",
+      "lower": "区試験",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B16_bracket_uno_classic",
+    "note": "割り注は、良いです。",
+    "len": 10,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+308A",
+      "U+6CE8",
+      "U+306F",
+      "U+3001",
+      "U+826F",
+      "U+3044",
+      "U+3067",
+      "U+3059",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B17_bracket_uno_short",
+    "note": "割注試験",
+    "len": 4,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+6CE8",
+      "U+8A66",
+      "U+9A13"
+    ],
+    "naive_midpoint": {
+      "index": 2,
+      "upper": "割注",
+      "lower": "試験"
+    },
+    "preferred_heuristic": {
+      "index": 2,
+      "upper": "割注",
+      "lower": "試験",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B18_classic_vertical",
+    "note": "割り注は、良いです。",
+    "len": 10,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+308A",
+      "U+6CE8",
+      "U+306F",
+      "U+3001",
+      "U+826F",
+      "U+3044",
+      "U+3067",
+      "U+3059",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "割り注は、",
+      "lower": "良いです。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B19_equal_vertical",
+    "note": "天地玄黄、宇宙洪荒。",
+    "len": 10,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5929",
+      "U+5730",
+      "U+7384",
+      "U+9EC4",
+      "U+3001",
+      "U+5B87",
+      "U+5B99",
+      "U+6D2A",
+      "U+8352",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 5,
+      "upper": "天地玄黄、",
+      "lower": "宇宙洪荒。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "天地玄黄、",
+      "lower": "宇宙洪荒。",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  },
+  {
+    "id": "B20_punct_vertical",
+    "note": "曰「天地」なり。",
+    "len": 8,
+    "nfc_same": true,
+    "codepoints": [
+      "U+66F0",
+      "U+300C",
+      "U+5929",
+      "U+5730",
+      "U+300D",
+      "U+306A",
+      "U+308A",
+      "U+3002"
+    ],
+    "naive_midpoint": {
+      "index": 4,
+      "upper": "曰「天地",
+      "lower": "」なり。"
+    },
+    "preferred_heuristic": {
+      "index": 5,
+      "upper": "曰「天地」",
+      "lower": "なり。",
+      "score": 1,
+      "flags": []
+    },
+    "midpoint_flags": [
+      "lower_starts_kinsoku"
+    ]
+  },
+  {
+    "id": "B21_bracket_vertical",
+    "note": "割注試験",
+    "len": 4,
+    "nfc_same": true,
+    "codepoints": [
+      "U+5272",
+      "U+6CE8",
+      "U+8A66",
+      "U+9A13"
+    ],
+    "naive_midpoint": {
+      "index": 2,
+      "upper": "割注",
+      "lower": "試験"
+    },
+    "preferred_heuristic": {
+      "index": 2,
+      "upper": "割注",
+      "lower": "試験",
+      "score": 0,
+      "flags": []
+    },
+    "midpoint_flags": []
+  }
+]

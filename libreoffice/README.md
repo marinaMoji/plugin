@@ -30,19 +30,19 @@ chmod +x build.sh build-icons.sh
 ./build.sh
 ```
 
-Toolbar icons come from `../icons/*.svg` (copied into the `.oxt`, plus 32×32 and 26×26 PNGs). LibreOffice’s **built-in** toolbar uses SVG; **extensions** still use `ImageSmallURL` / `ImageBigURL` bitmaps, which LO scales to the current toolbar size. Install **librsvg** (`brew install librsvg`) before building if PNGs are missing.
+Toolbar icons come from `../icons/*.svg` (copied into the `.oxt`). `Addons.xcu` points `ImageSmallURL` / `ImageBigURL` at those SVGs so LibreOffice can render them at the current toolbar size (sharp on HiDPI, like Colibre). The Extension Manager still uses a 42×42 PNG — install **librsvg** (`brew install librsvg`) before building if that icon is missing.
 
 1. **Quit Writer** completely.
-2. **Tools → Extension Manager** — **remove** any old **marinaMoji Kaeriten**, **restart Writer**, then **Add** → `dist/MarinaMojiKaeriten.oxt` (**0.3.14**). A plain “update” can leave old toolbar config (wrong name or missing icons).
+2. **Tools → Extension Manager** — **remove** any old **marinaMoji Kaeriten**, **restart Writer**, then **Add** → `dist/MarinaMojiKaeriten.oxt` (**0.3.15**). A plain “update” can leave old toolbar config (wrong name or missing icons).
 3. Accept the **GPL-3.0** license dialog → **Restart Writer**.
 
 On **macOS 26.x**, if toolbar buttons do nothing after step 3, use the Mac installer above (or `./install.sh` from Terminal).
 
 All commands are on the **marinaMoji** toolbar: **View → Toolbars → marinaMoji**.
 
-If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remove the extension, quit Writer, reinstall **0.3.14**, and enable the toolbar again. That clears the old cached label.
+If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remove the extension, quit Writer, reinstall **0.3.15**, and enable the toolbar again. That clears the old cached label.
 
-**Version note:** GitHub’s `libreoffice-v0.3.10` tag was cut on 2026-10-16, *before* bottom-line / left-margin alignment landed. That release and a local Mac rebuild can both report “0.3.10” while shipping different Python. Use **0.3.11+** for the alignment work.
+**Version note:** GitHub’s `libreoffice-v0.3.10` tag was cut on 2026-10-16, *before* bottom-line / left-margin alignment landed. That release and a local Mac rebuild can both report “0.3.10” while shipping different Python. Use **0.3.11+** for the alignment work; **0.3.15+** for warichū.
 
 | Button | Clipboard contents |
 |--------|-------------------|
@@ -51,11 +51,14 @@ If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remo
 Render / Unrender are unchanged (they edit the document, not the clipboard).
 The **Toggle vertical page** button switches the current page style between horizontal left-to-right (`LR_TB`) and vertical right-to-left (`TB_RL`), then refreshes existing rendered kaeriten.
 
+**Apply warichū / Remove warichū** use Writer’s native character-span combine (`CharCombineIsOn` only — no UNO bracket props). Select the *note* text inside a paragraph (leave some body text outside the selection), then Apply. Selecting the whole paragraph is refused (that paints badly in Writer).
+
 ### How the bundle works
 
 | Piece | Role |
 |-------|------|
-| `Scripts/python/marinamoji_kaeriten.py` | Render / unrender / copy |
+| `Scripts/python/marinamoji_kaeriten.py` | Render / unrender / copy / warichū entry points |
+| `Scripts/python/warichu.py` | Native warichū apply / remove |
 | `Scripts/python/export_core.py` | Plain-text export helpers (TEI/LaTeX kept for dev only) |
 | `marinamoji_kaeriten_dispatch.py` | ProtocolHandler for toolbar |
 
@@ -63,7 +66,7 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 
 ### If buttons are missing or do nothing
 
-1. Extension Manager → **remove** → restart Writer → install **0.3.14** → restart Writer.
+1. Extension Manager → **remove** → restart Writer → install **0.3.15** → restart Writer.
 2. **View → Toolbars → marinaMoji**
 3. **Tools → Customize → Toolbars → marinaMoji → Reset**
 
@@ -74,9 +77,10 @@ Optional **`./install.sh`** — copies macros for **Tools → Macros** / APSO on
 ./validate-extension.sh
 python3 tests/test_parser.py
 python3 tests/test_export.py
+python3 tests/test_warichu.py
 ```
 
-- **LibreOffice-only GitHub release:** tag `libreoffice-v0.3.14` (must match `description.xml`) or run **Release LibreOffice extension** in Actions.
+- **LibreOffice-only GitHub release:** tag `libreoffice-v0.3.15` (must match `description.xml`) or run **Release LibreOffice extension** in Actions.
 - **Official Extensions website + update feed:** [docs/LIBREOFFICE_MARKETPLACE.md](../docs/LIBREOFFICE_MARKETPLACE.md).
 
 ## Use
@@ -86,6 +90,7 @@ python3 tests/test_export.py
 3. Optional: **Toggle vertical page** to switch the current page style between 横書き and 縦書き
 4. Edit source with **Unrender**; do not edit inside rendered images/frames
 5. **Copy plain text** — paste elsewhere (canonical Unicode)
+6. Warichū: type e.g. `本文割り注は、良いです。`, select only `割り注は、良いです。`, **Apply warichū**
 
 Render is incremental: it formats new Unicode marks, refreshes rendered views when font / size / orientation changes, and skips views that are already current.
 

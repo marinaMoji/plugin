@@ -104,4 +104,6 @@ Ran `libreoffice/spikes/warichu/warichu_spike_macro.py` inside Writer 26.8.0.3.
 
 **Product implication (Gate 1 LO):** Native warichū **works** when applied like the UI: character range → `CharCombineIsOn` as a text span, not paragraph-wide. marinaMoji MVP should select annotation text (or body+note pattern), apply span combine + optional brackets. Do not set combine on the paragraph style. Fine row-gap/alignment still host-owned.
 
-**Span spike v4 (2026-10-29):** `artifacts/span_spike/VERDICT.md` — **A pass** (bare `CharCombineIsOn` on note span); **B fail** (UNO `CharCombinePrefix`/`Suffix` collapses paint). Sticky cursor combine must be cleared on body runs. LO MVP: span combine without UNO bracket props.
+**Span spike v4 (2026-10-29):** `artifacts/span_spike/VERDICT.md` — **A pass** (bare `CharCombineIsOn` on note span); **B fail** (UNO `CharCombinePrefix`/`Suffix` collapses paint). Sticky cursor combine must be cleared on body runs.
+
+**Phase 2 MVP (0.3.15):** `marinamoji_kaeriten/warichu.py` + toolbar **Apply warichū** / **Remove warichū**. Refuses whole-paragraph selection; no UNO brackets.

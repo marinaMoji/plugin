@@ -58,6 +58,45 @@
             <value>com.sun.star.text.TextDocument</value>
           </prop>
         </node>
+        <node oor:name="t_sep_w" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>private:separator</value>
+          </prop>
+        </node>
+        <node oor:name="t_warichu_on" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:apply_warichu</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Apply warichū</value>
+            <value xml:lang="en-US">Apply warichū</value>
+            <value xml:lang="ja">割注を適用</value>
+            <value xml:lang="fr">Appliquer le warichū</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
+        <node oor:name="t_warichu_off" oor:op="replace">
+          <prop oor:name="URL" oor:type="xs:string">
+            <value>org.marinaMoji.kaeriten:remove_warichu</value>
+          </prop>
+          <prop oor:name="Title" oor:type="xs:string">
+            <value>Remove warichū</value>
+            <value xml:lang="en-US">Remove warichū</value>
+            <value xml:lang="ja">割注を解除</value>
+            <value xml:lang="fr">Retirer le warichū</value>
+          </prop>
+          <prop oor:name="Target" oor:type="xs:string">
+            <value>_self</value>
+          </prop>
+          <prop oor:name="Context" oor:type="xs:string">
+            <value>com.sun.star.text.TextDocument</value>
+          </prop>
+        </node>
         <node oor:name="t_sep" oor:op="replace">
           <prop oor:name="URL" oor:type="xs:string">
             <value>private:separator</value>
@@ -87,10 +126,10 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/render_kaeriten.png</value>
+            <value>%origin%/icons/render_kaeriten.svg</value>
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/render_kaeriten_big.png</value>
+            <value>%origin%/icons/render_kaeriten.svg</value>
           </prop>
         </node>
       </node>
@@ -100,10 +139,10 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/unrender_kaeriten.png</value>
+            <value>%origin%/icons/unrender_kaeriten.svg</value>
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/unrender_kaeriten_big.png</value>
+            <value>%origin%/icons/unrender_kaeriten.svg</value>
           </prop>
         </node>
       </node>
@@ -113,10 +152,10 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/copy_plain_text.png</value>
+            <value>%origin%/icons/export_txt.svg</value>
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/copy_plain_text_big.png</value>
+            <value>%origin%/icons/export_txt.svg</value>
           </prop>
         </node>
       </node>
@@ -126,10 +165,36 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL" oor:type="xs:string">
-            <value>%origin%/icons/toggle_page_writing_mode.png</value>
+            <value>%origin%/icons/toggle_page_writing_mode.svg</value>
           </prop>
           <prop oor:name="ImageBigURL" oor:type="xs:string">
-            <value>%origin%/icons/toggle_page_writing_mode_big.png</value>
+            <value>%origin%/icons/toggle_page_writing_mode.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.apply_warichu" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:apply_warichu</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_warichu.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/apply_warichu.svg</value>
+          </prop>
+        </node>
+      </node>
+      <node oor:name="org.marinaMoji.kaeriten.remove_warichu" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.marinaMoji.kaeriten:remove_warichu</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_warichu.svg</value>
+          </prop>
+          <prop oor:name="ImageBigURL" oor:type="xs:string">
+            <value>%origin%/icons/remove_warichu.svg</value>
           </prop>
         </node>
       </node>

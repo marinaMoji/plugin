@@ -2,4 +2,6 @@ marinaMoji — Make room for character
 
 Met en forme les kaeriten Unicode (signes de lecture kanbun, U+3190–U+319F) dans LibreOffice Writer sous forme de glyphes compacts. Saisissez le texte source (par ex. 說㆒㆑者), puis utilisez la barre d’outils marinaMoji pour Rendre, Annuler le rendu, Copier le texte brut ou Basculer la page verticale.
 
+Prend aussi en charge le warichū (割注) : sélectionnez uniquement le texte de la note, puis Appliquer. Retirer fonctionne aussi avec le curseur dans l’annotation (pas tout le paragraphe ; pas de propriétés UNO de parenthèses ; coupure et taille gérées par Writer).
+
 Fonctionne hors ligne. Aucune télémétrie. L’IME marinaMoji n’est pas requis à l’exécution (toute saisie produisant les marques Unicode convient). LibreOffice 6.4 ou plus récent.

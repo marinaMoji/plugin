@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "purpose": "Stage B warichū corpus — native CharCombineIsOn spans only unless marked brackets",
+  "body_default": "本文",
+  "fonts_preferred": [
+    "Hiragino Mincho ProN",
+    "Noto Sans JP",
+    "YuMincho",
+    "Hiragino Sans"
+  ],
+  "fonts_unavailable_note": "Noto Serif CJK JP / Source Han Serif / IPAex Mincho may be absent; record substitutions",
+  "cases": [
+    {
+      "id": "B01_classic",
+      "group": "balance",
+      "body": "本文",
+      "note": "割り注は、良いです。",
+      "writing": "horizontal",
+      "brackets": false,
+      "notes": "Screenshot reference; 10 chars"
+    },
+    {
+      "id": "B02_equal_qianziwen",
+      "group": "balance",
+      "body": "本文",
+      "note": "天地玄黄、宇宙洪荒。",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B03_long_classical",
+      "group": "balance",
+      "body": "本文",
+      "note": "此書不知何人所撰、疑為後世偽作。",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B04_odd_length",
+      "group": "balance",
+      "body": "本文",
+      "note": "一二三四五",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B05_short_two",
+      "group": "balance",
+      "body": "本文",
+      "note": "割注",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B06_unequal_stretch",
+      "group": "balance",
+      "body": "本文",
+      "note": "あいうえおかきくけこさ",
+      "writing": "horizontal",
+      "brackets": false,
+      "notes": "11 kana — likely stretch on shorter line"
+    },
+    {
+      "id": "B07_very_long",
+      "group": "balance",
+      "body": "本文",
+      "note": "これは割注の試験としてかなり長い文字列を用意した例である",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B08_punct_comma_mid",
+      "group": "punctuation",
+      "body": "本文",
+      "note": "甲乙丙、丁戊己。",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B09_punct_open_bracket_risk",
+      "group": "punctuation",
+      "body": "本文",
+      "note": "曰「天地」なり。",
+      "writing": "horizontal",
+      "brackets": false,
+      "notes": "Opening 「 near midpoint — kinsoku check"
+    },
+    {
+      "id": "B10_punct_close_start_risk",
+      "group": "punctuation",
+      "body": "本文",
+      "note": "天地」宇宙。",
+      "writing": "horizontal",
+      "brackets": false,
+      "notes": "Closing 」 may land at lower-line start under naïve mid"
+    },
+    {
+      "id": "B11_punct_paren",
+      "group": "punctuation",
+      "body": "本文",
+      "note": "（甲乙）丙丁。",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B12_punct_various",
+      "group": "punctuation",
+      "body": "本文",
+      "note": "『書』・甲―乙…。",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B13_mixed_latin_digits",
+      "group": "mixed",
+      "body": "本文",
+      "note": "AB漢字12かな",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B14_historical_kana",
+      "group": "mixed",
+      "body": "本文",
+      "note": "ゐゑをゝゞ",
+      "writing": "horizontal",
+      "brackets": false
+    },
+    {
+      "id": "B15_vs16",
+      "group": "mixed",
+      "body": "本文",
+      "note": "葛󠄀飾区試験",
+      "writing": "horizontal",
+      "brackets": false,
+      "notes": "Includes VS16 after 葛 if preserved; verify code points"
+    },
+    {
+      "id": "B16_bracket_uno_classic",
+      "group": "brackets",
+      "body": "本文",
+      "note": "割り注は、良いです。",
+      "writing": "horizontal",
+      "brackets": true,
+      "notes": "Repro UNO Prefix/Suffix （）"
+    },
+    {
+      "id": "B17_bracket_uno_short",
+      "group": "brackets",
+      "body": "本文",
+      "note": "割注試験",
+      "writing": "horizontal",
+      "brackets": true
+    },
+    {
+      "id": "B18_classic_vertical",
+      "group": "vertical",
+      "body": "本文",
+      "note": "割り注は、良いです。",
+      "writing": "vertical",
+      "brackets": false
+    },
+    {
+      "id": "B19_equal_vertical",
+      "group": "vertical",
+      "body": "本文",
+      "note": "天地玄黄、宇宙洪荒。",
+      "writing": "vertical",
+      "brackets": false
+    },
+    {
+      "id": "B20_punct_vertical",
+      "group": "vertical",
+      "body": "本文",
+      "note": "曰「天地」なり。",
+      "writing": "vertical",
+      "brackets": false
+    },
+    {
+      "id": "B21_bracket_vertical",
+      "group": "vertical",
+      "body": "本文",
+      "note": "割注試験",
+      "writing": "vertical",
+      "brackets": true
+    }
+  ]
+}

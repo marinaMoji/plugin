@@ -27,6 +27,11 @@ try:
 except ImportError:
     _plain_text_export = None
 
+try:
+    import warichu as _warichu
+except ImportError:
+    _warichu = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1771,6 +1776,20 @@ def copy_plain_text(*_args):
     _clipboard_set_text(_plain_text_export(text))
 
 
+def apply_warichu(*_args):
+    """Format the selection as native warichū (character-span CharCombine)."""
+    if _warichu is None:
+        return
+    _warichu.apply_warichu()
+
+
+def remove_warichu(*_args):
+    """Remove native warichū from the selection."""
+    if _warichu is None:
+        return
+    _warichu.remove_warichu()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1783,6 +1802,8 @@ g_exportedScripts = (
     render_kaeriten,
     unrender_kaeriten,
     copy_plain_text,
+    apply_warichu,
+    remove_warichu,
     format_selection,
     format_paragraph,
     format_document,

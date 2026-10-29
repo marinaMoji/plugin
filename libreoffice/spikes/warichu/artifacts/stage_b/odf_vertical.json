@@ -1,0 +1,46 @@
+{
+  "combine_text_styles": [
+    {
+      "name": "T1",
+      "has_brackets": false,
+      "xml": "<style:style style:name=\"T1\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\"/></style:style>"
+    },
+    {
+      "name": "T2",
+      "has_brackets": true,
+      "xml": "<style:style style:name=\"T2\" style:family=\"text\"><style:text-properties style:text-combine=\"lines\" style:text-combine-start-char=\"（\" style:text-combine-end-char=\"）\"/></style:style>"
+    }
+  ],
+  "paragraph_combine_lines": [],
+  "sample_paras": [
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">割り注は、良いです。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">天地玄黄、宇宙洪荒。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T1\">曰「天地」なり。</text:span></text:p>",
+    "<text:p text:style-name=\"P3\">本文<text:span text:style-name=\"T2\">割注試験</text:span></text:p>"
+  ],
+  "notes_from_spans": [
+    {
+      "style": "T1",
+      "text": "割り注は、良いです。",
+      "len": 10
+    },
+    {
+      "style": "T1",
+      "text": "天地玄黄、宇宙洪荒。",
+      "len": 10
+    },
+    {
+      "style": "T1",
+      "text": "曰「天地」なり。",
+      "len": 8
+    },
+    {
+      "style": "T2",
+      "text": "割注試験",
+      "len": 4
+    }
+  ],
+  "ok": true,
+  "bare_combine_styles": 1,
+  "bracket_combine_styles": 1
+}

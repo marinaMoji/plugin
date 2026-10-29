@@ -9,21 +9,30 @@ Planning: [`docs/warichû/`](../../../docs/warichû/) · Phase 0: [`00-LO-PHASE0
 
 | Check | Result |
 |---|---|
-| Apply `CharCombineIsOn` + brackets | **Verified** |
-| Source Unicode unchanged | **Verified** |
-| Save / reopen ODT with combine still on | **Verified** |
-| ODF `style:text-combine="lines"` (+ start/end chars) | **Verified** |
-| Write DOCX from Writer | **Verified** (fidelity vs Word not judged yet) |
-| Unequal-line alignment (T04) | **Unknown** — look at open ODT |
-| Vertical (T07) | **Unknown** — use **Toggle vertical page** |
-| Manual break (T05) | **Unknown** |
+| Apply bare `CharCombineIsOn` (span) | **Pass** (Stage B corpus) |
+| Apply + UNO Prefix/Suffix brackets | **Fail paint** (horizontal); ODF still stores chars |
+| Source Unicode unchanged | **Verified** (incl. VS16) |
+| Save / reopen ODT | **Verified** |
+| ODF `style:text-combine="lines"` | **Verified** |
+| DOCX `w:eastAsianLayout combine` | **Exported**; Word paint **untested** |
+| Unequal-line stretch (`CalcNewBlock`) | **Observed** (e.g. B06) |
+| Vertical combine | **Works**; some kinsoku-bad breaks (B19/B20) |
+| Manual break | **Unsupported** in model |
 
-Artifacts: [`artifacts/`](artifacts/) (`spike_report.json`, `warichu_spike.odt`, matrix).
+Stage B: `./run_stage_b_corpus.sh` → [`artifacts/stage_b/`](artifacts/stage_b/). Docs `10`–`15`.
 
 ## How to re-run
 
 ```bash
 cd libreoffice/spikes/warichu
+./run_stage_b_corpus.sh
+# PDF (UNO storeAsURL may fail; headless works):
+# soffice --headless --convert-to pdf --outdir artifacts/stage_b artifacts/stage_b/warichu_stage_b_horizontal.odt
+```
+
+Legacy spike:
+
+```bash
 ./run.sh
 ```
 

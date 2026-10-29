@@ -44,7 +44,8 @@ if [[ ! -f "${SRC}/marinamoji_kaeriten.py" ]]; then
 fi
 
 mkdir -p "${LO_USER}"
-cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_handoff.py" "${LO_USER}/"
+cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_handoff.py" \
+   "${SRC}/warichu.py" "${LO_USER}/"
 cp "${ROOT}/../mapping.json" "${LO_USER}/marinamoji_mapping.json"
 
 if [[ ! -f "${LO_USER}/marinamoji_kaeriten.py" ]]; then
@@ -53,17 +54,20 @@ if [[ ! -f "${LO_USER}/marinamoji_kaeriten.py" ]]; then
   exit 1
 fi
 
-chmod 644 "${LO_USER}/marinamoji_kaeriten.py" "${LO_USER}/marinamoji_mapping.json"
+chmod 644 "${LO_USER}/marinamoji_kaeriten.py" "${LO_USER}/warichu.py" "${LO_USER}/marinamoji_mapping.json"
 if [[ "$(uname -s)" == "Darwin" ]]; then
   xattr -c "${LO_USER}/marinamoji_kaeriten.py" 2>/dev/null || true
+  xattr -c "${LO_USER}/warichu.py" 2>/dev/null || true
   xattr -c "${LO_USER}/marinamoji_mapping.json" 2>/dev/null || true
 fi
 
 # Drop LO's compiled script cache so it reloads the .py (stale .pack → file open errors).
-rm -f "${LO_PACK}/marinamoji_kaeriten.pack" "${LO_PACK}/marinamoji_mapping.pack" 2>/dev/null || true
+rm -f "${LO_PACK}/marinamoji_kaeriten.pack" "${LO_PACK}/warichu.pack" \
+  "${LO_PACK}/marinamoji_mapping.pack" 2>/dev/null || true
 
 echo "Installed macros to:"
 echo "  ${LO_USER}/marinamoji_kaeriten.py"
+echo "  ${LO_USER}/warichu.py"
 echo "  ${LO_USER}/marinamoji_mapping.json"
 ls -la "${LO_USER}/"
 echo ""
