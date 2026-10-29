@@ -6,6 +6,8 @@ Also formats native warichū (割注): select the note text (not the whole parag
 
 Native group-ruby (振り仮名): select base text → Apply ruby → enter the reading (default alignment LEFT — Writer-native, stable beside warichū). Remove ruby works from a selection or caret inside the ruby span. Base characters are preserved. Do not nest on warichū.
 
+Native tate-chū-yoko (縦中横): select a short Latin/digit run → Apply (CharRotation 90° + fit to line). Remove clears rotation. Approximation of 縦中横 — not Word’s dedicated feature. Refuses warichū on the same span.
+
 Native emphasis marks (圏点・傍点): select text → Apply (document default, 黒ゴマ / accent) or open the emphasis menu for 黒丸 / 白丸 / 点, Remove, or Set default. Passage marks are ordinary CharEmphasis; changing the document default does not rewrite existing marks.
 
 Works offline. No telemetry. Does not require the marinaMoji IME at runtime (any input that produces the Unicode marks is fine). LibreOffice 6.4 or newer.

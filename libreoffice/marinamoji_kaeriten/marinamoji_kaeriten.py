@@ -47,6 +47,11 @@ try:
 except ImportError:
     _typography_prefs = None
 
+try:
+    import tatechuyoko as _tatechuyoko
+except ImportError:
+    _tatechuyoko = None
+
 # UNO enums at module level (after import uno), same pattern as LO TableSample.py
 try:
     from com.sun.star.text.TextContentAnchorType import AS_CHARACTER
@@ -1858,6 +1863,20 @@ def emphasis_apply_tooltip(*_args):
     return _emphasis.apply_style_tooltip(doc, "en")
 
 
+def apply_tatechuyoko(*_args):
+    """Apply tate-chū-yoko (90° + fit to line) to the selection."""
+    if _tatechuyoko is None:
+        return
+    _tatechuyoko.apply_tatechuyoko()
+
+
+def remove_tatechuyoko(*_args):
+    """Remove tate-chū-yoko from the selection or caret-inside span."""
+    if _tatechuyoko is None:
+        return
+    _tatechuyoko.remove_tatechuyoko()
+
+
 # Legacy names (older menu URLs and saved macro shortcuts)
 format_selection = render_kaeriten
 format_paragraph = render_kaeriten
@@ -1878,6 +1897,8 @@ g_exportedScripts = (
     emphasis_menu,
     remove_emphasis,
     set_emphasis_default,
+    apply_tatechuyoko,
+    remove_tatechuyoko,
     format_selection,
     format_paragraph,
     format_document,

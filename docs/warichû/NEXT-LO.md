@@ -2,12 +2,10 @@
 
 ## Ordered typography roadmap
 
-Knock off in this order (feasibility vs native UNO, 2026-10-29):
-
 | # | Feature | Status |
 |---|---|---|
-| 1 | **Emphasis marks 圏点・傍点** | **0.3.24 coded — smoke pending** — [`../emphasis/`](../emphasis/) |
-| 2 | Tate-chū-yoko 縦中横 | pending |
+| 1 | Emphasis marks 圏点・傍点 | **0.3.26** — [`../emphasis/`](../emphasis/) |
+| 2 | **Tate-chū-yoko 縦中横** | **0.3.30** (toolbar.v4) — smoke pending — [`../tatechuyoko/`](../tatechuyoko/) |
 | 3 | Scholarly typography presets | pending |
 | 4 | Kinsoku shori 禁則処理 (diagnostics) | pending |
 | 5 | Document-wide validation | pending |
@@ -17,10 +15,8 @@ Knock off in this order (feasibility vs native UNO, 2026-10-29):
 
 ## Phase 3 — ruby + warichū coexistence (**0.3.22** smoked)
 
-- Native **group-ruby** Apply / Remove (`ruby.py`) — see [`20-PHASE3-RUBY.md`](20-PHASE3-RUBY.md).
-- Manual coexistence smoke **passed** (user 2026-10-29): ruby + warichū + vertical; Text-to-text Base line; Fixed line spacing.
-- Package: `plugin/libreoffice/dist/MarinaMojiKaeriten.oxt` — **ready to publish** when you choose.
-- Still deferred: jukugo / mono auto-split / ruby metrics UI / stretch-mode UI (INDENT_BLOCK/BLOCK) / shared rules engine / Word.
+- Native **group-ruby** Apply / Remove (`ruby.py`).
+- Still deferred: jukugo / mono auto-split / ruby metrics UI / stretch-mode UI / Word.
 
 ## Parked upstream
 
@@ -31,5 +27,9 @@ Knock off in this order (feasibility vs native UNO, 2026-10-29):
 ## Release
 
 - **0.3.16** warichū validated.
-- **0.3.22** = warichū + ruby coexistence (LEFT ruby adjust; paragraph Text-to-text Base line on apply; bare combine). Smoke OK — publish when ready.
-- **0.3.24** = emphasis (黒ゴマ default, menu overrides, doc preference). Smoke pending.
+- **0.3.22** ruby + warichū coexistence smoked.
+- **0.3.26** emphasis marks (toolbar.v2).
+- **0.3.27** tate-chū-yoko (90° + fit) MVP.
+- **0.3.28** tate-chū-yoko selection policy + caret detection.
+- **0.3.30** toolbar.v4 — equal-length `m01`…`m18` item names (fixes LO
+  `LengthContentsCompare` scramble). Smoke pending. See [`../libreoffice/CHANGELOG.md`](../../libreoffice/CHANGELOG.md).

@@ -34,6 +34,8 @@ copy_lo_icon apply_warichu.svg
 copy_lo_icon remove_warichu.svg
 copy_lo_icon apply_ruby.svg
 copy_lo_icon remove_ruby.svg
+copy_lo_icon apply_tatechuyoko.svg
+copy_lo_icon remove_tatechuyoko.svg
 copy_lo_icon apply_emphasis.svg
 copy_lo_icon emphasis_menu.svg
 copy_lo_icon remove_emphasis.svg

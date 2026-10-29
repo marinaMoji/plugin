@@ -29,6 +29,8 @@ _COMMANDS = frozenset(
         "emphasis_menu",
         "remove_emphasis",
         "set_emphasis_default",
+        "apply_tatechuyoko",
+        "remove_tatechuyoko",
     )
 )
 
@@ -108,6 +110,10 @@ class MarinaMojiKaeritenProtocolHandler(
             macros.remove_emphasis()
         elif path == "set_emphasis_default":
             macros.set_emphasis_default()
+        elif path == "apply_tatechuyoko":
+            macros.apply_tatechuyoko()
+        elif path == "remove_tatechuyoko":
+            macros.remove_tatechuyoko()
 
     def addStatusListener(self, control, url):
         # Title/tooltip comes from Addons.xcu. Document-default name is shown

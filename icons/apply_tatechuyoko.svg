@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- Vertical stem + horizontal digit pair (&-*) -->
+  <rect x="4" y="3.5" width="7" height="17" rx="1.2" fill="none" stroke="#48484a" stroke-width="1.5"/>
+  <path d="M5.8 8h3.4M5.8 12h3.4M5.8 16h2.4" fill="none" stroke="#48484a" stroke-width="1.2" stroke-linecap="round"/>
+  <rect x="13" y="8" width="7.5" height="8" rx="1.2" fill="none" stroke="#005fef" stroke-width="1.5"/>
+  <path d="M14.5 12h2M17.5 12h2" fill="none" stroke="#005fef" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
