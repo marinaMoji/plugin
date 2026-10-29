@@ -73,7 +73,7 @@ export MARINAMOJI_PLUGIN_BASE="https://marinamoji.github.io/plugin/word"
 | `marinamoji-kaeriten-onlyoffice-mac.dmg` | Mac | GUI installer |
 | `word-dist.zip` | — | Archive of hosted files (when Word included) |
 | `marinamoji-kaeriten-word.xml` | Windows / web / reference | Production manifest |
-| `marinamoji-kaeriten-word-setup.exe` | Windows | Per-user Inno Setup installer; registers the manifest under the `WEF\Developer` key. Built by the `windows-installer` CI job after the Release exists; unsigned unless you sign it with `packaging/sign-windows-release.mjs` |
+| `marinamoji-kaeriten-word-setup.exe` | Windows | Per-user Inno Setup installer; registers the manifest under the `WEF\Developer` key. Built **unsigned** by the `windows-installer` CI job after the Release exists; then sign it and re-upload with `node packaging/sign-windows-release.mjs <plugins-vX.Y.Z> --upload` (needs the Certum SimplySign `sign-windows` setup on the maintainer machine; it also rewrites the `.exe` line in `SHA256SUMS.txt`) |
 | `marinamoji-kaeriten-word-mac.dmg` | Mac | Copies the manifest into Word `wef/`; if macOS refuses (it usually does), stages it on the Desktop and opens Finder for a drag |
 | `INSTALL.txt`, `SHA256SUMS.txt`, `VERSION.txt` | All | Human readme + integrity |
 

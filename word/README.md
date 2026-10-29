@@ -145,7 +145,7 @@ npm run start:server-only
 
 ### Windows / Word on the web
 
-**Word for Windows (users):** run `marinamoji-kaeriten-word-setup.exe` from the [latest release](https://github.com/marinaMoji/plugin/releases/latest), close Word completely, reopen it, then **Home → Kaeriten** (or **Insert → Add-ins → My Add-ins → Developer Add-ins**). The installer is per-user (no admin) and unsigned, so SmartScreen may warn. Untested on a real Windows Word so far ([#12](https://github.com/marinaMoji/plugin/issues/12)).
+**Word for Windows (users):** run `marinamoji-kaeriten-word-setup.exe` from the [latest release](https://github.com/marinaMoji/plugin/releases/latest), close Word completely, reopen it, then **Home → Kaeriten** (or **Insert → Add-ins → My Add-ins → Developer Add-ins**). The installer is per-user (no admin) and Authenticode-signed; SmartScreen can still warn until the certificate has built up reputation. Untested on a real Windows Word so far ([#12](https://github.com/marinaMoji/plugin/issues/12)).
 
 **Word on the web / manual:** **Insert** → **Add-ins** → **My Add-ins** → **Upload My Add-in** → `marinamoji-kaeriten-word.xml` from the release  
 (French: **Insertion** → **Compléments** → **Mes compléments** → **Téléverser mon complément**.) Developers can upload `plugin/word/manifest.xml` (localhost).

@@ -30,7 +30,7 @@ We **do** use normal **HTTPS** on our own domain (e.g. Let’s Encrypt via GitHu
 | Product | End-user install (goal) | Gatekeeper |
 |---------|-------------------------|------------|
 | **LibreOffice** | Download Mac `.dmg` → run installer (or `.oxt` on Linux/Windows) | May warn on unsigned `.app` / `.dmg` |
-| **Word** | Download Mac `.dmg` (manifest) or Windows `marinamoji-kaeriten-word-setup.exe` | May warn on unsigned `.dmg`; Windows SmartScreen may warn on the unsigned `.exe` |
+| **Word** | Download Mac `.dmg` (manifest) or Windows `marinamoji-kaeriten-word-setup.exe` | May warn on unsigned `.dmg`; the Windows `.exe` is signed (SmartScreen may still warn at first) |
 | **ONLYOFFICE** | Download Mac `.dmg` → run installer (or manual zip) | May warn on unsigned `.app` / `.dmg` |
 
 **Recommended order for new users:** LibreOffice first (simplest), then Word or ONLYOFFICE if they need that host.
@@ -191,7 +191,7 @@ We ship **`marinamoji-kaeriten-word-setup.exe`** (Inno Setup, built by CI on eve
 
 **User steps:**
 
-1. Download `marinamoji-kaeriten-word-setup.exe` from the GitHub Release. Windows SmartScreen may warn because the installer is not Authenticode-signed (**More info → Run anyway**).
+1. Download `marinamoji-kaeriten-word-setup.exe` from the GitHub Release. The installer is Authenticode-signed, but SmartScreen can still warn until the certificate has built up reputation (**More info → Run anyway**).
 2. Run it. It is per-user: no administrator rights, nothing outside your profile. English, French and Japanese.
 3. It copies the production manifest to `%LOCALAPPDATA%\marinaMoji\Kaeriten\` and registers it under `HKCU\Software\Microsoft\Office\16.0\WEF\Developer`.
 4. Close Word completely, reopen it with a document (internet required, the add-in is hosted on GitHub Pages).
