@@ -1,35 +1,20 @@
-# LibreOffice next steps (post Stage C plugin polish)
+# LibreOffice next steps (release + upstream prep)
 
-**User priority:** LibreOffice perfect before Word.
+## Waiting on you
 
-## Done (Stage C plugin — 0.3.16)
+1. **Manual test 0.3.16** — [`RELEASE-0.3.16-CHECKLIST.md`](RELEASE-0.3.16-CHECKLIST.md). Do not publish until signed off.
+2. **Review U1 Bugzilla draft** — [`upstream/U1-BUGZILLA-REVIEW.md`](upstream/U1-BUGZILLA-REVIEW.md) + native ODT in `upstream/u1-reproducer/`. File only after approval.
+3. **Approve Ubuntu VM** — [`upstream/lo-build-vm/`](upstream/lo-build-vm/) (150–200 GiB). No paid provision / full `make` until you say so.
 
-- Caret-aware **Remove warichū** (expand to CharCombine span).
-- Unit/smoke helper tests (`tests/test_warichu.py`) + optional in-Writer `warichu_smoke_macro.py`.
-- JA/FR toolbar labels; Help text notes host owns split/size; no UNO brackets.
-- Extension build target: `libreoffice/dist/MarinaMojiKaeriten.oxt`.
+## Deferred
 
-## Immediate remaining (manual in Writer)
-
-1. Install 0.3.16 → smoke: apply, caret-remove, save/reopen ODT, undo, kaeriten adjacent.
-2. Optional soft kinsoku **warnings** (predicted only) — still deferred.
-
-## Upstream (no submit without approval)
-
-| ID | Status |
+| Item | Status |
 |---|---|
-| U1 delimiter paint | Confirmed; **no LO build** — see `upstream/17`, `BUG-U1-*` |
-| U2 kinsoku break | Feasible small post-adjust; not coded — `upstream/18`, `BUG-U2-*` |
-| U3 scholarly manual division | Proposal only — `upstream/19` |
+| File U2 kinsoku | After independent re-verify of B11/B19/B20 (not filed) |
+| Implement scholarly mode | After maintainer discussion; summary ready |
+| U1 patch compile | After VM build exists; keep separate from U2 |
 
-**Build env:** not present locally (`16-LO-BUILD-ENVIRONMENT.md`). Need VM/disk before compiling patches.
+## Shipped locally
 
-## Blocked / unsupported
-
-- Alignment / size / manual-division **product** UI until upstream exists.
-- UNO Prefix/Suffix delimiters until U1 fixed.
-- Spaces / images as warichū.
-
-## Docs
-
-A `05`–`09` · B `10`–`15` · C `16` + `upstream/*`
+- Extension **0.3.16** with caret-aware remove (`warichu.py`).
+- Build: `libreoffice/./build.sh` → `dist/MarinaMojiKaeriten.oxt`.

@@ -1,5 +1,5 @@
 {
-  "started_at": "2026-10-29T10:45:16.069391+00:00",
+  "started_at": "2026-10-29T11:16:03.225927+00:00",
   "lo_version": "LibreOffice 26.8.0.3 26.8",
   "artifact_dir": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b",
   "fixture_path": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/fixtures_stage_b.json",
@@ -919,6 +919,6 @@
     "classic_note_in_text": true,
     "vs_candidate_in_text": true
   },
-  "finished_at": "2026-10-29T10:45:21.825108+00:00",
+  "finished_at": "2026-10-29T11:16:06.639522+00:00",
   "visual_checklist": "/Users/daniel/Code/marinaMoji/plugin/libreoffice/spikes/warichu/artifacts/stage_b/VISUAL_CHECKLIST.md"
 }
