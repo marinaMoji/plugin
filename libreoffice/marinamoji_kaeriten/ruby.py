@@ -241,13 +241,45 @@ def _anchor_inside_ruby(text, text_range):
     return None
 
 
+def expand_ruby_span_by_reading(readings, index):
+    """Pure helper: readings[i] is the RubyText of character i ("" = none).
+
+    Like expand_ruby_span_indices, but the span stops where the reading
+    changes, so adjacent words (東京 とうきょう / 大学 だいがく) stay separate.
+    """
+    flags = [bool(r) for r in readings]
+    span = expand_ruby_span_indices(flags, index)
+    if span is None:
+        return None
+    n = len(readings)
+    pos = min(max(index, 0), n - 1)
+    if not flags[pos] and pos > 0 and flags[pos - 1]:
+        pos -= 1
+    ref = readings[pos]
+    start, end = pos, pos + 1
+    while start > span[0] and readings[start - 1] == ref:
+        start -= 1
+    while end < span[1] and readings[end] == ref:
+        end += 1
+    return (start, end)
+
+
 def expand_to_ruby_span(text, text_range):
-    """Expand to contiguous non-empty RubyText run."""
+    """Expand to the contiguous run of characters with the *same* RubyText."""
     if text_range is None:
         return None
     anchor = _anchor_inside_ruby(text, text_range)
     if anchor is None:
         return None
+
+    probe_ref = text.createTextCursorByRange(anchor.getStart())
+    probe_ref.goRight(1, True)
+    ref = _ruby_text_of(probe_ref)
+    if not ref:
+        return None
+
+    def _same(c):
+        return _ruby_text_of(c) == ref
 
     start = text.createTextCursorByRange(anchor.getStart())
     start.collapseToStart()
@@ -256,7 +288,7 @@ def expand_to_ruby_span(text, text_range):
         if not probe.goLeft(1, False):
             break
         check = text.createTextCursorByRange(probe.getStart())
-        if not check.goRight(1, True) or not _ruby_text_of(check):
+        if not check.goRight(1, True) or not _same(check):
             break
         start.gotoRange(probe.getStart(), False)
         start.collapseToStart()
@@ -268,7 +300,7 @@ def expand_to_ruby_span(text, text_range):
         check = text.createTextCursorByRange(start.getStart())
         if included:
             check.goRight(included, False)
-        if not check.goRight(1, True) or not _ruby_text_of(check):
+        if not check.goRight(1, True) or not _same(check):
             break
         included += 1
     if included == 0:
@@ -498,6 +530,44 @@ def apply_ruby(*_args):
         pass
 
 
+def _remove_ruby_spans(text, selection):
+    """Clear ruby for a caret (one word) or a selection (every word touched).
+
+    Each span is a whole word (same reading), so selecting part of a word still
+    removes the whole word's ruby, and selecting several adjacent words removes
+    all of them. Clearing as we go means a word is found only once, and an
+    already-cleared span is never cleared again (that would attach an empty
+    ruby wrapper). Returns (spans, text_changed).
+    """
+    spans = []
+
+    def _clear(span):
+        before = _range_text(span)
+        _clear_ruby(span)
+        spans.append(span)
+        return _range_text(span) == before
+
+    if _is_collapsed(selection):
+        span = expand_to_ruby_span(text, selection)
+        if span is not None and not _clear(span):
+            return spans, True
+        return spans, False
+
+    count = len(_range_text(selection))
+    cursor = text.createTextCursorByRange(selection.getStart())
+    cursor.collapseToStart()
+    for _ in range(count):
+        one = text.createTextCursorByRange(cursor.getStart())
+        if not one.goRight(1, True):
+            break
+        if _ruby_text_of(one):
+            span = expand_to_ruby_span(text, one)
+            if span is not None and not _clear(span):
+                return spans, True
+        cursor.goRight(1, False)
+    return spans, False
+
+
 def remove_ruby(*_args):
     """Toolbar: remove ruby from selection or caret-inside ruby span."""
     try:
@@ -515,23 +585,8 @@ def remove_ruby(*_args):
         return
 
     text = _text_of(doc, selection)
-    span = expand_to_ruby_span(text, selection)
-    if span is None:
-        if not _is_collapsed(selection) and selection_has_ruby(selection):
-            span = text.createTextCursorByRange(selection)
-        else:
-            _message(
-                doc,
-                "marinaMoji ruby",
-                "No ruby found at the cursor.",
-                kind="info",
-            )
-            return
-
-    before = _range_text(span)
-    _clear_ruby(span)
-    after = _range_text(span)
-    if after != before:
+    spans, changed = _remove_ruby_spans(text, selection)
+    if changed:
         _message(
             doc,
             "marinaMoji ruby",
@@ -540,7 +595,15 @@ def remove_ruby(*_args):
             kind="error",
         )
         return
+    if not spans:
+        _message(
+            doc,
+            "marinaMoji ruby",
+            "No ruby found at the cursor.",
+            kind="info",
+        )
+        return
     try:
-        doc.getCurrentController().select(span)
+        doc.getCurrentController().select(spans[-1])
     except Exception:
         pass

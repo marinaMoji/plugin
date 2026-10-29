@@ -64,5 +64,18 @@ def main():
     print("All ruby helper tests passed.")
 
 
+def test_adjacent_ruby_words_with_different_readings_stay_separate():
+    from ruby import expand_ruby_span_by_reading
+
+    r = ["とう", "とう", "きょう", "きょう"]  # 2 chars + 2 chars, different readings
+    assert expand_ruby_span_by_reading(r, 0) == (0, 2)
+    assert expand_ruby_span_by_reading(r, 1) == (0, 2)
+    assert expand_ruby_span_by_reading(r, 2) == (2, 4)
+    assert expand_ruby_span_by_reading(r, 4) == (2, 4)  # caret after last char
+    assert expand_ruby_span_by_reading(["", "あ", "あ", ""], 3) == (1, 3)
+    assert expand_ruby_span_by_reading(["", ""], 1) is None
+    assert expand_ruby_span_by_reading(["あ", "あ"], 1) == (0, 2)
+
+
 if __name__ == "__main__":
     main()
