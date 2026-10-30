@@ -1,7 +1,7 @@
 # Handbook launch — LibreOffice integration feasibility
 
 **Status:** retain external browser (`file://`).  
-**Date:** 2026-10-29 · extension **0.3.35**
+**Date:** 2026-10-30 · extension **0.3.36**
 
 ## Current mechanism
 

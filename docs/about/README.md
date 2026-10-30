@@ -1,6 +1,6 @@
 # The Little Book of Japanese Typography
 
-**Version:** LibreOffice extension **0.3.35** (toolbar `.v7`).
+**Version:** LibreOffice extension **0.3.36** (toolbar `.v7`).
 
 ## Mechanism
 

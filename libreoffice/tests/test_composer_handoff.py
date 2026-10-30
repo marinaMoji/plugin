@@ -136,7 +136,25 @@ def test_fresh_unicode_text_is_taken_once(tmp_path):
     txt.write_text("謀\n", encoding="utf-8")
     cache = str(tmp_path / "cache")
     mtime = os.path.getmtime(txt)
-    first = h.peek_fresh_text(cache, now=mtime + 5, path=str(txt))
+    first = h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS + 1, path=str(txt))
     assert first == ("謀", mtime)
     h.mark_seen_text(cache, mtime)
-    assert h.peek_fresh_text(cache, now=mtime + 6, path=str(txt)) is None
+    assert h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS + 2, path=str(txt)) is None
+
+
+def test_unicode_text_waits_for_the_input_method(tmp_path):
+    # The input method types the character and removes the file; the extension
+    # must not insert it during that window (that was the double insertion).
+    txt = tmp_path / "r.txt"
+    txt.write_text("椾\n", encoding="utf-8")
+    cache = str(tmp_path / "cache")
+    mtime = os.path.getmtime(txt)
+    assert h.peek_fresh_text(cache, now=mtime + 0.5, path=str(txt)) is None
+    assert h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS - 0.1, path=str(txt)) is None
+    # Still there afterwards: the input method could not deliver it.
+    assert h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS + 0.1, path=str(txt)) == ("椾", mtime)
+    # A grace-period peek never marks the result as seen.
+    assert h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS + 0.2, path=str(txt)) == ("椾", mtime)
+    # Removed by the input method: nothing to insert.
+    os.remove(txt)
+    assert h.peek_fresh_text(cache, now=mtime + h.TEXT_GRACE_SECONDS + 1, path=str(txt)) is None

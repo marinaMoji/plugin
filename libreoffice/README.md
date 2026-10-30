@@ -33,14 +33,14 @@ chmod +x build.sh build-icons.sh
 Toolbar icons come from `../icons/*.svg` (copied into the `.oxt`). `Addons.xcu` points `ImageSmallURL` / `ImageBigURL` at those SVGs so LibreOffice can render them at the current toolbar size (sharp on HiDPI, like Colibre). The Extension Manager still uses a 42×42 PNG — install **librsvg** (`brew install librsvg`) before building if that icon is missing.
 
 1. **Quit Writer** completely.
-2. **Tools → Extension Manager** — **remove** any old **marinaMoji Kaeriten**, **restart Writer**, then **Add** → `dist/MarinaMojiKaeriten.oxt` (**0.3.35**). A plain “update” can leave old toolbar config (wrong name or missing icons).
+2. **Tools → Extension Manager** — **remove** any old **marinaMoji Kaeriten**, **restart Writer**, then **Add** → `dist/MarinaMojiKaeriten.oxt` (**0.3.36**). A plain “update” can leave old toolbar config (wrong name or missing icons).
 3. Accept the **GPL-3.0** license dialog → **Restart Writer**.
 
 On **macOS 26.x**, if toolbar buttons do nothing after step 3, use the Mac installer above (or `./install.sh` from Terminal).
 
 All commands are on the **marinaMoji** toolbar: **View → Toolbars → marinaMoji**.
 
-If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remove the extension, quit Writer, reinstall **0.3.35**, and enable the toolbar again. That clears the old cached label.
+If the menu still shows **Add-On 2** (a name LibreOffice invented earlier), remove the extension, quit Writer, reinstall **0.3.36**, and enable the toolbar again. That clears the old cached label.
 
 **Version note:** GitHub’s `libreoffice-v0.3.10` tag was cut on 2026-10-16, *before* bottom-line / left-margin alignment landed. That release and a local Mac rebuild can both report “0.3.10” while shipping different Python. Use **0.3.11+** for the alignment work; **0.3.15+** for warichū.
 

@@ -5,6 +5,14 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.36 - 2026-10-30
+
+* **Character composer no longer inserts a Unicode character twice** (issue
+  marinaMoji#102). The input method types the character, and the extension also
+  inserted the composer's `.txt` result. The extension now waits four seconds
+  and only inserts a result that is still there, i.e. one the input method did
+  not deliver. The Linux input method removes the file once it has committed it.
+
 ## 0.3.35 - 2026-10-29
 
 * **Tables, footnotes, headers and frames:** ruby, warichū, tate-chū-yoko,

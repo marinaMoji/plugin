@@ -14,6 +14,10 @@ import sys
 import tempfile
 
 FRESH_SECONDS = 120  # older than this is a leftover from an earlier session
+# The input method types a Unicode character itself and removes the .txt once it
+# has. The extension only steps in for a result that is still there after this
+# long, i.e. one the input method could not deliver, so nothing is typed twice.
+TEXT_GRACE_SECONDS = 4.0
 _SEEN_FILE = "composer_seen"
 _SEEN_TEXT_FILE = "composer_seen_text"
 
@@ -216,7 +220,11 @@ def mark_seen_text(cache_dir, mtime):
 
 
 def peek_fresh_text(cache_dir=None, now=None, path=None):
-    """Return (text, mtime) for a fresh Unicode composer result, else None."""
+    """Return (text, mtime) for a Unicode composer result the input method left behind.
+
+    A result younger than TEXT_GRACE_SECONDS is not returned yet (it is retried
+    on the next poll): the input method normally types it and deletes the file.
+    """
     import time
 
     path = text_path() if path is None else path
@@ -241,6 +249,8 @@ def peek_fresh_text(cache_dir=None, now=None, path=None):
     if now - mtime > FRESH_SECONDS:
         mark_seen_text(cache_dir, mtime)
         return None
+    if now - mtime < TEXT_GRACE_SECONDS:
+        return None  # the input method may still be committing it
     return text, mtime
 
 
