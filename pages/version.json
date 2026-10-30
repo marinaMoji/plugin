@@ -1,8 +1,8 @@
 {
-  "plugins": "0.0.13",
+  "plugins": "0.0.14",
   "word": "0.1.7",
   "word_manifest": "1.0.0.0",
   "libreoffice": "0.3.35",
-  "onlyoffice": "0.1.19",
+  "onlyoffice": "0.1.20",
   "release_url": "https://github.com/marinaMoji/plugin/releases/latest"
 }
