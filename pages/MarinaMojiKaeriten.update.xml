@@ -6,7 +6,7 @@
   <identifier value="org.marinaMoji.kaeriten"/>
   <version value="0.3.35"/>
   <update-download>
-    <src xlink:href="https://github.com/marinaMoji/plugin/releases/download/plugins-v0.0.12/MarinaMojiKaeriten.oxt"/>
+    <src xlink:href="https://github.com/marinaMoji/plugin/releases/download/plugins-v0.0.13/MarinaMojiKaeriten.oxt"/>
   </update-download>
   <publisher>
     <name xlink:href="https://github.com/marinaMoji/plugin" lang="en">marinaMoji</name>
