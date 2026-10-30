@@ -4,6 +4,10 @@ Version history for the ONLYOFFICE Document Editor plugin. Marketplace updates r
 
 ## Unreleased
 
+## 0.1.19 - 2026-10-30
+
+* Render on an already rendered paragraph now replaces only the existing marinaMoji views (matched by tag) and the raw marks, and leaves the rest of the paragraph alone. Before, a second Render rebuilt the whole paragraph: a hyperlink inside it was lost (Unrender could not bring it back) and bold/colour were reset to the first run's style. A paragraph that holds other content (hyperlinks, fields) is never rebuilt, and hyperlink text now counts as part of the paragraph's canonical text. Reported by the ONLYOFFICE Marketplace reviewer. Checked on the reviewer's example (hyperlink, bold, colour; Render, Render, Unrender) in ONLYOFFICE Desktop, and with an in-memory model of the document API (`tests/render_refresh.test.js`).
+
 ## 0.1.18 - 2026-10-28
 
 * Composed drawings inserted from the composer are lowered 0.15 em (`DROP_EM`) instead of 0, so they sit on the text's baseline instead of riding high. Chosen by rendering a test document through ONLYOFFICE's converter (`x2t`): 0 left the ink about 0.15 em too high, 0.19 about 0.035 em too low. Not yet checked with a real insert in Desktop.

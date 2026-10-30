@@ -391,6 +391,13 @@
               return;
             }
             var type = el.GetClassType ? el.GetClassType() : "";
+            if (type === "hyperlink") {
+              // ApiHyperlink has no GetText; without this its text drops out of
+              // the canonical paragraph text.
+              var shown = el.GetDisplayedText ? el.GetDisplayedText() : "";
+              state.text += shown || "";
+              return;
+            }
             var childCount = el.GetElementsCount ? el.GetElementsCount() : 0;
             if ((type === "run" || type === "inlineLvlSdt") && childCount > 0) {
               for (var i = 0; i < childCount; i++) {
@@ -657,15 +664,12 @@
           }
 
           /**
-           * Prefer replacing only mark characters inside existing runs so the rest
-           * of the paragraph (bold, links, etc.) stays intact. Fall back to a full
-           * rebuild when the paragraph already holds marinaMoji views.
+           * Replace only mark characters inside existing runs so the rest of the
+           * paragraph (bold, links, etc.) stays intact. Existing views are handled
+           * by refreshViewsInPlace.
            */
           function fillParagraphInPlace(oPara, segments, localFontSizePt) {
-            var markMap = {};
-            for (var s = 0; s < segments.length; s++) {
-              if (segments[s].type === "kaeriten") markMap[segments[s].marks] = segments[s];
-            }
+            var markMap = markMapOf(segments);
             var markRe = /[\u3190-\u319f]+/g;
             var touched = false;
             var ec = oPara.GetElementsCount ? oPara.GetElementsCount() : 0;
@@ -711,6 +715,71 @@
             return touched;
           }
 
+          function marksFromTag(tag) {
+            if (!tag || tag.indexOf(sourcePrefix) !== 0) return null;
+            return tag.substring(sourcePrefix.length).split(";")[0] || null;
+          }
+
+          /** Source marks if el is (or wraps) a marinaMoji view, else null. */
+          function viewMarksOf(el) {
+            if (!el) return null;
+            var marks = marksFromTag(el.GetTag ? el.GetTag() || "" : "");
+            if (marks) return marks;
+            marks = marksFromTag(el.GetName ? el.GetName() || "" : "");
+            if (marks) return marks;
+            var alias = el.GetAlias ? el.GetAlias() || "" : "";
+            if (/^[\u3190-\u319f]+$/.test(alias)) return alias;
+            var count = el.GetElementsCount ? el.GetElementsCount() : 0;
+            for (var i = 0; i < count; i++) {
+              var inner = viewMarksOf(el.GetElement(i));
+              if (inner) return inner;
+            }
+            return null;
+          }
+
+          function markMapOf(segments) {
+            var map = {};
+            for (var s = 0; s < segments.length; s++) {
+              if (segments[s].type === "kaeriten") map[segments[s].marks] = segments[s];
+            }
+            return map;
+          }
+
+          /**
+           * Replace only the existing marinaMoji views (matched by tag) with fresh
+           * ones. Everything else in the paragraph (hyperlinks, formatted runs,
+           * fields) is left exactly as it is.
+           */
+          function refreshViewsInPlace(oPara, markMap, localFontSizePt) {
+            var touched = false;
+            var ec = oPara.GetElementsCount ? oPara.GetElementsCount() : 0;
+            for (var e = ec - 1; e >= 0; e--) {
+              var el = oPara.GetElement(e);
+              var type = el && el.GetClassType ? el.GetClassType() : "";
+              if (type !== "inlineLvlSdt" && type !== "run") continue;
+              var marks = viewMarksOf(el);
+              if (!marks || !markMap[marks]) continue;
+              var view = createKaeritenView(markMap[marks], localFontSizePt);
+              if (!view || !view.el) continue;
+              // Same pattern as Unrender: insert the new view, then drop the old one.
+              insertViewAt(oPara, e, view);
+              oPara.RemoveElement(e + 1);
+              touched = true;
+            }
+            return touched;
+          }
+
+          /** True when the paragraph holds only runs and inline controls. */
+          function paragraphIsPlain(oPara) {
+            var ec = oPara.GetElementsCount ? oPara.GetElementsCount() : 0;
+            for (var e = 0; e < ec; e++) {
+              var el = oPara.GetElement(e);
+              var type = el && el.GetClassType ? el.GetClassType() : "";
+              if (type !== "run" && type !== "inlineLvlSdt") return false;
+            }
+            return true;
+          }
+
           function fillParagraphRebuild(oPara, segments, localFontSizePt) {
             var styleRun = null;
             var ec0 = oPara.GetElementsCount ? oPara.GetElementsCount() : 0;
@@ -741,32 +810,14 @@
 
           function fillParagraph(oPara, segments, itemFontSizePt) {
             var localFontSizePt = itemFontSizePt || fontSizePt;
-            var hasViews = false;
-            var ec = oPara.GetElementsCount ? oPara.GetElementsCount() : 0;
-            for (var e = 0; e < ec; e++) {
-              var el = oPara.GetElement(e);
-              if (!el) continue;
-              var type = el.GetClassType ? el.GetClassType() : "";
-              if (type === "inlineLvlSdt") {
-                hasViews = true;
-                break;
-              }
-              if (type === "run" && el.GetElementsCount && el.GetElementsCount() > 0) {
-                for (var r = 0; r < el.GetElementsCount(); r++) {
-                  var inner = el.GetElement(r);
-                  var it = inner && inner.GetClassType ? inner.GetClassType() : "";
-                  if (it === "inlineLvlSdt" || it === "drawing" || it === "image") {
-                    hasViews = true;
-                    break;
-                  }
-                }
-              }
-              if (hasViews) break;
+            var refreshed = refreshViewsInPlace(oPara, markMapOf(segments), localFontSizePt);
+            var split = fillParagraphInPlace(oPara, segments, localFontSizePt);
+            if (refreshed || split) return;
+            // Last resort: rebuild, but only a paragraph made of nothing but runs
+            // and controls. Anything else (hyperlinks, fields...) would be lost.
+            if (paragraphIsPlain(oPara)) {
+              fillParagraphRebuild(oPara, segments, localFontSizePt);
             }
-            if (!hasViews && fillParagraphInPlace(oPara, segments, localFontSizePt)) {
-              return;
-            }
-            fillParagraphRebuild(oPara, segments, localFontSizePt);
           }
 
           for (var p = 0; p < plan.length; p++) {
