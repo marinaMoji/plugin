@@ -10,7 +10,8 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 * **Toolbar icons follow light and dark mode.** A startup job watches the
   application's appearance and swaps the toolbar icons for a dark set (in
   memory only; nothing is written to the profile). It works with LibreOffice
-  set to Automatic, Light or Dark. Tested on macOS only so far.
+  set to Automatic, Light or Dark. Tested on macOS only so far. On Linux and
+  Windows it listens through an invisible child window, never a dialog.
 * **Sharper icons:** the logo icon is rescaled to the same 24-unit box as the
   other icons, and the page writing-mode icon draws its H and V as paths
   instead of text.

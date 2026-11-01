@@ -87,6 +87,44 @@ class ThemeSwitcher(object):
         except Exception:
             return None
 
+    def _style_settings_source(self):
+        """(dialog_or_None, StyleSettings) from a window that is never shown.
+
+        macOS: a hidden dialog peer (verified there). On GTK and Windows a dialog
+        peer can become a visible empty window, so other platforms use an
+        invisible child window of the document frame, then the frame itself.
+        """
+        smgr = self.ctx.ServiceManager
+        parent = self._parent_window()
+        if sys.platform == "darwin":
+            dialog = smgr.createInstanceWithContext(
+                "com.sun.star.awt.UnoControlDialog", self.ctx
+            )
+            model = smgr.createInstanceWithContext(
+                "com.sun.star.awt.UnoControlDialogModel", self.ctx
+            )
+            dialog.setModel(model)
+            toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
+            dialog.createPeer(toolkit, parent)
+            return dialog, dialog.getPeer().StyleSettings
+        import uno
+        from com.sun.star.awt import Rectangle, WindowDescriptor
+
+        toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
+        try:
+            desc = WindowDescriptor()
+            desc.Type = uno.Enum("com.sun.star.awt.WindowClass", "SIMPLE")
+            desc.WindowServiceName = "window"
+            desc.Parent = parent
+            desc.ParentIndex = -1
+            desc.Bounds = Rectangle(0, 0, 1, 1)
+            desc.WindowAttributes = 0  # child window, never made visible
+            child = toolkit.createWindow(desc)
+            return child, child.StyleSettings
+        except Exception:
+            _log("child window has no style settings; falling back to the frame")
+            return None, parent.StyleSettings
+
     def ensure_listener(self):
         """Register the style listener once; re-register if it was disposed."""
         with self.lock:
@@ -104,22 +142,12 @@ class ThemeSwitcher(object):
                 def disposing(self, event):
                     switcher.reset_listener()
 
-            smgr = self.ctx.ServiceManager
             try:
-                dialog = smgr.createInstanceWithContext(
-                    "com.sun.star.awt.UnoControlDialog", self.ctx
-                )
-                model = smgr.createInstanceWithContext(
-                    "com.sun.star.awt.UnoControlDialogModel", self.ctx
-                )
-                dialog.setModel(model)
-                toolkit = smgr.createInstanceWithContext(
-                    "com.sun.star.awt.Toolkit", self.ctx
-                )
-                dialog.createPeer(toolkit, self._parent_window())
-                settings = dialog.getPeer().StyleSettings
+                dialog, settings = self._style_settings_source()
             except Exception:
                 traceback.print_exc(file=sys.stderr)
+                return False
+            if settings is None:
                 return False
             listener = _Listener()
             settings.addStyleChangeListener(listener)
