@@ -11,7 +11,8 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
   application's appearance and swaps the toolbar icons for a dark set (in
   memory only; nothing is written to the profile). It works with LibreOffice
   set to Automatic, Light or Dark. Tested on macOS only so far. On Linux and
-  Windows it listens through an invisible child window, never a dialog.
+  Windows it listens through the document window itself (no extra window is
+  created unless that is unavailable, and then only an invisible one).
 * **Sharper icons:** the logo icon is rescaled to the same 24-unit box as the
   other icons, and the page writing-mode icon draws its H and V as paths
   instead of text.
