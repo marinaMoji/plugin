@@ -27,15 +27,14 @@ Do this in the **plugin** repo when you are ready. No Extensions website step he
 4. **Tag and push** (version must match `description.xml`):
 
    ```bash
-   git tag libreoffice-v0.3.10
-   git push origin libreoffice-v0.3.10
+   git tag plugins-v0.0.15
+   git push origin plugins-v0.0.15
    ```
 
-   Or: Actions → **Release LibreOffice extension** → run with tag `libreoffice-v0.3.10`.  
-   On a **tag push**, CI publishes the GitHub Release **and** updates the live Pages feed.  
-   On **manual dispatch**, leave `publish_update_feed` unchecked to upload the Release only and review the update XML artifact first.
+   Or: Actions → **Release plugins** → run with that tag.  
+   CI publishes the single GitHub Release (LibreOffice, ONLYOFFICE and Word together) **and** updates the live Pages feed.
 5. **Confirm**:
-   - Release asset: `https://github.com/marinaMoji/plugin/releases/tag/libreoffice-v0.3.10`
+   - Release asset: `https://github.com/marinaMoji/plugin/releases/tag/plugins-v0.0.15`
    - Feed (after Pages deploy): `https://marinamoji.github.io/plugin/MarinaMojiKaeriten.update.xml` shows `0.3.10` and a versioned (not `/latest/`) download URL
 6. **Optional later:** Extensions website submission (below). Screenshots help there; they are not required for steps 1–5.
 
@@ -98,8 +97,7 @@ Host version (`description.xml` → `<version>`) is **independent** of the IME, 
 - `<update-information>` pointing at our GitHub Pages feed
 - Build: `libreoffice/build.sh` → `dist/MarinaMojiKaeriten.oxt`
 - Validation: `libreoffice/validate-extension.sh`
-- LO-only CI: `.github/workflows/release-libreoffice.yml` (`libreoffice-v*` tags)
-- Umbrella CI still ships the `.oxt` on `plugins-v*` tags
+- CI: `.github/workflows/release.yml` ships the `.oxt` with everything else on `plugins-v*` tags (no separate LibreOffice release)
 
 ---
 
@@ -186,12 +184,11 @@ Online update installs the `.oxt` only. On LibreOffice 26.x macOS, if the toolba
 
 | Line | Tag / field | Builds |
 |------|-------------|--------|
-| LibreOffice only | `libreoffice-v0.3.10` (= `description.xml` version) | `.oxt` (+ Mac DMG on macOS runners) |
-| All office plugins | `plugins-v0.0.3` | LO + ONLYOFFICE + Word (existing workflow) |
+| All office plugins | `plugins-v0.0.3` | LO + ONLYOFFICE + Word, one Release (`libreoffice-v*` tags are retired; old ones stay for existing feed links) |
 | IME | separate `marinaMoji/marinaMoji` releases | not this repo |
 
 Authoritative LO version: **`libreoffice/marinamoji_kaeriten/description.xml`**.  
-`packaging/sync-version-channel.sh` (umbrella release) and the LO-only workflow both derive the feed from that value.
+`packaging/sync-version-channel.sh` derives the feed from that value.
 
 ---
 
@@ -199,11 +196,11 @@ Authoritative LO version: **`libreoffice/marinamoji_kaeriten/description.xml`**.
 
 | Step | Automated? |
 |------|------------|
-| Build `.oxt`, validate ZIP/XML/id/version | Yes — `validate-extension.sh` + LO release workflow |
-| Unit tests (parser/export) | Yes — in `build-libreoffice-release.sh` |
-| Attach assets to GitHub Release | Yes — on `libreoffice-v*` / `plugins-v*` |
+| Build `.oxt`, validate ZIP/XML/id/version | Yes — `validate-extension.sh` + release workflow |
+| Unit tests (parser/export) | Yes — in `build-release.sh` |
+| Attach assets to GitHub Release | Yes — on `plugins-v*` |
 | Generate reviewable update XML | Yes — workflow artifact + Release asset |
-| Deploy update XML to GitHub Pages | Yes **after** Release, when authorized (tag push for LO-only; umbrella release always syncs) |
+| Deploy update XML to GitHub Pages | Yes **after** Release, (the release workflow always syncs) |
 | Upload new version to extensions.libreoffice.org | **No** — no supported public API; use the admin UI |
 | Moderator approval | **Manual** (TDF) |
 | Real Writer install / update clicks | **Manual** |
@@ -214,7 +211,7 @@ Do **not** automate the Extensions website via scraping or stored browser passwo
 
 ## Initial marketplace submission
 
-1. Finish compliance checklist; run `./validate-extension.sh` and ship a GitHub Release whose `.oxt` you are willing to list (e.g. `libreoffice-v0.3.10`).
+1. Finish compliance checklist; run `./validate-extension.sh` and ship a GitHub Release whose `.oxt` you are willing to list (e.g. `plugins-v0.0.15`).
 2. Create a TDF SSO account → sign in at https://extensions.libreoffice.org/admin.
 3. **Add Extension** in **English** first (fallback language).
 4. Suggested metadata (edit freely before submit):
@@ -245,17 +242,17 @@ Do **not** automate the Extensions website via scraping or stored browser passwo
 
 1. Set `<version value="0.2.0"/>` in `description.xml`.
 2. Commit to `main` (does **not** by itself change the live update feed).
-3. Tag and push: `git tag libreoffice-v0.2.0 && git push origin libreoffice-v0.2.0`  
-   — or run **Release LibreOffice extension** with that tag.
-4. CI builds/validates, creates GitHub Release `libreoffice-v0.2.0` with the `.oxt`, then (on tag push) commits the new feed to `main`.
+3. Tag and push: `git tag plugins-v0.0.15 && git push origin plugins-v0.0.15`  
+   — or run **Release plugins** with that tag.
+4. CI builds/validates, creates GitHub Release `plugins-v0.0.15` with the `.oxt`, then commits the new feed to `main`.
 5. Users with an older install that already has `update-information`: Check for Updates → offered `0.2.0` → download from the versioned Release URL → confirm → restart Writer.
 6. **Manually** add release `0.2.0` on extensions.libreoffice.org if you want the marketplace page to show the new file (discovery), independent of (B)/(C).
 
 ### One month later: `0.2.1`
 
-1. Bump to `0.2.1`, tag `libreoffice-v0.2.1`, same CI path.
-2. Live feed now advertises `0.2.1` and `…/download/libreoffice-v0.2.1/MarinaMojiKaeriten.oxt`.
-3. Historical `libreoffice-v0.2.0` assets remain on GitHub (do not overwrite).
+1. Bump to `0.2.1`, tag `plugins-v0.0.16`, same CI path.
+2. Live feed now advertises `0.2.1` and `…/download/plugins-v0.0.16/MarinaMojiKaeriten.oxt`.
+3. Historical release assets remain on GitHub (do not overwrite).
 4. Upload `0.2.1` on the Extensions website when you want the store page current.
 
 ---

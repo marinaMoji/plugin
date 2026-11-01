@@ -87,7 +87,7 @@ if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
 else
   # Creates the git tag from the current commit when the tag does not exist yet
   # (useful for workflow_dispatch on main).
-  gh release create "${TAG}" --repo "${REPO}" \
+  gh release create "${TAG}" --repo "${REPO}" --latest \
     --title "marinaMoji Kaeriten office plugins ${TAG#plugins-v}" \
     --notes-file "${NOTES}" \
     "${ASSETS[@]}"

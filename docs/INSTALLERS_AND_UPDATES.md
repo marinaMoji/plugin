@@ -124,20 +124,9 @@ cd plugin/libreoffice
 
 Bump `description.xml` `<version>`. The Mac GUI installer bundles this `.oxt` plus Python macros (required on LO 26.x).
 
-### 1.5a LibreOffice-only release (no Word / ONLYOFFICE rebuild)
+### 1.5a LibreOffice releases
 
-```bash
-# bump libreoffice/marinamoji_kaeriten/description.xml <version> first
-cd plugin/packaging
-export MARINAMOJI_RELEASE_TAG="libreoffice-v0.3.10"   # must match description.xml
-./build-libreoffice-release.sh
-# Review packaging/release-libreoffice/MarinaMojiKaeriten.update.xml
-./publish-libreoffice-release.sh
-# Only then authorize copying the update XML to pages/ on main (or use the
-# "Release LibreOffice extension" workflow with publish_update_feed).
-```
-
-Prefer tagging `libreoffice-v*` so CI does the build, Release upload, and (on tag push) feed publish. Marketplace steps: [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md).
+There is no separate LibreOffice release. The `.oxt` and its Mac `.dmg` ship in the single `plugins-v*` release together with Word and ONLYOFFICE, so GitHub's "Latest" always carries every file the website links to. Bump `libreoffice/marinamoji_kaeriten/description.xml` `<version>`, then tag `plugins-vX.Y.Z` (§1.7). CI builds, publishes the Release, and syncs the update feed. Marketplace steps: [LIBREOFFICE_MARKETPLACE.md](LIBREOFFICE_MARKETPLACE.md).
 
 ### 1.6 Quality checklist before you publish
 
@@ -303,7 +292,6 @@ For a small scholarly community, a short post when you tag a release is often en
 | **Production Word manifest URL** | Workflow writes `marinamoji-kaeriten-word.xml` with correct base URL |
 | **Checksums** | `build-release.sh` / `build-word-release.sh` write `SHA256SUMS.txt` |
 | **GitHub Release (installers)** | Tag `plugins-v*` → `.github/workflows/release.yml` (macOS) → build + upload |
-| **LibreOffice-only Release** | Tag `libreoffice-v*` → `.github/workflows/release-libreoffice.yml` → `.oxt` + feed |
 | **LO package validation** | `libreoffice/validate-extension.sh` (also run from release workflows) |
 | **ONLYOFFICE marketplace export** | `onlyoffice/export-marketplace.sh` + [onlyoffice-marketplace.yml](../.github/workflows/onlyoffice-marketplace.yml) → zip artifact (no upstream PR) |
 

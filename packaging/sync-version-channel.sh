@@ -4,7 +4,7 @@
 #
 # LibreOffice update-download URL prefers a versioned GitHub Release asset
 # (not /latest/) so the feed stays reproducible. Set MARINAMOJI_RELEASE_TAG
-# (e.g. plugins-v0.0.3 or libreoffice-v0.3.10) when publishing.
+# (e.g. plugins-v0.0.3) when publishing; defaults to plugins-v<version>.
 set -euo pipefail
 PACKAGING="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN="$(cd "${PACKAGING}/.." && pwd)"
@@ -45,8 +45,7 @@ if [[ -n "${MARINAMOJI_OXT_DOWNLOAD_URL:-}" ]]; then
 elif [[ -n "${TAG}" ]]; then
   OXT_URL="https://github.com/${REPO}/releases/download/${TAG}/MarinaMojiKaeriten.oxt"
 else
-  # Default convention for LibreOffice-only releases
-  OXT_URL="https://github.com/${REPO}/releases/download/libreoffice-v${LO_VER}/MarinaMojiKaeriten.oxt"
+  OXT_URL="https://github.com/${REPO}/releases/download/plugins-v${VERSION}/MarinaMojiKaeriten.oxt"
 fi
 
 mkdir -p "${PAGES}"

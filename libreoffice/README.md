@@ -82,7 +82,7 @@ python3 tests/test_export.py
 python3 tests/test_warichu.py
 ```
 
-- **LibreOffice-only GitHub release:** tag `libreoffice-v0.3.15` (must match `description.xml`) or run **Release LibreOffice extension** in Actions.
+- **GitHub release:** the `.oxt` ships in the single `plugins-v*` release with Word and ONLYOFFICE (tag `plugins-vX.Y.Z` or run **Release plugins** in Actions).
 - **Official Extensions website + update feed:** [docs/LIBREOFFICE_MARKETPLACE.md](../docs/LIBREOFFICE_MARKETPLACE.md).
 
 ## Use

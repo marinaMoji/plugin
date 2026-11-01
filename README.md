@@ -79,7 +79,6 @@ Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#metadata-and-export).
 | [docs/LIBREOFFICE_MARKETPLACE.md](docs/LIBREOFFICE_MARKETPLACE.md) | Official Extensions website + native LO update feed |
 | [docs/UPDATE_LEFTOVERS.md](docs/UPDATE_LEFTOVERS.md) | Update channel: shipped pieces vs leftovers |
 | [.github/workflows/release.yml](.github/workflows/release.yml) | Tag `plugins-v*` → build installers + GitHub Release |
-| [.github/workflows/release-libreoffice.yml](.github/workflows/release-libreoffice.yml) | Tag `libreoffice-v*` → LO-only `.oxt` + update feed |
 | [docs/SELF_HOSTED_PUBLISHING_PLAN.md](docs/SELF_HOSTED_PUBLISHING_PLAN.md) | Step-by-step publish plan (LO, Word, ONLYOFFICE) |
 | [docs/GITHUB_PAGES.md](docs/GITHUB_PAGES.md) | Host Word add-in on GitHub Pages |
 | [docs/INSTALL-MAC-GATEKEEPER.md](docs/INSTALL-MAC-GATEKEEPER.md) | macOS Right-click → Open (unsigned downloads) |
