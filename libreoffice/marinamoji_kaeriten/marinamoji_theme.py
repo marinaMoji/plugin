@@ -91,8 +91,8 @@ class ThemeSwitcher(object):
         """(dialog_or_None, StyleSettings) from a window that is never shown.
 
         macOS: a hidden dialog peer (verified there). On GTK and Windows a dialog
-        peer can become a visible empty window, so other platforms use an
-        invisible child window of the document frame, then the frame itself.
+        peer can become a visible empty window, so other platforms read the
+        document frame's own settings, and only then try an invisible child window.
         """
         smgr = self.ctx.ServiceManager
         parent = self._parent_window()
@@ -107,23 +107,33 @@ class ThemeSwitcher(object):
             toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
             dialog.createPeer(toolkit, parent)
             return dialog, dialog.getPeer().StyleSettings
+        # Prefer the frame's own window: it already exists, so no new window can
+        # appear. Only if it exposes no style settings, create an invisible child.
+        try:
+            settings = parent.StyleSettings
+            if settings is not None:
+                _log("style source: frame window")
+                return None, settings
+        except Exception:
+            pass
         import uno
         from com.sun.star.awt import Rectangle, WindowDescriptor
 
         toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
+        desc = WindowDescriptor()
+        desc.Type = uno.Enum("com.sun.star.awt.WindowClass", "SIMPLE")
+        desc.WindowServiceName = "window"
+        desc.Parent = parent
+        desc.ParentIndex = -1
+        desc.Bounds = Rectangle(0, 0, 1, 1)
+        desc.WindowAttributes = 0  # child window, never made visible
+        child = toolkit.createWindow(desc)
         try:
-            desc = WindowDescriptor()
-            desc.Type = uno.Enum("com.sun.star.awt.WindowClass", "SIMPLE")
-            desc.WindowServiceName = "window"
-            desc.Parent = parent
-            desc.ParentIndex = -1
-            desc.Bounds = Rectangle(0, 0, 1, 1)
-            desc.WindowAttributes = 0  # child window, never made visible
-            child = toolkit.createWindow(desc)
-            return child, child.StyleSettings
+            child.setVisible(False)  # belt and braces: some backends map it anyway
         except Exception:
-            _log("child window has no style settings; falling back to the frame")
-            return None, parent.StyleSettings
+            pass
+        _log("style source: invisible child window")
+        return child, child.StyleSettings
 
     def ensure_listener(self):
         """Register the style listener once; re-register if it was disposed."""
