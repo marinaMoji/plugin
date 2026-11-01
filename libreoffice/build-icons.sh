@@ -33,6 +33,17 @@ root = m.group(0)
 root = re.sub(r"\s(?:width|height)=\"[^\"]*\"", "", root)
 text = text[: m.start()] + root + text[m.end():]
 text = re.sub(r"<sodipodi:namedview\b.*?</sodipodi:namedview>", "", text, flags=re.S)
+# Large intrinsic size (e.g. the 320-unit logo): LibreOffice rasterizes at the
+# viewBox size and scales the bitmap down, which looks jagged. Normalize to the
+# 24-unit box the other toolbar icons use so it is rendered at the target size.
+m = re.search(r"<svg\b[^>]*>", text, re.S)
+vb = re.search(r'viewBox="([\d.\-]+)[ ,]+([\d.\-]+)[ ,]+([\d.]+)[ ,]+([\d.]+)"', m.group(0))
+if vb and float(vb.group(3)) > 64:
+    scale = 24.0 / float(vb.group(3))
+    root = m.group(0).replace(vb.group(0), 'viewBox="0 0 24 24"')
+    end = text.rindex("</svg>")
+    text = (text[: m.start()] + root + '<g transform="scale(%.8f)">' % scale
+            + text[m.end():end] + "</g>" + text[end:])
 open(dst, "w", encoding="utf-8").write(text)
 PY
 }

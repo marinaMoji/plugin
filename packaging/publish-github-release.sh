@@ -87,7 +87,10 @@ if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
 else
   # Creates the git tag from the current commit when the tag does not exist yet
   # (useful for workflow_dispatch on main).
-  gh release create "${TAG}" --repo "${REPO}" --latest \
+  # A "-" in the version (e.g. plugins-v0.0.15-rc1) marks a pre-release: it must
+  # not become GitHub's "Latest", which the website's download links resolve to.
+  if [[ "${TAG}" == *-* ]]; then CHANNEL_FLAG=--prerelease; else CHANNEL_FLAG=--latest; fi
+  gh release create "${TAG}" --repo "${REPO}" "${CHANNEL_FLAG}" \
     --title "marinaMoji Kaeriten office plugins ${TAG#plugins-v}" \
     --notes-file "${NOTES}" \
     "${ASSETS[@]}"

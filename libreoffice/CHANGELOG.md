@@ -5,6 +5,16 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+## 0.3.37 - 2026-11-01
+
+* **Toolbar icons follow light and dark mode.** A startup job watches the
+  application's appearance and swaps the toolbar icons for a dark set (in
+  memory only; nothing is written to the profile). It works with LibreOffice
+  set to Automatic, Light or Dark. Tested on macOS only so far.
+* **Sharper icons:** the logo icon is rescaled to the same 24-unit box as the
+  other icons, and the page writing-mode icon draws its H and V as paths
+  instead of text.
+
 ## 0.3.36 - 2026-10-30
 
 * **Character composer no longer inserts a Unicode character twice** (issue

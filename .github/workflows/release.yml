@@ -131,6 +131,8 @@ jobs:
           ./packaging/publish-github-release.sh
 
       - name: Push synced version channel to main
+        # Release candidates (plugins-v0.0.15-rc1) must not advance the live update feed.
+        if: ${{ !contains(steps.meta.outputs.version, '-') }}
         # build-release.sh rewrites pages/; Pages hosts from main, so commit the sync there.
         # Runs after the Release so MarinaMojiKaeriten.update.xml versioned URLs work.
         run: |

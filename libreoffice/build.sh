@@ -33,6 +33,7 @@ cp "${SRC}/marinamoji_kaeriten.py" "${SRC}/export_core.py" "${SRC}/composer_hand
    "${SRC}/warichu.py" "${SRC}/ruby.py" "${SRC}/emphasis.py" "${SRC}/typography_prefs.py" \
    "${SRC}/tatechuyoko.py" "${SRC}/typography_analysis.py" "${SRC}/typography_inspector.py" \
    "${SRC}/jidori.py" "${SRC}/jidori_math.py" "${SRC}/about.py" \
+   "${SRC}/marinamoji_theme.py" \
    "${BUILD}/Scripts/python/"
 cp "${PLUGIN}/mapping.json" "${BUILD}/Scripts/python/marinamoji_mapping.json"
 # Offline About guide (HTML + specimens + logo)
@@ -55,20 +56,12 @@ cp "${SRC}/description/"*.txt "${BUILD}/description/"
 if [[ -d "${SRC}/icons" ]] && compgen -G "${SRC}/icons/*" >/dev/null; then
   cp -R "${SRC}/icons" "${BUILD}/"
 fi
+# Dark variants ship in icons-dark/; the startup job swaps them in at runtime
+# (marinamoji_theme.py) because add-on image URLs do not follow the UI theme.
+python3 "${ROOT}/dark_icons.py" "${SRC}/icons" "${BUILD}/icons-dark"
 if [[ "${MODE}" == "dark" ]]; then
-  # LibreOffice add-on image URLs do not switch with the UI theme. Prepare
-  # a separate package with light foregrounds on transparent backgrounds.
-  python3 - "${BUILD}/icons" <<'PYCODE'
-from pathlib import Path
-import sys
-
-for path in Path(sys.argv[1]).glob("*.svg"):
-    text = path.read_text(encoding="utf-8")
-    for old, new in (("#48484a", "#f2f2f7"), ("#005fef", "#75adff"),
-                     ("#005ced", "#75adff"), ("#203758", "#f2f2f7")):
-        text = text.replace(old, new)
-    path.write_text(text, encoding="utf-8")
-PYCODE
+  # Standalone dark package: the static toolbar images themselves are light-on-dark.
+  python3 "${ROOT}/dark_icons.py" "${SRC}/icons" "${BUILD}/icons"
 fi
 if [[ -f "${SRC}/images/extension_icon.png" ]]; then
   cp "${SRC}/images/extension_icon.png" "${BUILD}/images/"

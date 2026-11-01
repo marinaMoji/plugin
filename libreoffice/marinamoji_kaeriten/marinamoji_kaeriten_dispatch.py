@@ -55,6 +55,26 @@ def _macro_module():
     return macros
 
 
+def _theme_module():
+    _macro_module()  # puts Scripts/python on sys.path
+    import marinamoji_theme  # noqa: WPS433
+
+    return marinamoji_theme
+
+
+def _job_event_name(args):
+    """EventName from the job's Environment argument ('' if absent)."""
+    try:
+        for arg in args:
+            if arg.Name == "Environment":
+                for item in arg.Value:
+                    if item.Name == "EventName":
+                        return item.Value
+    except Exception:
+        pass
+    return ""
+
+
 class MarinaMojiKaeritenProtocolHandler(
     unohelper.Base, XServiceInfo, XDispatchProvider, XDispatch, XInitialization
 ):
@@ -152,6 +172,12 @@ class MarinaMojiComposerJob(unohelper.Base, XServiceInfo, XJob):
         self.ctx = ctx
 
     def execute(self, args):
+        try:
+            _theme_module().handle_event(self.ctx, _job_event_name(args))
+        except Exception:
+            import traceback
+
+            traceback.print_exc(file=sys.stderr)
         try:
             mod = _macro_module()
             mod.start_composer_watcher()

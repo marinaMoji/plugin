@@ -5,6 +5,7 @@
   <path d="M11.2 5.6 14 8l-2.8 2.4" fill="none" stroke="#005fef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M17 6v7.5" fill="none" stroke="#005fef" stroke-width="1.8" stroke-linecap="round"/>
   <path d="M19.4 11.2 17 14l-2.4-2.8" fill="none" stroke="#005fef" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="6.5" y="18.2" font-family="Arial,sans-serif" font-size="5.5" font-weight="700" fill="#48484a">H</text>
-  <text x="13.4" y="18.2" font-family="Arial,sans-serif" font-size="5.5" font-weight="700" fill="#48484a">V</text>
+  <!-- H and V drawn as strokes, not <text>, so LibreOffice renders pure vector -->
+  <path d="M7.2 14.4v3.7M10 14.4v3.7M7.2 16.25h2.8" fill="none" stroke="#48484a" stroke-width="1.1"/>
+  <path d="M13.8 14.4l1.6 3.7 1.6-3.7" fill="none" stroke="#48484a" stroke-width="1.1" stroke-linejoin="miter"/>
 </svg>
