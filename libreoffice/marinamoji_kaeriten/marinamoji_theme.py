@@ -5,12 +5,15 @@ Add-on image URLs in Addons.xcu cannot follow the UI theme, so the startup job
 swaps the Writer module's command images at runtime. The swap lives in memory
 only (it is not persisted); it is re-applied on every launch and window event.
 
-Appearance is read from a hidden dialog peer's StyleSettings (FaceColor): it
-tracks the effective light/dark state even when LibreOffice is set to Automatic.
-The first reading at startup can still be the light palette, so the listener
-stays registered and the state is re-read on later window events.
+Appearance is read from StyleSettings.FaceColor on a real window: it tracks the
+effective light/dark state even when LibreOffice is set to Automatic. On Windows
+and Linux we listen on the document frame itself (a dialog peer can appear as a
+blank window; a synthetic child often never receives Appearance updates). macOS
+uses a hidden dialog peer. The first reading at startup can still be the light
+palette, so the listener stays registered and the state is re-read on later
+window events. If FaceColor is unavailable, Windows falls back to the
+Appearance config value, then to the OS AppsUseLightTheme setting.
 """
-import os
 import sys
 import threading
 import traceback
@@ -51,6 +54,36 @@ def variant_for_face_color(color):
     return DARK if luminance < 128 else LIGHT
 
 
+def variant_for_appearance_value(value):
+    """Map Misc Appearance / ApplicationAppearance (0/1/2) to LIGHT/DARK/None."""
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        return None
+    if value == 1:
+        return LIGHT
+    if value == 2:
+        return DARK
+    return None  # 0 = Automatic (follow the OS), or unknown
+
+
+def windows_apps_use_dark():
+    """True if Windows apps prefer dark, False if light, None if unknown."""
+    if sys.platform != "win32":
+        return None
+    try:
+        import winreg
+
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize",
+        ) as key:
+            value, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
+        return int(value) == 0
+    except Exception:
+        return None
+
+
 def icon_file(command, variant):
     """Path of the icon, relative to the extension root."""
     folder = "icons-dark" if variant == DARK else "icons"
@@ -72,10 +105,70 @@ class ThemeSwitcher(object):
         self._graphics = {}
 
     # -- appearance ------------------------------------------------------
-    def _current_variant(self):
-        if self.settings is None:
+    def _face_color(self, settings):
+        if settings is None:
             return None
-        return variant_for_face_color(self.settings.FaceColor)
+        try:
+            return settings.FaceColor
+        except Exception:
+            return None
+
+    def _variant_from_config(self):
+        """LIGHT/DARK from Office config when Appearance is forced; else None."""
+        try:
+            from com.sun.star.beans import PropertyValue
+
+            provider = self.ctx.ServiceManager.createInstanceWithContext(
+                "com.sun.star.configuration.ConfigurationProvider", self.ctx
+            )
+            node = PropertyValue()
+            node.Name = "nodepath"
+            node.Value = "/org.openoffice.Office.Common/Misc"
+            access = provider.createInstanceWithArguments(
+                "com.sun.star.configuration.ConfigurationAccess", (node,)
+            )
+            for name in ("Appearance", "ApplicationAppearance"):
+                try:
+                    value = access.getPropertyValue(name)
+                except Exception:
+                    try:
+                        value = getattr(access, name)
+                    except Exception:
+                        continue
+                variant = variant_for_appearance_value(value)
+                if variant is not None:
+                    return variant
+                # Automatic (0): stop; OS fallback is handled by the caller.
+                return None
+        except Exception:
+            return None
+        return None
+
+    def _current_variant(self):
+        """Effective light/dark for the toolbar icons.
+
+        Prefer a forced Appearance (Light/Dark) from Options. On Windows,
+        Automatic follows AppsUseLightTheme because FaceColor can stay on the
+        light palette under native theming. Otherwise use the live frame
+        FaceColor (and the listener's StyleSettings as a backup).
+        """
+        configured = self._variant_from_config()
+        if configured is not None:
+            return configured
+        os_dark = windows_apps_use_dark()
+        if os_dark is True:
+            return DARK
+        if os_dark is False:
+            return LIGHT
+        parent = self._parent_window()
+        if parent is not None:
+            color = self._face_color(getattr(parent, "StyleSettings", None))
+            if color is not None:
+                return variant_for_face_color(color)
+        color = self._face_color(self.settings)
+        if color is not None:
+            return variant_for_face_color(color)
+        return None
 
     def _parent_window(self):
         try:
@@ -91,11 +184,14 @@ class ThemeSwitcher(object):
         """(dialog_or_None, StyleSettings) from a window that is never shown.
 
         macOS: a hidden dialog peer (verified there). On GTK and Windows a dialog
-        peer can become a visible empty window, so other platforms use an
-        invisible child window of the document frame, then the frame itself.
+        peer can become a visible empty window, and a synthetic child often never
+        receives Appearance-driven StyleSettings updates, so those platforms use
+        the document frame window itself.
         """
         smgr = self.ctx.ServiceManager
         parent = self._parent_window()
+        if parent is None:
+            raise RuntimeError("no document frame window yet")
         if sys.platform == "darwin":
             dialog = smgr.createInstanceWithContext(
                 "com.sun.star.awt.UnoControlDialog", self.ctx
@@ -107,23 +203,7 @@ class ThemeSwitcher(object):
             toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
             dialog.createPeer(toolkit, parent)
             return dialog, dialog.getPeer().StyleSettings
-        import uno
-        from com.sun.star.awt import Rectangle, WindowDescriptor
-
-        toolkit = smgr.createInstanceWithContext("com.sun.star.awt.Toolkit", self.ctx)
-        try:
-            desc = WindowDescriptor()
-            desc.Type = uno.Enum("com.sun.star.awt.WindowClass", "SIMPLE")
-            desc.WindowServiceName = "window"
-            desc.Parent = parent
-            desc.ParentIndex = -1
-            desc.Bounds = Rectangle(0, 0, 1, 1)
-            desc.WindowAttributes = 0  # child window, never made visible
-            child = toolkit.createWindow(desc)
-            return child, child.StyleSettings
-        except Exception:
-            _log("child window has no style settings; falling back to the frame")
-            return None, parent.StyleSettings
+        return None, parent.StyleSettings
 
     def ensure_listener(self):
         """Register the style listener once; re-register if it was disposed."""
@@ -224,8 +304,18 @@ class ThemeSwitcher(object):
                 if variant is None:
                     return
                 if force or variant != self.applied:
-                    _log("{} -> {} (FaceColor=#{:06x})".format(
-                        reason or "refresh", variant, self.settings.FaceColor & 0xFFFFFF))
+                    color = self._face_color(self.settings)
+                    if color is None:
+                        parent = self._parent_window()
+                        color = self._face_color(
+                            getattr(parent, "StyleSettings", None) if parent else None
+                        )
+                    detail = (
+                        "FaceColor=#{:06x}".format(color & 0xFFFFFF)
+                        if color is not None
+                        else "fallback"
+                    )
+                    _log("{} -> {} ({})".format(reason or "refresh", variant, detail))
                     self.apply(variant)
             except Exception:
                 traceback.print_exc(file=sys.stderr)

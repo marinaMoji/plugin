@@ -5,13 +5,18 @@ Version numbers match `marinamoji_kaeriten/description.xml`.
 
 ## Unreleased
 
+* **Windows/Linux toolbar theme:** listen on the document frame's StyleSettings
+  (not a synthetic child window, which never saw Appearance updates on Windows).
+  If FaceColor is missing, fall back to the Appearance config value, then on
+  Windows to the OS `AppsUseLightTheme` setting.
+
 ## 0.3.37 - 2026-11-01
 
 * **Toolbar icons follow light and dark mode.** A startup job watches the
   application's appearance and swaps the toolbar icons for a dark set (in
   memory only; nothing is written to the profile). It works with LibreOffice
-  set to Automatic, Light or Dark. Tested on macOS only so far. On Linux and
-  Windows it listens through an invisible child window, never a dialog.
+  set to Automatic, Light or Dark. Verified on macOS; Windows/Linux use the
+  document frame (see Unreleased).
 * **Sharper icons:** the logo icon is rescaled to the same 24-unit box as the
   other icons, and the page writing-mode icon draws its H and V as paths
   instead of text.

@@ -19,6 +19,14 @@ def test_variant_for_face_color():
     assert theme.variant_for_face_color(0xFF1E1E1E) == theme.DARK  # alpha byte ignored
 
 
+def test_variant_for_appearance_value():
+    assert theme.variant_for_appearance_value(0) is None
+    assert theme.variant_for_appearance_value(1) == theme.LIGHT
+    assert theme.variant_for_appearance_value(2) == theme.DARK
+    assert theme.variant_for_appearance_value("2") == theme.DARK
+    assert theme.variant_for_appearance_value("nope") is None
+
+
 def test_icon_files():
     assert theme.icon_file("apply_ruby", theme.LIGHT) == "icons/apply_ruby.svg"
     assert theme.icon_file("apply_ruby", theme.DARK) == "icons-dark/apply_ruby.svg"
