@@ -5,7 +5,15 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 SRC="${ROOT}/marinamoji_kaeriten"
 DIST="${ROOT}/dist"
 BUILD="${DIST}/build"
+MODE="${1:-light}"
+if [[ "${MODE}" != "light" && "${MODE}" != "dark" ]]; then
+  echo "Usage: $0 [light|dark]" >&2
+  exit 1
+fi
 OXT="${DIST}/MarinaMojiKaeriten.oxt"
+if [[ "${MODE}" == "dark" ]]; then
+  OXT="${DIST}/MarinaMojiKaeriten-dark.oxt"
+fi
 PLUGIN="$(cd "${ROOT}/.." && pwd)"
 
 chmod +x "${ROOT}/build-icons.sh"
@@ -46,6 +54,21 @@ fi
 cp "${SRC}/description/"*.txt "${BUILD}/description/"
 if [[ -d "${SRC}/icons" ]] && compgen -G "${SRC}/icons/*" >/dev/null; then
   cp -R "${SRC}/icons" "${BUILD}/"
+fi
+if [[ "${MODE}" == "dark" ]]; then
+  # LibreOffice add-on image URLs do not switch with the UI theme. Prepare
+  # a separate package with light foregrounds on transparent backgrounds.
+  python3 - "${BUILD}/icons" <<'PYCODE'
+from pathlib import Path
+import sys
+
+for path in Path(sys.argv[1]).glob("*.svg"):
+    text = path.read_text(encoding="utf-8")
+    for old, new in (("#48484a", "#f2f2f7"), ("#005fef", "#75adff"),
+                     ("#005ced", "#75adff"), ("#203758", "#f2f2f7")):
+        text = text.replace(old, new)
+    path.write_text(text, encoding="utf-8")
+PYCODE
 fi
 if [[ -f "${SRC}/images/extension_icon.png" ]]; then
   cp "${SRC}/images/extension_icon.png" "${BUILD}/images/"

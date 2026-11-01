@@ -30,7 +30,7 @@ chmod +x build.sh build-icons.sh
 ./build.sh
 ```
 
-Toolbar icons come from `../icons/*.svg` (copied into the `.oxt`). `Addons.xcu` points `ImageSmallURL` / `ImageBigURL` at those SVGs so LibreOffice can render them at the current toolbar size (sharp on HiDPI, like Colibre). The Extension Manager still uses a 42×42 PNG — install **librsvg** (`brew install librsvg`) before building if that icon is missing.
+Toolbar icons come from `../icons/*.svg` (copied into the `.oxt`). `Addons.xcu` points `ImageSmallURL` / `ImageBigURL` at those SVGs so LibreOffice can render them at the current toolbar size (sharp on HiDPI, like Colibre). For dark toolbars, run `./build.sh dark` and install `dist/MarinaMojiKaeriten-dark.oxt`; it uses light linework on transparent backgrounds. LibreOffice does not automatically switch add-on images with the theme, so reinstall the normal package after switching back to a light toolbar. The Extension Manager still uses a 42×42 PNG — install **librsvg** (`brew install librsvg`) before building if that icon is missing.
 
 1. **Quit Writer** completely.
 2. **Tools → Extension Manager** — **remove** any old **marinaMoji Kaeriten**, **restart Writer**, then **Add** → `dist/MarinaMojiKaeriten.oxt` (**0.3.36**). A plain “update” can leave old toolbar config (wrong name or missing icons).
