@@ -89,7 +89,7 @@ else
   # (useful for workflow_dispatch on main).
   # A "-" in the version (e.g. plugins-v0.0.15-rc1) marks a pre-release: it must
   # not become GitHub's "Latest", which the website's download links resolve to.
-  if [[ "${TAG}" == *-* ]]; then CHANNEL_FLAG=--prerelease; else CHANNEL_FLAG=--latest; fi
+  if [[ "${TAG#plugins-v}" == *-* ]]; then CHANNEL_FLAG=--prerelease; else CHANNEL_FLAG=--latest; fi
   gh release create "${TAG}" --repo "${REPO}" "${CHANNEL_FLAG}" \
     --title "marinaMoji Kaeriten office plugins ${TAG#plugins-v}" \
     --notes-file "${NOTES}" \
