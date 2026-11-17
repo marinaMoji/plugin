@@ -7,7 +7,8 @@ import {
   runCopyPlainText,
 } from "../actions.js";
 
-Office.onReady(() => {});
+// Resolves once Office.js is up. Ribbon buttons can fire before that on Windows.
+const officeReady = Office.onReady(() => {});
 
 function notify(event, message) {
   if (message) console.warn("marinaMoji:", message);
@@ -16,6 +17,7 @@ function notify(event, message) {
 
 async function ribbonCall(event, fn) {
   try {
+    await officeReady;
     await fn();
     notify(event);
   } catch (err) {
@@ -41,3 +43,20 @@ globalThis.renderKaeriten = renderKaeriten;
 globalThis.unrenderKaeriten = unrenderKaeriten;
 globalThis.refreshKaeriten = refreshKaeriten;
 globalThis.copyPlainText = copyPlainText;
+
+// Word on Windows looks handlers up through Office.actions, not only globals.
+try {
+  const names = {
+    renderKaeriten,
+    unrenderKaeriten,
+    refreshKaeriten,
+    copyPlainText,
+  };
+  Office.onReady(() => {
+    for (const [name, handler] of Object.entries(names)) {
+      Office.actions.associate(name, handler);
+    }
+  });
+} catch (err) {
+  console.warn("marinaMoji: Office.actions.associate unavailable:", err);
+}

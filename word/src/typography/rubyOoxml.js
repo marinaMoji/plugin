@@ -56,15 +56,21 @@ export function unwrapRubyInOoxml(ooxml) {
   if (typeof ooxml !== "string" || !ooxml) {
     throw new Error("OOXML package is empty.");
   }
-  return ooxml.replace(
-    /<w:ruby\b[^>]*>([\s\S]*?)<\/w:ruby>/gi,
-    (_whole, inner) => {
-      const base = /<w:rubyBase\b[^>]*>([\s\S]*?)<\/w:rubyBase>/i.exec(inner);
-      if (base) return base[1];
-      // Fallback: drop ruby wrapper entirely if base missing.
-      return "";
-    }
-  );
+  const baseOf = (inner) => {
+    const base = /<w:rubyBase\b[^>]*>([\s\S]*?)<\/w:rubyBase>/i.exec(inner);
+    // Fallback: drop ruby wrapper entirely if base missing.
+    return base ? base[1] : "";
+  };
+  // In real documents (Word on Windows in particular) w:ruby is a child of a
+  // w:r. Replacing only the w:ruby would leave runs nested in a run, which Word
+  // drops, so the ruby stays. Replace the whole wrapping run first.
+  const wrapped =
+    /<w:r(?:\s[^>]*)?>\s*(?:<w:rPr(?:\s[^>]*)?>(?:(?!<\/w:rPr>)[\s\S])*<\/w:rPr>\s*)?<w:ruby\b[^>]*>((?:(?!<\/w:ruby>)[\s\S])*)<\/w:ruby>\s*<\/w:r>/gi;
+  return ooxml
+    .replace(wrapped, (_whole, inner) => baseOf(inner))
+    .replace(/<w:ruby\b[^>]*>((?:(?!<\/w:ruby>)[\s\S])*)<\/w:ruby>/gi, (_w, inner) =>
+      baseOf(inner)
+    );
 }
 
 export function assertRubyApplyAllowed(ooxml) {
